@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, Pressable,
   RefreshControl,
@@ -21,9 +21,18 @@ interface HomeScreenProps {
   onBrowsePress: () => void;
 }
 
-// ─── Recent Contributions (mock) ─────────────────────────────────────────────
+interface RecentContrib {
+  id: string;
+  org?: typeof MOCK_ORGS[number];
+  isAnon?: boolean;
+  action_sw: string;
+  action_en: string;
+  target_sw: string;
+  target_en: string;
+  time: string;
+}
 
-const RECENT_CONTRIBS = [
+const RECENT_CONTRIBS: RecentContrib[] = [
   {
     id: '1',
     org: MOCK_ORGS[0],
@@ -35,7 +44,6 @@ const RECENT_CONTRIBS = [
   },
   {
     id: '2',
-    org: undefined,
     isAnon: true,
     action_sw: 'Pendekezo',
     action_en: 'Suggestion',
@@ -54,9 +62,14 @@ const RECENT_CONTRIBS = [
   },
 ];
 
-export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrowsePress }: HomeScreenProps) {
+export function HomeScreen({
+  onSectionPress,
+  onPollPress,
+  onSearchPress,
+  onBrowsePress,
+}: HomeScreenProps) {
   const { language } = useAppContext();
-  const [refreshing, setRefreshing] = React.useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -66,7 +79,7 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
 
   const heroSubtitle = t(
     'Karibu kwenye jukwaa la mazungumzo ya kikatiba la Tanzania.',
-    'Welcome to Tanzania\'s constitutional deliberation platform.',
+    "Welcome to Tanzania's constitutional deliberation platform.",
     language,
   );
 
@@ -87,53 +100,60 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
           />
         }
       >
-        {/* ── Hero banner ─────────────────────────────────────────────────── */}
         <View style={styles.hero}>
           <View style={styles.heroTextBlock}>
             <Text style={styles.heroTagline}>
               {t('Soma · Jadili · Pendekeza · Piga Kura', 'Read · Discuss · Propose · Vote', language)}
             </Text>
+            <Text style={styles.heroTitle}>
+              {t('Ifahamu katiba. Sauti yako ihesabike.', 'Know the constitution. Make your voice count.', language)}
+            </Text>
             <Text style={styles.heroSub}>{heroSubtitle}</Text>
           </View>
 
-          <Pressable onPress={onSearchPress} style={({ pressed }) => [styles.searchBar, pressed && styles.searchBarFocused]} accessibilityRole="button">
-            <Ionicons name="search" size={19} color={Colors.green[200]} />
-            <Text style={styles.searchPlaceholder}>{t('Tafuta ibara, neno, au mada...', 'Search articles, terms, topics...', language)}</Text>
-            <Ionicons name="arrow-forward" size={18} color={Colors.green[300]} />
+          <Pressable
+            onPress={onSearchPress}
+            style={({ pressed }) => [styles.searchBar, pressed && styles.searchBarFocused]}
+            accessibilityRole="button"
+          >
+            <Ionicons name="search" size={19} color={Colors.green[700]} />
+            <Text style={styles.searchPlaceholder}>
+              {t('Tafuta ibara, neno, au mada...', 'Search articles, terms, topics...', language)}
+            </Text>
+            <Ionicons name="arrow-forward" size={18} color={Colors.green[700]} />
           </Pressable>
         </View>
 
         <View style={styles.quickActions}>
-          <Pressable onPress={onBrowsePress} style={({pressed}) => [styles.quickAction, pressed && styles.contribRowPressed]}>
-            <View style={[styles.quickIcon,{backgroundColor:Colors.green[900]}]}><Ionicons name="book-outline" size={21} color={Colors.green[300]}/></View>
-            <View style={{flex:1}}><Text style={styles.quickTitle}>{t('Soma Katiba','Read the Constitution',language)}</Text><Text style={styles.quickSub}>{t('Vinjari sura na ibara','Browse chapters and articles',language)}</Text></View>
-            <Ionicons name="chevron-forward" size={18} color={Colors.text.muted}/>
-          </Pressable>
-          <View style={styles.quickDivider}/>
-          <Pressable onPress={() => onPollPress(POLL_ART13)} style={({pressed}) => [styles.quickAction, pressed && styles.contribRowPressed]}>
-            <View style={[styles.quickIcon,{backgroundColor:Colors.gold[900]}]}><Ionicons name="stats-chart-outline" size={21} color={Colors.gold[300]}/></View>
-            <View style={{flex:1}}><Text style={styles.quickTitle}>{t('Piga kura','Vote now',language)}</Text><Text style={styles.quickSub}>{t('Kura 2 zinaendelea','2 active polls',language)}</Text></View>
-            <Ionicons name="chevron-forward" size={18} color={Colors.text.muted}/>
-          </Pressable>
+          <QuickAction
+            icon="book-outline"
+            iconBg={Colors.green[900]}
+            iconColor={Colors.green[300]}
+            title={t('Soma Katiba', 'Read the Constitution', language)}
+            subtitle={t('Vinjari sura na ibara', 'Browse chapters and articles', language)}
+            onPress={onBrowsePress}
+          />
+          <View style={styles.quickDivider} />
+          <QuickAction
+            icon="stats-chart-outline"
+            iconBg={Colors.gold[900]}
+            iconColor={Colors.gold[300]}
+            title={t('Piga kura', 'Vote now', language)}
+            subtitle={t('Kura 2 zinaendelea', '2 active polls', language)}
+            onPress={() => onPollPress(POLL_ART13)}
+          />
         </View>
 
-        {/* ── Featured Poll ──────────────────────────────────────────────── */}
         <View style={styles.section}>
           <SectionLabel
             label={t('Kura inayoendelea sasa', 'Active poll', language)}
             accent={Colors.gold[400]}
           />
-          <FeaturedPollCard
-            poll={POLL_ART13}
-            onVotePress={onPollPress}
-          />
+          <FeaturedPollCard poll={POLL_ART13} onVotePress={onPollPress} />
         </View>
 
-        {/* ── Trending Articles ──────────────────────────────────────────── */}
         <View style={styles.section}>
-          <SectionLabel
-            label={t('Ibara zinazojadiliwa sana', 'Most discussed articles', language)}
-          />
+          <SectionLabel label={t('Ibara zinazojadiliwa sana', 'Most discussed articles', language)} />
           {TRENDING.map(item => (
             <ArticleCard
               key={item.section.id}
@@ -145,19 +165,14 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
           ))}
         </View>
 
-        {/* ── Second Poll ────────────────────────────────────────────────── */}
         <View style={styles.section}>
           <SectionLabel
             label={t('Kura nyingine inayoendelea', 'Another active poll', language)}
             accent={Colors.blue[400]}
           />
-          <FeaturedPollCard
-            poll={POLL_ART19}
-            onVotePress={onPollPress}
-          />
+          <FeaturedPollCard poll={POLL_ART19} onVotePress={onPollPress} />
         </View>
 
-        {/* ── Recent Contributions ───────────────────────────────────────── */}
         <View style={styles.section}>
           <SectionLabel label={t('Wachangiaji wa hivi karibuni', 'Recent contributors', language)} />
           <View style={styles.contribList}>
@@ -194,7 +209,6 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
           </View>
         </View>
 
-        {/* ── Disclaimer ─────────────────────────────────────────────────── */}
         <View style={styles.disclaimer}>
           <View style={styles.disclaimerDot} />
           <Text style={styles.disclaimerText}>
@@ -212,7 +226,32 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
   );
 }
 
-// ─── Sub-component: Section Label ────────────────────────────────────────────
+function QuickAction({
+  icon, iconBg, iconColor, title, subtitle, onPress,
+}: {
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+  iconBg: string;
+  iconColor: string;
+  title: string;
+  subtitle: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.quickAction, pressed && styles.contribRowPressed]}
+    >
+      <View style={[styles.quickIcon, { backgroundColor: iconBg }]}>
+        <Ionicons name={icon} size={21} color={iconColor} />
+      </View>
+      <View style={styles.quickTextBlock}>
+        <Text style={styles.quickTitle}>{title}</Text>
+        <Text style={styles.quickSub}>{subtitle}</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={18} color={Colors.text.muted} />
+    </Pressable>
+  );
+}
 
 function SectionLabel({ label, accent }: { label: string; accent?: string }) {
   return (
@@ -241,11 +280,8 @@ const sectionLabelStyles = StyleSheet.create({
     fontWeight: Typography.weight.semibold,
     color: Colors.text.secondary,
     letterSpacing: Typography.letterSpacing.wider,
-    textTransform: 'uppercase',
   },
 });
-
-// ─── Styles ───────────────────────────────────────────────────────────────────
 
 const styles = StyleSheet.create({
   root: {
@@ -257,15 +293,18 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: Spacing[20],
+    width: '100%',
+    maxWidth: 960,
+    alignSelf: 'center',
   },
-  // Hero
   hero: {
-    backgroundColor: Colors.green[700],
+    backgroundColor: Colors.green[50],
     paddingHorizontal: Spacing[4],
-    paddingTop: Spacing[5],
-    paddingBottom: Spacing[6],
-    gap: Spacing[4],
-    borderBottomWidth: 0,
+    paddingTop: Spacing[8],
+    paddingBottom: Spacing[8],
+    gap: Spacing[5],
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.green[100],
   },
   heroTextBlock: {
     gap: Spacing[2],
@@ -274,43 +313,88 @@ const styles = StyleSheet.create({
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
     fontWeight: Typography.weight.medium,
-    color: Colors.gold[300],
+    color: Colors.green[700],
     letterSpacing: Typography.letterSpacing.widest,
   },
-  heroSub: {
+  heroTitle: {
+    maxWidth: 680,
     fontFamily: Typography.family.serif,
-    fontSize: Typography.size.lg,
-    color: Colors.green[100],
-    lineHeight: Typography.size.lg * 1.5,
+    fontSize: Typography.size['4xl'],
+    lineHeight: Typography.size['4xl'] * 1.08,
+    color: Colors.green[900],
+    letterSpacing: Typography.letterSpacing.tight,
+  },
+  heroSub: {
+    maxWidth: 620,
+    fontFamily: Typography.family.sans,
+    fontSize: Typography.size.base,
+    lineHeight: Typography.size.base * 1.6,
+    color: Colors.text.secondary,
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: Colors.surface.raised,
     borderRadius: Radius.xl,
     paddingHorizontal: Spacing[3],
     paddingVertical: Spacing[2.5],
-    borderWidth: 0.5,
-    borderColor: 'rgba(255,255,255,0.15)',
+    borderWidth: 1,
+    borderColor: Colors.green[200],
     gap: Spacing[2],
   },
   searchBarFocused: {
-    borderColor: Colors.gold[400],
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    borderColor: Colors.green[500],
+    backgroundColor: '#FFFFFF',
   },
   searchPlaceholder: {
     flex: 1,
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.base,
-    color: Colors.green[100],
+    color: Colors.text.secondary,
   },
-  quickActions:{marginHorizontal:Spacing[4],marginTop:-Spacing[3],backgroundColor:Colors.surface.raised,borderRadius:Radius.xl,borderWidth:1,borderColor:Colors.surface.border,overflow:'hidden',...Shadow.md},
-  quickAction:{minHeight:68,flexDirection:'row',alignItems:'center',gap:Spacing[3],paddingHorizontal:Spacing[4],paddingVertical:Spacing[3]},
-  quickDivider:{height:StyleSheet.hairlineWidth,backgroundColor:Colors.surface.border,marginLeft:Spacing[16]},
-  quickIcon:{width:40,height:40,borderRadius:Radius.md,alignItems:'center',justifyContent:'center'},
-  quickTitle:{fontSize:Typography.size.base,fontWeight:Typography.weight.semibold,color:Colors.text.primary},
-  quickSub:{fontSize:Typography.size.xs,color:Colors.text.muted,marginTop:3},
-  // Sections
+  quickActions: {
+    marginHorizontal: Spacing[4],
+    marginTop: -Spacing[3],
+    backgroundColor: Colors.surface.raised,
+    borderRadius: Radius.xl,
+    borderWidth: 1,
+    borderColor: Colors.surface.border,
+    overflow: 'hidden',
+    ...Shadow.md,
+  },
+  quickAction: {
+    minHeight: 68,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing[3],
+    paddingHorizontal: Spacing[4],
+    paddingVertical: Spacing[3],
+  },
+  quickDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: Colors.surface.border,
+    marginLeft: Spacing[16],
+  },
+  quickIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: Radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickTextBlock: {
+    flex: 1,
+  },
+  quickTitle: {
+    fontSize: Typography.size.base,
+    fontWeight: Typography.weight.semibold,
+    color: Colors.text.primary,
+  },
+  quickSub: {
+    fontSize: Typography.size.xs,
+    color: Colors.text.muted,
+    marginTop: 3,
+  },
   section: {
     paddingHorizontal: Spacing[4],
     paddingTop: Spacing[6],
@@ -318,7 +402,6 @@ const styles = StyleSheet.create({
   articleCard: {
     marginBottom: Spacing[3],
   },
-  // Contributions
   contribList: {
     backgroundColor: Colors.surface.raised,
     borderRadius: Radius.xl,
@@ -362,7 +445,6 @@ const styles = StyleSheet.create({
     color: Colors.text.muted,
     flexShrink: 0,
   },
-  // Disclaimer
   disclaimer: {
     flexDirection: 'row',
     gap: Spacing[2.5],
@@ -384,11 +466,11 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   disclaimerText: {
+    flex: 1,
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
-    color: Colors.text.muted,
     lineHeight: Typography.size.xs * 1.6,
-    flex: 1,
+    color: Colors.text.muted,
   },
   bottomPad: {
     height: Spacing[4],

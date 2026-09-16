@@ -1,7 +1,7 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import {
   View, Text, ScrollView, Pressable, StyleSheet,
-  TextInput, Share,
+  TextInput, Share, Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
@@ -26,8 +26,6 @@ import type {
   Section, WorkspaceTab, Discussion, SuggestionStatus, Organization,
 } from '../types';
 
-// ─── Tab definitions ──────────────────────────────────────────────────────────
-
 interface TabDef {
   key: WorkspaceTab;
   label_sw: string;
@@ -45,7 +43,14 @@ const TABS: TabDef[] = [
   { key: 'related',     label_sw: 'Zinazohusiana', label_en: 'Related'     },
 ];
 
-// ─── Main Screen ──────────────────────────────────────────────────────────────
+const SUGGESTION_STATUS_COLORS: Record<SuggestionStatus, 'gold' | 'green' | 'red' | 'gray' | 'blue'> = {
+  submitted: 'gray',
+  under_review: 'gold',
+  accepted: 'green',
+  rejected: 'red',
+  merged: 'blue',
+  polled: 'blue',
+};
 
 interface SectionWorkspaceProps {
   section: Section;
@@ -59,7 +64,6 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
 
   const title = t(section.title_sw, section.title_en, language);
 
-  // ── Bookmark state persisted to local storage ──
   useEffect(() => {
     let cancelled = false;
     storageGetJSON<string[]>(StorageKeys.bookmarks, []).then(ids => {
@@ -92,13 +96,24 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
     }
   }, [section, title]);
 
+  const headerLabel = language === 'sw' ? 'Ibara' : 'Article';
+  const muunganoCopy = t(
+    'Mada hii inashughulikiwa kwa makini maalum na bodi ya usimamizi.',
+    'This topic is handled with special care by the oversight board.',
+    language,
+  );
+  const disclaimer = t(
+    'Maelezo haya si ushauri wa kisheria.',
+    'This information is not legal advice.',
+    language,
+  );
+
   return (
     <View style={styles.root}>
-      {/* Header */}
       <AppHeader
         showBack
         onBack={onBack}
-        title={`${language === 'sw' ? 'Ibara' : 'Article'} ${section.article_number}`}
+        title={`${headerLabel} ${section.article_number}`}
         subtitle={title}
         rightActions={
           <View style={styles.headerActions}>
@@ -110,31 +125,23 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
               <Ionicons
                 name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
                 size={20}
-                color={isBookmarked ? Colors.gold[300] : 'rgba(255,255,255,0.7)'}
+                color={isBookmarked ? Colors.gold[500] : Colors.text.muted}
               />
             </Pressable>
             <Pressable onPress={handleShare} hitSlop={10} accessibilityLabel="Shiriki">
-              <Ionicons name="share-social-outline" size={20} color="rgba(255,255,255,0.7)" />
+              <Ionicons name="share-social-outline" size={20} color={Colors.text.muted} />
             </Pressable>
           </View>
         }
       />
 
-      {/* Muungano warning banner */}
       {section.is_muungano && (
         <View style={styles.muunganoBanner}>
           <Ionicons name="warning-outline" size={16} color={Colors.gold[400]} />
-          <Text style={styles.muunganoText}>
-            {t(
-              'Mada hii inashughulikiwa kwa makini maalum na bodi ya usimamizi.',
-              'This topic is handled with special care by the oversight board.',
-              language,
-            )}
-          </Text>
+          <Text style={styles.muunganoText}>{muunganoCopy}</Text>
         </View>
       )}
 
-      {/* Tab rail */}
       <View style={styles.tabRailWrapper}>
         <ScrollView
           horizontal
@@ -161,7 +168,6 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
         </ScrollView>
       </View>
 
-      {/* Tab content */}
       <ScrollView
         style={styles.content}
         contentContainerStyle={styles.contentInner}
@@ -177,32 +183,20 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
         {activeTab === 'history' && <TabHistory section={section} />}
         {activeTab === 'related' && <TabRelated section={section} />}
 
-        {/* Global disclaimer */}
         <View style={styles.disclaimerRow}>
-          <Text style={styles.disclaimerText}>
-            {t(
-              'Maelezo haya si ushauri wa kisheria.',
-              'This information is not legal advice.',
-              language,
-            )}
-          </Text>
+          <Text style={styles.disclaimerText}>{disclaimer}</Text>
         </View>
-        <View style={{ height: Spacing[20] }} />
+        <View style={styles.spacer} />
       </ScrollView>
     </View>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 1 — ORIGINAL TEXT
-// ═══════════════════════════════════════════════════════════════════════════════
 
 function TabText({ section }: { section: Section }) {
   const { language, setLanguage, fontSize } = useAppContext();
   const body = language === 'sw' ? section.body_sw : section.body_en;
   const title = language === 'sw' ? section.title_sw : section.title_en;
 
-  // Respect the user's reading-size preference on the main reading surface
   const titleSize = scaledSize(Typography.size['2xl'], fontSize);
   const bodySize = scaledSize(Typography.size.md, fontSize);
 
@@ -217,47 +211,42 @@ function TabText({ section }: { section: Section }) {
     }
   }, [section, language]);
 
+  const lockedLabel = t(
+    'Maandishi rasmi · Hayabadiliki',
+    'Official text · Immutable',
+    language,
+  );
+
   return (
     <View style={tabStyles.wrapper}>
-      {/* Locked badge */}
       <View style={tabStyles.lockedRow}>
-        <Badge label={t('Maandishi rasmi · Hayabadiliki', 'Official text · Immutable', language)} variant="locked" size="md" />
+        <Badge label={lockedLabel} variant="locked" size="md" />
       </View>
 
-      {/* Language toggle */}
       <View style={tabStyles.langToggle}>
-        <Pressable
-          style={[tabStyles.langBtn, language === 'sw' && tabStyles.langBtnActive]}
-          onPress={() => setLanguage('sw')}
-        >
-          <Text style={[tabStyles.langBtnText, language === 'sw' && tabStyles.langBtnTextActive]}>
-            Kiswahili
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[tabStyles.langBtn, language === 'en' && tabStyles.langBtnActive]}
-          onPress={() => setLanguage('en')}
-        >
-          <Text style={[tabStyles.langBtnText, language === 'en' && tabStyles.langBtnTextActive]}>
-            English
-          </Text>
-        </Pressable>
+        {(['sw', 'en'] as const).map(code => (
+          <Pressable
+            key={code}
+            style={[tabStyles.langBtn, language === code && tabStyles.langBtnActive]}
+            onPress={() => setLanguage(code)}
+          >
+            <Text style={[tabStyles.langBtnText, language === code && tabStyles.langBtnTextActive]}>
+              {code === 'sw' ? 'Kiswahili' : 'English'}
+            </Text>
+          </Pressable>
+        ))}
       </View>
 
-      {/* Article number */}
       <Text style={tabStyles.articleNum}>
         {language === 'sw' ? 'Ibara' : 'Article'} {section.article_number}
       </Text>
 
-      {/* Title */}
       <Text style={[tabStyles.articleTitle, { fontSize: titleSize, lineHeight: Math.round(titleSize * 1.3) }]}>
         {title}
       </Text>
 
-      {/* Gold rule */}
       <View style={tabStyles.goldRule} />
 
-      {/* Body text */}
       <Text
         style={[tabStyles.articleBody, { fontSize: bodySize, lineHeight: Math.round(bodySize * 1.65) }]}
         selectable
@@ -265,35 +254,45 @@ function TabText({ section }: { section: Section }) {
         {body}
       </Text>
 
-      {/* Action buttons */}
       <View style={tabStyles.textActions}>
-        <Pressable style={tabStyles.textActionBtn} accessibilityLabel={t('Sikiliza', 'Listen', language)}>
-          <Ionicons name="volume-high-outline" size={15} color={Colors.text.secondary} />
-          <Text style={tabStyles.textActionLabel}>{t('Sikiliza', 'Listen', language)}</Text>
-        </Pressable>
-        <Pressable style={tabStyles.textActionBtn} accessibilityLabel={t('Fonti', 'Font', language)}>
-          <Ionicons name="text" size={15} color={Colors.text.secondary} />
-          <Text style={tabStyles.textActionLabel}>{t('Fonti', 'Font', language)}</Text>
-        </Pressable>
-        <Pressable style={tabStyles.textActionBtn} onPress={handleArticleLink} accessibilityLabel={t('Kiungo', 'Share link', language)}>
-          <Ionicons name="link-outline" size={15} color={Colors.text.secondary} />
-          <Text style={tabStyles.textActionLabel}>{t('Kiungo', 'Share link', language)}</Text>
-        </Pressable>
+        <TextAction icon="volume-high-outline" label={t('Sikiliza', 'Listen', language)} />
+        <TextAction icon="text" label={t('Fonti', 'Font', language)} />
+        <TextAction icon="link-outline" label={t('Kiungo', 'Share link', language)} onPress={handleArticleLink} />
       </View>
     </View>
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 2 — PLAIN LANGUAGE
-// ═══════════════════════════════════════════════════════════════════════════════
+function TextAction({
+  icon, label, onPress,
+}: {
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+  label: string;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable style={tabStyles.textActionBtn} accessibilityLabel={label} onPress={onPress}>
+      <Ionicons name={icon} size={15} color={Colors.text.secondary} />
+      <Text style={tabStyles.textActionLabel}>{label}</Text>
+    </Pressable>
+  );
+}
 
 function TabPlain({ section }: { section: Section }) {
   const { language } = useAppContext();
   const org = MOCK_ORGS[0];
 
-  const summary_sw = 'Ibara hii inakuambia kwamba una haki ya kusema unachofikiria, na pia kusikiliza watu wengine, bila mtu kukuzuia. Serikali haiwezi kukizuia kwa urahisi mada unayotaka kujua au kuzungumza.';
-  const summary_en = 'This article tells you that you have the right to say what you think, and also to listen to other people, without anyone stopping you. The government cannot easily stop you from knowing or discussing topics you want.';
+  const summary = language === 'sw'
+    ? 'Ibara hii inakuambia kwamba una haki ya kusema unachofikiria, na pia kusikiliza watu wengine, bila mtu kukuzuia. Serikali haiwezi kukizuia kwa urahisi mada unayotaka kujua au kuzungumza.'
+    : 'This article tells you that you have the right to say what you think, and also to listen to other people, without anyone stopping you. The government cannot easily stop you from knowing or discussing topics you want.';
+
+  const concepts = [
+    { sw: 'Uhuru wa maoni', en: 'Freedom of expression', desc_sw: 'Haki ya kusema unachofikiria hadharani', desc_en: 'Right to say what you think publicly' },
+    { sw: 'Kupata habari', en: 'Access to information', desc_sw: 'Haki ya kujua mambo yanayokukaribia', desc_en: 'Right to know things that affect you' },
+    { sw: 'Vikwazo vya kisheria', en: 'Legal limits', desc_sw: 'Serikali inaweza kuweka mipaka kwa sheria tu', desc_en: 'Government can only restrict through law' },
+  ];
+
+  const reviewedLabel = language === 'sw' ? 'Imekaguliwa Agosti 2026' : 'Reviewed August 2026';
 
   return (
     <View style={tabStyles.wrapper}>
@@ -304,15 +303,13 @@ function TabPlain({ section }: { section: Section }) {
             {t('Maelezo ya lugha rahisi', 'Plain language summary', language)}
           </Text>
         </View>
-        <Text style={tabStyles.plainBody}>
-          {language === 'sw' ? summary_sw : summary_en}
-        </Text>
+        <Text style={tabStyles.plainBody}>{summary}</Text>
       </View>
 
       <View style={tabStyles.plainMeta}>
         <Avatar name={org.name} type="org" orgType={org.type} size="xs" />
         <Text style={tabStyles.plainMetaText}>
-          {org.name} · {t('Imekaguliwa', 'Reviewed', language)} {language === 'sw' ? 'Agosti 2026' : 'August 2026'}
+          {org.name} · {reviewedLabel}
         </Text>
       </View>
 
@@ -323,19 +320,14 @@ function TabPlain({ section }: { section: Section }) {
         fullWidth
       />
 
-      {/* Key concepts */}
-      <View style={{ gap: Spacing[2], marginTop: Spacing[2] }}>
+      <View style={tabStyles.conceptList}>
         <Text style={tabStyles.sectionHeading}>
           {t('Dhana muhimu', 'Key concepts', language)}
         </Text>
-        {[
-          { sw: 'Uhuru wa maoni', en: 'Freedom of expression', desc_sw: 'Haki ya kusema unachofikiria hadharani', desc_en: 'Right to say what you think publicly' },
-          { sw: 'Kupata habari', en: 'Access to information', desc_sw: 'Haki ya kujua mambo yanayokukaribia', desc_en: 'Right to know things that affect you' },
-          { sw: 'Vikwazo vya kisheria', en: 'Legal limits', desc_sw: 'Serikali inaweza kuweka mipaka kwa sheria tu', desc_en: 'Government can only restrict through law' },
-        ].map((concept, i) => (
+        {concepts.map((concept, i) => (
           <View key={i} style={tabStyles.conceptRow}>
             <View style={tabStyles.conceptDot} />
-            <View style={styles.flex1}>
+            <View style={tabStyles.flex1}>
               <Text style={tabStyles.conceptTitle}>
                 {language === 'sw' ? concept.sw : concept.en}
               </Text>
@@ -350,15 +342,10 @@ function TabPlain({ section }: { section: Section }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 3 — DISCUSSION
-// ═══════════════════════════════════════════════════════════════════════════════
-
 function TabDiscussion({ section }: { section: Section }) {
   const { language } = useAppContext();
   const [replyText, setReplyText] = useState('');
   const [sortBy, setSortBy] = useState<'top' | 'new' | 'verified'>('top');
-  // Comments posted by the user in this session (mock backend pending)
   const [posted, setPosted] = useState<Discussion[]>([]);
   const meta = section.meta;
 
@@ -368,21 +355,22 @@ function TabDiscussion({ section }: { section: Section }) {
     ? t('Mapya', 'New', language)
     : t('Wataalamu', 'Verified', language);
 
-  // Sorting actually applies to the visible comment list
   const visibleDiscussions = useMemo(() => {
     const all = [...posted, ...DISCUSSIONS_ART19];
     const sorted = [...all];
     if (sortBy === 'top') {
       sorted.sort((a, b) => b.upvotes - a.upvotes);
     } else if (sortBy === 'new') {
-      sorted.sort((a, b) =>
-        new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+      sorted.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
     } else {
-      sorted.sort((a, b) =>
-        Number(b.is_verified_author) - Number(a.is_verified_author));
+      sorted.sort((a, b) => Number(b.is_verified_author) - Number(a.is_verified_author));
     }
     return sorted;
   }, [posted, sortBy]);
+
+  const cycleSort = useCallback(() => {
+    setSortBy(s => s === 'top' ? 'new' : s === 'new' ? 'verified' : 'top');
+  }, []);
 
   const handlePost = useCallback(() => {
     const text = replyText.trim();
@@ -404,27 +392,24 @@ function TabDiscussion({ section }: { section: Section }) {
     setReplyText('');
   }, [replyText, section.id]);
 
+  const anonLabel = t('Mtumiaji asiyejulikana', 'Anonymous', language);
+
   return (
     <View style={tabStyles.wrapper}>
-      {/* Header row */}
       <View style={tabStyles.discHeader}>
         <Text style={tabStyles.discCount}>
           {t('Maoni', 'Comments', language)} {meta?.discussion_count ?? visibleDiscussions.length}
         </Text>
-        <Pressable
-          style={tabStyles.sortBtn}
-          onPress={() => setSortBy(s => s === 'top' ? 'new' : s === 'new' ? 'verified' : 'top')}
-        >
+        <Pressable style={tabStyles.sortBtn} onPress={cycleSort}>
           <Text style={tabStyles.sortBtnText}>{sortLabel} ⌄</Text>
         </Pressable>
       </View>
 
-      {/* Comments — sorted by the active sort mode */}
-      {visibleDiscussions.map((disc) => (
+      {visibleDiscussions.map(disc => (
         <CommentCard
           key={disc.id}
           id={disc.id}
-          authorName={disc.is_anonymous ? t('Mtumiaji asiyejulikana', 'Anonymous', language) : (disc.org?.name ?? disc.user?.display_name ?? '??')}
+          authorName={disc.is_anonymous ? anonLabel : (disc.org?.name ?? disc.user?.display_name ?? '??')}
           authorType={disc.org ? 'org' : disc.is_anonymous ? 'anon' : 'user'}
           orgType={disc.org?.type}
           badge={disc.org ? 'tls' : disc.is_verified_author ? 'verified' : undefined}
@@ -435,7 +420,6 @@ function TabDiscussion({ section }: { section: Section }) {
         />
       ))}
 
-      {/* Reply composer */}
       <View style={tabStyles.replyComposer}>
         <TextInput
           style={tabStyles.replyInput}
@@ -463,10 +447,7 @@ function TabDiscussion({ section }: { section: Section }) {
   );
 }
 
-function CommentCard({
-  id, authorName, authorType, orgType, badge,
-  body, upvotes, replyCount, time,
-}: {
+interface CommentCardProps {
   id: string;
   authorName: string;
   authorType: 'user' | 'org' | 'anon';
@@ -476,11 +457,15 @@ function CommentCard({
   upvotes: number;
   replyCount: number;
   time: string;
-}) {
+}
+
+function CommentCard({
+  id, authorName, authorType, orgType, badge,
+  body, upvotes, replyCount, time,
+}: CommentCardProps) {
   const { language } = useAppContext();
   const [liked, setLiked] = useState(false);
 
-  // Like state persisted to local storage
   useEffect(() => {
     let cancelled = false;
     storageGetJSON<string[]>(StorageKeys.likes, []).then(ids => {
@@ -502,6 +487,8 @@ function CommentCard({
     });
   }, [id]);
 
+  const badgeLabel = badge === 'tls' ? 'Taasisi' : badge === 'nida' ? 'NIDA' : '✓';
+
   return (
     <View style={commentStyles.card}>
       <View style={commentStyles.header}>
@@ -515,7 +502,7 @@ function CommentCard({
         <View style={commentStyles.meta}>
           <View style={commentStyles.nameRow}>
             <Text style={commentStyles.name} numberOfLines={1}>{authorName}</Text>
-            {badge && <Badge label={badge === 'tls' ? 'Taasisi' : badge === 'nida' ? 'NIDA' : '✓'} variant={badge} size="sm" />}
+            {badge && <Badge label={badgeLabel} variant={badge} size="sm" />}
           </View>
           <Text style={commentStyles.time}>{formatRelativeTime(time, language)}</Text>
         </View>
@@ -528,7 +515,7 @@ function CommentCard({
             size={14}
             color={liked ? Colors.green[400] : Colors.text.muted}
           />
-          <Text style={[commentStyles.actionText, liked && { color: Colors.green[400] }]}>
+          <Text style={[commentStyles.actionText, liked && commentStyles.actionTextLiked]}>
             {liked ? upvotes + 1 : upvotes}
           </Text>
         </Pressable>
@@ -547,14 +534,8 @@ function CommentCard({
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 4 — SUGGESTIONS
-// ═══════════════════════════════════════════════════════════════════════════════
-
 function TabSuggestions({ section }: { section: Section }) {
   const { language } = useAppContext();
-
-  // Endorsements toggle locally and persist (mock backend pending)
   const [endorsements, setEndorsements] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
@@ -573,15 +554,6 @@ function TabSuggestions({ section }: { section: Section }) {
     });
   }, []);
 
-  const statusColors: Record<SuggestionStatus, 'gold' | 'green' | 'red' | 'gray' | 'blue'> = {
-    submitted: 'gray',
-    under_review: 'gold',
-    accepted: 'green',
-    rejected: 'red',
-    merged: 'blue',
-    polled: 'blue',
-  };
-
   return (
     <View style={tabStyles.wrapper}>
       <Button
@@ -597,17 +569,14 @@ function TabSuggestions({ section }: { section: Section }) {
       </Text>
 
       {SUGGESTIONS_ART19.map(sugg => {
-        const title = sugg.title;
-        const rationale = sugg.rationale;
         const proposed = language === 'sw' ? sugg.proposed_text_sw : sugg.proposed_text_en;
         const orgName = sugg.org?.name ?? t('Mtumiaji asiyejulikana', 'Anonymous', language);
         const statusLabel = getSuggestionStatusLabel(sugg.status, language);
-        const statusVar = statusColors[sugg.status];
+        const statusVar = SUGGESTION_STATUS_COLORS[sugg.status];
         const hasEndorsed = !!endorsements[sugg.id];
 
         return (
           <View key={sugg.id} style={suggStyles.card}>
-            {/* Header */}
             <View style={suggStyles.header}>
               <Avatar
                 name={orgName}
@@ -615,17 +584,15 @@ function TabSuggestions({ section }: { section: Section }) {
                 orgType={sugg.org?.type}
                 size="xs"
               />
-              <View style={styles.flex1}>
+              <View style={tabStyles.flex1}>
                 <Text style={suggStyles.orgName} numberOfLines={1}>{orgName}</Text>
                 <Text style={suggStyles.dateMeta}>{formatDate(sugg.created_at, language)}</Text>
               </View>
               <Badge label={statusLabel} variant={statusVar} size="sm" />
             </View>
 
-            {/* Title */}
-            <Text style={suggStyles.title}>{title}</Text>
+            <Text style={suggStyles.title}>{sugg.title}</Text>
 
-            {/* Proposed text */}
             <View style={suggStyles.proposedBox}>
               <Text style={suggStyles.proposedLabel}>
                 {t('Pendekezo la maandishi:', 'Proposed text:', language)}
@@ -633,10 +600,8 @@ function TabSuggestions({ section }: { section: Section }) {
               <Text style={suggStyles.proposedText}>{proposed}</Text>
             </View>
 
-            {/* Rationale */}
-            <Text style={suggStyles.rationale} numberOfLines={3}>{rationale}</Text>
+            <Text style={suggStyles.rationale} numberOfLines={3}>{sugg.rationale}</Text>
 
-            {/* Footer */}
             <View style={suggStyles.footer}>
               <StatChip
                 icon={<Ionicons name="thumbs-up-outline" size={13} color={Colors.green[400]} />}
@@ -648,7 +613,7 @@ function TabSuggestions({ section }: { section: Section }) {
                 count={sugg.oppose_count}
                 color={Colors.text.muted}
               />
-              <View style={styles.flex1} />
+              <View style={tabStyles.flex1} />
               <Button
                 variant={hasEndorsed ? 'secondary' : 'ghost'}
                 size="sm"
@@ -663,18 +628,14 @@ function TabSuggestions({ section }: { section: Section }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 5 — POLLS
-// ═══════════════════════════════════════════════════════════════════════════════
-
 function TabPolls({ section }: { section: Section }) {
   const { language } = useAppContext();
-  const [voted, setVoted] = useState<string | null>(POLL_ART19.user_voted ?? null);
-  const [selectedOpt, setSelectedOpt] = useState<string | null>(null);
   const poll = POLL_ART19;
+  const [voted, setVoted] = useState<string | null>(poll.user_voted ?? null);
+  const [selectedOpt, setSelectedOpt] = useState<string | null>(null);
+
   const pollTitle = language === 'sw' ? poll.title_sw : poll.title_en;
 
-  // Hydrate persisted vote for this poll
   useEffect(() => {
     let cancelled = false;
     storageGetJSON<Record<string, string>>(StorageKeys.votes, {}).then(votes => {
@@ -683,18 +644,16 @@ function TabPolls({ section }: { section: Section }) {
     return () => { cancelled = true; };
   }, [poll.id, poll.user_voted]);
 
-  const handleVote = () => {
+  const handleVote = useCallback(() => {
     if (!selectedOpt) return;
     setVoted(selectedOpt);
-    // Persist so the vote survives app restarts (mock backend pending)
     storageGetJSON<Record<string, string>>(StorageKeys.votes, {}).then(votes => {
       storageSetJSON(StorageKeys.votes, { ...votes, [poll.id]: selectedOpt });
     });
-  };
+  }, [selectedOpt, poll.id]);
 
   return (
     <View style={tabStyles.wrapper}>
-      {/* Poll class badge */}
       <View style={pollStyles.pollHeader}>
         <Badge
           label={t('Kura ya ushauri', 'Advisory poll', language)}
@@ -708,10 +667,8 @@ function TabPolls({ section }: { section: Section }) {
         />
       </View>
 
-      {/* Question */}
       <Text style={pollStyles.question}>{pollTitle}</Text>
 
-      {/* Options */}
       <View style={pollStyles.options}>
         {poll.options.map(opt => (
           <PollBar
@@ -725,7 +682,6 @@ function TabPolls({ section }: { section: Section }) {
         ))}
       </View>
 
-      {/* Vote button */}
       {!voted ? (
         <Button
           variant="primary"
@@ -744,7 +700,6 @@ function TabPolls({ section }: { section: Section }) {
         </View>
       )}
 
-      {/* Stats */}
       <View style={pollStyles.stats}>
         <StatChip
           icon={<Ionicons name="people-outline" size={13} color={Colors.text.muted} />}
@@ -757,7 +712,6 @@ function TabPolls({ section }: { section: Section }) {
         </Text>
       </View>
 
-      {/* Audit note */}
       <View style={pollStyles.auditNote}>
         <Text style={pollStyles.auditText}>
           {t(
@@ -770,10 +724,6 @@ function TabPolls({ section }: { section: Section }) {
     </View>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 6 — ANALYSIS
-// ═══════════════════════════════════════════════════════════════════════════════
 
 function TabAnalysis({ section }: { section: Section }) {
   const { language } = useAppContext();
@@ -793,7 +743,7 @@ function TabAnalysis({ section }: { section: Section }) {
               orgType={paper.org.type}
               size="sm"
             />
-            <View style={styles.flex1}>
+            <View style={tabStyles.flex1}>
               <Text style={analysisStyles.orgName}>{paper.org.name}</Text>
               <Text style={analysisStyles.date}>{formatDate(paper.published_at, language)}</Text>
             </View>
@@ -815,17 +765,13 @@ function TabAnalysis({ section }: { section: Section }) {
             variant="outline"
             size="sm"
             label={t('Soma uchambuzi kamili', 'Read full analysis', language)}
-            rightIcon={<Text style={{ color: Colors.green[400], fontSize: 14 }}>→</Text>}
+            rightIcon={<Text style={analysisStyles.arrow}>→</Text>}
           />
         </View>
       ))}
     </View>
   );
 }
-
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 7 — HISTORY
-// ═══════════════════════════════════════════════════════════════════════════════
 
 function TabHistory({ section }: { section: Section }) {
   const { language } = useAppContext();
@@ -842,12 +788,10 @@ function TabHistory({ section }: { section: Section }) {
           const isCurrent = item.is_current;
           return (
             <View key={item.year} style={histStyles.timelineItem}>
-              {/* Line */}
               <View style={histStyles.lineCol}>
-                <View style={[histStyles.dot, isCurrent && histStyles.dotCurrent, !isCurrent && histStyles.dotPast]} />
+                <View style={[histStyles.dot, isCurrent ? histStyles.dotCurrent : histStyles.dotPast]} />
                 {!isLast && <View style={[histStyles.line, isCurrent && histStyles.lineCurrent]} />}
               </View>
-              {/* Content */}
               <View style={histStyles.content}>
                 <Text style={[histStyles.year, isCurrent && histStyles.yearCurrent]}>
                   {item.year}
@@ -859,7 +803,12 @@ function TabHistory({ section }: { section: Section }) {
                   {language === 'sw' ? item.description_sw : item.description_en}
                 </Text>
                 {isCurrent && (
-                  <Badge label={t('Inaendelea', 'Ongoing', language)} variant="green" size="sm" style={{ marginTop: Spacing[1] }} />
+                  <Badge
+                    label={t('Inaendelea', 'Ongoing', language)}
+                    variant="green"
+                    size="sm"
+                    style={histStyles.currentBadge}
+                  />
                 )}
               </View>
             </View>
@@ -880,10 +829,6 @@ function TabHistory({ section }: { section: Section }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// TAB 8 — RELATED
-// ═══════════════════════════════════════════════════════════════════════════════
-
 function TabRelated({ section }: { section: Section }) {
   const { language } = useAppContext();
 
@@ -899,7 +844,7 @@ function TabRelated({ section }: { section: Section }) {
       <Text style={tabStyles.sectionHeading}>
         {t('Ibara zinazohusiana', 'Related articles', language)}
       </Text>
-      {related.map((item, i) => (
+      {related.map(item => (
         <Pressable
           key={item.artNum}
           style={({ pressed }) => [relStyles.row, pressed && relStyles.rowPressed]}
@@ -907,7 +852,7 @@ function TabRelated({ section }: { section: Section }) {
           <View style={relStyles.num}>
             <Text style={relStyles.numText}>{item.artNum}</Text>
           </View>
-          <View style={styles.flex1}>
+          <View style={tabStyles.flex1}>
             <Text style={relStyles.title}>
               {language === 'sw' ? item.title_sw : item.title_en}
             </Text>
@@ -922,10 +867,6 @@ function TabRelated({ section }: { section: Section }) {
   );
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// SHARED STYLES
-// ═══════════════════════════════════════════════════════════════════════════════
-
 const styles = StyleSheet.create({
   root: {
     flex: 1,
@@ -936,33 +877,22 @@ const styles = StyleSheet.create({
     gap: Spacing[3],
     alignItems: 'center',
   },
-  headerIcon: {
-    fontSize: 20,
-    color: 'rgba(255,255,255,0.7)',
-  },
-  headerIconActive: {
-    color: Colors.gold[300],
-  },
   muunganoBanner: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: Spacing[2],
     backgroundColor: Colors.gold[900],
-    borderBottomWidth: 0.5,
+    borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: Colors.gold[700],
     paddingHorizontal: Spacing[4],
     paddingVertical: Spacing[2.5],
-  },
-  muunganoIcon: {
-    fontSize: 14,
-    color: Colors.gold[400],
   },
   muunganoText: {
     flex: 1,
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
-    color: Colors.gold[300],
     lineHeight: Typography.size.xs * 1.5,
+    color: Colors.gold[300],
   },
   tabRailWrapper: {
     backgroundColor: Colors.surface.raised,
@@ -1015,18 +945,20 @@ const styles = StyleSheet.create({
   disclaimerText: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
+    lineHeight: Typography.size.xs * 1.6,
     color: Colors.text.muted,
     textAlign: 'center',
-    lineHeight: Typography.size.xs * 1.6,
   },
-  flex1: { flex: 1 },
+  spacer: {
+    height: Spacing[20],
+  },
 });
 
 const tabStyles = StyleSheet.create({
   wrapper: {
     gap: Spacing[4],
   },
-  // Text tab
+  flex1: { flex: 1 },
   lockedRow: {
     flexDirection: 'row',
   },
@@ -1064,9 +996,7 @@ const tabStyles = StyleSheet.create({
   },
   articleTitle: {
     fontFamily: Typography.family.serif,
-    fontSize: Typography.size['2xl'],
     color: Colors.text.primary,
-    lineHeight: Typography.size['2xl'] * 1.3,
     fontWeight: Typography.weight.regular,
   },
   goldRule: {
@@ -1076,9 +1006,7 @@ const tabStyles = StyleSheet.create({
   },
   articleBody: {
     fontFamily: Typography.family.serif,
-    fontSize: Typography.size.md,
     color: Colors.text.primary,
-    lineHeight: Typography.size.md * Typography.lineHeight.loose,
   },
   textActions: {
     flexDirection: 'row',
@@ -1096,16 +1024,11 @@ const tabStyles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: Colors.surface.borderStrong,
   },
-  textActionIcon: {
-    fontSize: 14,
-    color: Colors.text.secondary,
-  },
   textActionLabel: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
     color: Colors.text.secondary,
   },
-  // Plain tab
   plainCard: {
     backgroundColor: Colors.green[900] + '80',
     borderRadius: Radius.xl,
@@ -1134,8 +1057,8 @@ const tabStyles = StyleSheet.create({
   plainBody: {
     fontFamily: Typography.family.serif,
     fontSize: Typography.size.md,
-    color: Colors.text.primary,
     lineHeight: Typography.size.md * 1.7,
+    color: Colors.text.primary,
   },
   plainMeta: {
     flexDirection: 'row',
@@ -1155,6 +1078,10 @@ const tabStyles = StyleSheet.create({
     letterSpacing: Typography.letterSpacing.wider,
     textTransform: 'uppercase',
     marginBottom: Spacing[1],
+  },
+  conceptList: {
+    gap: Spacing[2],
+    marginTop: Spacing[2],
   },
   conceptRow: {
     flexDirection: 'row',
@@ -1181,11 +1108,10 @@ const tabStyles = StyleSheet.create({
   conceptDesc: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
+    lineHeight: Typography.size.sm * 1.5,
     color: Colors.text.secondary,
     marginTop: 2,
-    lineHeight: Typography.size.sm * 1.5,
   },
-  // Discussion tab
   discHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1235,10 +1161,10 @@ const tabStyles = StyleSheet.create({
     gap: Spacing[2],
   },
   replyAnonHint: {
+    flex: 1,
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
     color: Colors.text.muted,
-    flex: 1,
   },
 });
 
@@ -1280,8 +1206,8 @@ const commentStyles = StyleSheet.create({
   body: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
-    color: Colors.text.secondary,
     lineHeight: Typography.size.sm * 1.6,
+    color: Colors.text.secondary,
   },
   actions: {
     flexDirection: 'row',
@@ -1292,14 +1218,13 @@ const commentStyles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing[1],
   },
-  actionIcon: {
-    fontSize: 14,
-    color: Colors.text.muted,
-  },
   actionText: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
     color: Colors.text.muted,
+  },
+  actionTextLiked: {
+    color: Colors.green[400],
   },
 });
 
@@ -1332,8 +1257,8 @@ const suggStyles = StyleSheet.create({
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.base,
     fontWeight: Typography.weight.semibold,
-    color: Colors.text.primary,
     lineHeight: Typography.size.base * 1.4,
+    color: Colors.text.primary,
   },
   proposedBox: {
     backgroundColor: Colors.surface.overlay,
@@ -1352,15 +1277,15 @@ const suggStyles = StyleSheet.create({
   proposedText: {
     fontFamily: Typography.family.serif,
     fontSize: Typography.size.base,
-    color: Colors.text.primary,
     lineHeight: Typography.size.base * 1.6,
+    color: Colors.text.primary,
     fontStyle: 'italic',
   },
   rationale: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
-    color: Colors.text.secondary,
     lineHeight: Typography.size.sm * 1.6,
+    color: Colors.text.secondary,
   },
   footer: {
     flexDirection: 'row',
@@ -1381,8 +1306,8 @@ const pollStyles = StyleSheet.create({
   question: {
     fontFamily: Typography.family.serif,
     fontSize: Typography.size.xl,
-    color: Colors.text.primary,
     lineHeight: Typography.size.xl * 1.4,
+    color: Colors.text.primary,
     fontWeight: Typography.weight.regular,
   },
   options: {
@@ -1398,10 +1323,6 @@ const pollStyles = StyleSheet.create({
     borderRadius: Radius.lg,
     borderWidth: 0.5,
     borderColor: Colors.green[700],
-  },
-  votedIcon: {
-    fontSize: 16,
-    color: Colors.green[400],
   },
   votedText: {
     fontFamily: Typography.family.sans,
@@ -1432,8 +1353,8 @@ const pollStyles = StyleSheet.create({
   auditText: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
-    color: Colors.text.muted,
     lineHeight: Typography.size.xs * 1.6,
+    color: Colors.text.muted,
   },
 });
 
@@ -1466,14 +1387,14 @@ const analysisStyles = StyleSheet.create({
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.base,
     fontWeight: Typography.weight.semibold,
-    color: Colors.text.primary,
     lineHeight: Typography.size.base * 1.4,
+    color: Colors.text.primary,
   },
   abstract: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
-    color: Colors.text.secondary,
     lineHeight: Typography.size.sm * 1.6,
+    color: Colors.text.secondary,
   },
   tags: {
     flexDirection: 'row',
@@ -1492,6 +1413,10 @@ const analysisStyles = StyleSheet.create({
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs,
     color: Colors.text.muted,
+  },
+  arrow: {
+    color: Colors.green[400],
+    fontSize: 14,
   },
 });
 
@@ -1556,8 +1481,11 @@ const histStyles = StyleSheet.create({
   histDesc: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
-    color: Colors.text.secondary,
     lineHeight: Typography.size.sm * 1.5,
+    color: Colors.text.secondary,
+  },
+  currentBadge: {
+    marginTop: Spacing[1],
   },
   sourceNote: {
     backgroundColor: Colors.surface.raised,

@@ -66,7 +66,7 @@ export function BottomTabBar({
                   <Ionicons
                     name={isActive ? tab.iconActive : tab.icon}
                     size={21}
-                    color={isActive ? Colors.green[300] : Colors.text.muted}
+                    color={isActive ? Colors.green[700] : Colors.text.muted}
                   />
                   {count > 0 && (
                     <View style={styles.badge}>
@@ -96,14 +96,17 @@ const styles = StyleSheet.create({
   },
   bar: {
     flexDirection: 'row',
-    paddingTop: Spacing[2],
+    paddingTop: Spacing[1],
     paddingBottom: Spacing[1],
+    width: '100%',
+    maxWidth: 720,
+    alignSelf: 'center',
   },
   tabItem: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    minHeight: 54,
+    minHeight: 56,
     paddingVertical: Spacing[1.5],
     position: 'relative',
   },
@@ -112,17 +115,16 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     position: 'absolute',
-    top: 0,
-    left: '15%',
-    right: '15%',
-    height: 2,
-    backgroundColor: Colors.green[400],
-    borderBottomLeftRadius: 2,
-    borderBottomRightRadius: 2,
+    top: 4,
+    width: 44,
+    height: 32,
+    backgroundColor: Colors.green[50],
+    borderRadius: 16,
   },
   iconWrap: {
     position: 'relative',
     marginBottom: Spacing[1],
+    zIndex: 1,
   },
   badge: {
     position: 'absolute',
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     color: Colors.text.muted,
   },
   labelActive: {
-    color: Colors.green[300],
+    color: Colors.green[700],
     fontWeight: Typography.weight.semibold,
   },
 });

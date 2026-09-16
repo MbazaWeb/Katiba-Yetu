@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.surface.raised,
     borderRadius: Radius['2xl'],
-    borderWidth: 0.5,
-    borderColor: Colors.green[700],
-    padding: Spacing[4],
+    borderWidth: 1,
+    borderColor: Colors.surface.border,
+    padding: Spacing[5],
     gap: Spacing[3],
     ...Shadow.md,
   },

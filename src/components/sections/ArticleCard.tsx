@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     backgroundColor: Colors.surface.raised,
     borderRadius: Radius.xl,
-    borderWidth: 0.5,
+    borderWidth: 1,
     borderColor: Colors.surface.border,
     padding: Spacing[4],
     gap: Spacing[3],
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.xs - 1,
     color: Colors.green[300],
-    fontWeight: Typography.weight.medium,
+    fontWeight: Typography.weight.semibold,
     marginBottom: 2,
   },
   numValue: {

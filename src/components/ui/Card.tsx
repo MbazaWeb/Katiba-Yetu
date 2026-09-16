@@ -38,7 +38,7 @@ export function Card({
   const containerStyle: ViewStyle = {
     backgroundColor: isFlat ? 'transparent' : Colors.surface.raised,
     borderRadius: Radius.xl,
-    borderWidth: noBorder ? 0 : 0.5,
+    borderWidth: noBorder ? 0 : 1,
     borderColor: accent ?? Colors.surface.border,
     ...(accent && !isFlat ? { borderLeftWidth: 3, borderLeftColor: accent } : {}),
     ...(!isFlat ? Shadow.sm : {}),

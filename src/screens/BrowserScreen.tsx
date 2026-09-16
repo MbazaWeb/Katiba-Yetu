@@ -20,26 +20,51 @@ interface BrowserScreenProps {
 
 type DocTab = 'union' | 'zanzibar';
 
+const DOC_TABS: { key: DocTab; label_sw: string; label_en: string; accent: string }[] = [
+  { key: 'union',    label_sw: 'Muungano 1977', label_en: 'Union 1977',    accent: Colors.green[500] },
+  { key: 'zanzibar', label_sw: 'Zanzibar 1984', label_en: 'Zanzibar 1984', accent: Colors.blue[400]  },
+];
+
+const DOC_META: Record<DocTab, { title_sw: string; title_en: string; meta_sw: string; meta_en: string }> = {
+  union: {
+    title_sw: 'Katiba ya Jamhuri ya Muungano wa Tanzania, 1977',
+    title_en: 'Constitution of the United Republic of Tanzania, 1977',
+    meta_sw: 'Ibara 152 · Sura 8',
+    meta_en: 'Articles 152 · Chapters 8',
+  },
+  zanzibar: {
+    title_sw: 'Katiba ya Zanzibar, 1984',
+    title_en: 'Constitution of Zanzibar, 1984',
+    meta_sw: 'Ibara 132 · Sura 10',
+    meta_en: 'Articles 132 · Chapters 10',
+  },
+};
+
 export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
   const { language } = useAppContext();
   const [activeDoc, setActiveDoc] = useState<DocTab>('union');
   const [query, setQuery] = useState('');
 
-  // Search only applies to the Union document — the Zanzibar document
-  // is not loaded yet (placeholder screen below).
-  const filtered = useMemo(() => MOCK_SECTIONS.filter(ch => {
-    if (!query) return true;
+  const filtered = useMemo(() => {
+    if (!query) return MOCK_SECTIONS;
     const q = query.toLowerCase();
-    const matchTitle = ch.title_sw.toLowerCase().includes(q) ||
-                       ch.title_en.toLowerCase().includes(q);
-    const matchChild = ch.children?.some(c =>
-      c.title_sw.toLowerCase().includes(q) ||
-      c.title_en.toLowerCase().includes(q) ||
-      c.body_sw.toLowerCase().includes(q) ||
-      c.body_en.toLowerCase().includes(q),
-    );
-    return matchTitle || matchChild;
-  }), [query]);
+    return MOCK_SECTIONS.filter(ch => {
+      if (ch.title_sw.toLowerCase().includes(q) || ch.title_en.toLowerCase().includes(q)) {
+        return true;
+      }
+      return ch.children?.some(c =>
+        c.title_sw.toLowerCase().includes(q) ||
+        c.title_en.toLowerCase().includes(q) ||
+        c.body_sw.toLowerCase().includes(q) ||
+        c.body_en.toLowerCase().includes(q),
+      );
+    });
+  }, [query]);
+
+  const activeMeta = DOC_META[activeDoc];
+  const docTitle = language === 'sw' ? activeMeta.title_sw : activeMeta.title_en;
+  const docMeta = language === 'sw' ? activeMeta.meta_sw : activeMeta.meta_en;
+  const activeAccent = DOC_TABS.find(tab => tab.key === activeDoc)?.accent ?? Colors.green[500];
 
   return (
     <View style={styles.root}>
@@ -50,23 +75,27 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
         title={t('Kivinjari cha Katiba', 'Constitution Browser', language)}
       />
 
-      {/* Doc switcher tabs */}
       <View style={styles.docTabs}>
-        <DocTabButton
-          label={t('Muungano 1977', 'Union 1977', language)}
-          active={activeDoc === 'union'}
-          accent={Colors.green[500]}
-          onPress={() => setActiveDoc('union')}
-        />
-        <DocTabButton
-          label={t('Zanzibar 1984', 'Zanzibar 1984', language)}
-          active={activeDoc === 'zanzibar'}
-          accent={Colors.blue[400]}
-          onPress={() => setActiveDoc('zanzibar')}
-        />
+        {DOC_TABS.map(tab => {
+          const active = activeDoc === tab.key;
+          return (
+            <Pressable
+              key={tab.key}
+              onPress={() => setActiveDoc(tab.key)}
+              style={({ pressed }) => [
+                styles.docTab,
+                active && { borderBottomColor: tab.accent, borderBottomWidth: 2 },
+                pressed && styles.docTabPressed,
+              ]}
+            >
+              <Text style={[styles.docTabText, active && { color: tab.accent, fontWeight: Typography.weight.semibold }]}>
+                {language === 'sw' ? tab.label_sw : tab.label_en}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
-      {/* Search bar */}
       <View style={styles.searchWrap}>
         <View style={styles.searchBar}>
           <Ionicons name="search" size={16} color={Colors.text.muted} />
@@ -82,22 +111,11 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
         </View>
       </View>
 
-      {/* Doc header */}
       <View style={styles.docHeader}>
-        <View style={[styles.docColorBar, { backgroundColor: activeDoc === 'union' ? Colors.green[500] : Colors.blue[400] }]} />
+        <View style={[styles.docColorBar, { backgroundColor: activeAccent }]} />
         <View style={styles.docHeaderText}>
-          <Text style={styles.docTitle}>
-            {activeDoc === 'union'
-              ? t('Katiba ya Jamhuri ya Muungano wa Tanzania, 1977', 'Constitution of the United Republic of Tanzania, 1977', language)
-              : t('Katiba ya Zanzibar, 1984', 'Constitution of Zanzibar, 1984', language)
-            }
-          </Text>
-          <Text style={styles.docMeta}>
-            {activeDoc === 'union'
-              ? t('Ibara 152 · Sura 8', 'Articles 152 · Chapters 8', language)
-              : t('Ibara 132 · Sura 10', 'Articles 132 · Chapters 10', language)
-            }
-          </Text>
+          <Text style={styles.docTitle}>{docTitle}</Text>
+          <Text style={styles.docMeta}>{docMeta}</Text>
         </View>
       </View>
 
@@ -107,20 +125,18 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
         showsVerticalScrollIndicator={false}
       >
         {activeDoc === 'union' ? (
-          <>
-            {filtered.length === 0 ? (
-              <EmptySearch lang={language} />
-            ) : (
-              filtered.map((chapter, idx) => (
-                <ChapterRow
-                  key={chapter.id}
-                  chapter={chapter}
-                  onArticlePress={onSectionPress}
-                  defaultOpen={idx === 1}
-                />
-              ))
-            )}
-          </>
+          filtered.length === 0 ? (
+            <EmptySearch lang={language} />
+          ) : (
+            filtered.map((chapter, idx) => (
+              <ChapterRow
+                key={chapter.id}
+                chapter={chapter}
+                onArticlePress={onSectionPress}
+                defaultOpen={idx === 1}
+              />
+            ))
+          )
         ) : (
           <ZanzibarPlaceholder language={language} />
         )}
@@ -128,27 +144,6 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
         <View style={styles.bottomPad} />
       </ScrollView>
     </View>
-  );
-}
-
-// ─── Sub-components ───────────────────────────────────────────────────────────
-
-function DocTabButton({
-  label, active, accent, onPress,
-}: { label: string; active: boolean; accent: string; onPress: () => void }) {
-  return (
-    <Pressable
-      onPress={onPress}
-      style={({ pressed }) => [
-        styles.docTab,
-        active && { borderBottomColor: accent, borderBottomWidth: 2 },
-        pressed && { opacity: 0.7 },
-      ]}
-    >
-      <Text style={[styles.docTabText, active && { color: accent, fontWeight: Typography.weight.semibold }]}>
-        {label}
-      </Text>
-    </Pressable>
   );
 }
 
@@ -162,8 +157,7 @@ function EmptySearch({ lang }: { lang: 'sw' | 'en' }) {
       <Text style={styles.emptyBody}>
         {lang === 'sw'
           ? 'Jaribu maneno mengine au angalia sura moja kwa moja.'
-          : 'Try different words or browse chapters directly.'
-        }
+          : 'Try different words or browse chapters directly.'}
       </Text>
     </View>
   );
@@ -172,7 +166,7 @@ function EmptySearch({ lang }: { lang: 'sw' | 'en' }) {
 function ZanzibarPlaceholder({ language }: { language: 'sw' | 'en' }) {
   return (
     <View style={styles.znzPlaceholder}>
-      <View style={[styles.znzIcon, { backgroundColor: Colors.blue[900] }]}>
+      <View style={styles.znzIcon}>
         <Ionicons name="map-outline" size={30} color={Colors.blue[300]} />
       </View>
       <Text style={styles.znzTitle}>
@@ -181,10 +175,13 @@ function ZanzibarPlaceholder({ language }: { language: 'sw' | 'en' }) {
       <Text style={styles.znzBody}>
         {language === 'sw'
           ? 'Hati hii inaandaliwa. Itapatikana hivi karibuni.'
-          : 'This document is being prepared. Available soon.'
-        }
+          : 'This document is being prepared. Available soon.'}
       </Text>
-      <Badge label={language === 'sw' ? 'Inakuja hivi karibuni' : 'Coming soon'} variant="blue" size="md" />
+      <Badge
+        label={language === 'sw' ? 'Inakuja hivi karibuni' : 'Coming soon'}
+        variant="blue"
+        size="md"
+      />
     </View>
   );
 }
@@ -194,7 +191,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.surface.base,
   },
-  // Doc tabs
   docTabs: {
     flexDirection: 'row',
     backgroundColor: Colors.surface.raised,
@@ -208,12 +204,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
+  docTabPressed: {
+    opacity: 0.7,
+  },
   docTabText: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
     color: Colors.text.secondary,
   },
-  // Search
   searchWrap: {
     paddingHorizontal: Spacing[4],
     paddingVertical: Spacing[3],
@@ -239,7 +237,6 @@ const styles = StyleSheet.create({
     color: Colors.text.primary,
     padding: 0,
   },
-  // Doc header
   docHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -255,13 +252,15 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     flexShrink: 0,
   },
+  docHeaderText: {
+    flex: 1,
+  },
   docTitle: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.sm,
     fontWeight: Typography.weight.medium,
-    color: Colors.text.primary,
-    flex: 1,
     lineHeight: Typography.size.sm * 1.4,
+    color: Colors.text.primary,
   },
   docMeta: {
     fontFamily: Typography.family.sans,
@@ -269,16 +268,15 @@ const styles = StyleSheet.create({
     color: Colors.text.muted,
     marginTop: 2,
   },
-  docHeaderText: {
+  scroll: {
     flex: 1,
   },
-  // Scroll
-  scroll: { flex: 1 },
   scrollContent: {
     padding: Spacing[4],
   },
-  bottomPad: { height: Spacing[16] },
-  // Empty
+  bottomPad: {
+    height: Spacing[16],
+  },
   empty: {
     alignItems: 'center',
     paddingVertical: Spacing[16],
@@ -297,7 +295,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     maxWidth: 280,
   },
-  // Zanzibar placeholder
   znzPlaceholder: {
     alignItems: 'center',
     paddingVertical: Spacing[16],
@@ -309,6 +306,7 @@ const styles = StyleSheet.create({
     borderRadius: Radius['2xl'],
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: Colors.blue[900],
   },
   znzTitle: {
     fontFamily: Typography.family.serif,

@@ -191,5 +191,9 @@ const styles = StyleSheet.create({
   },
   screenArea: {
     flex: 1,
+    width: '100%',
+    maxWidth: 960,
+    alignSelf: 'center',
+    backgroundColor: Colors.surface.base,
   },
 });
