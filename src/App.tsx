@@ -5,6 +5,9 @@ import { BottomTabBar, TabKey } from './components/navigation/BottomTabBar';
 import { HomeScreen } from './screens/HomeScreen';
 import { BrowserScreen } from './screens/BrowserScreen';
 import { SectionWorkspace } from './screens/SectionWorkspace';
+import { PollsScreen } from './screens/PollsScreen';
+import { SearchScreen } from './screens/SearchScreen';
+import { ProfileScreen } from './screens/ProfileScreen';
 import { Colors } from './constants/tokens';
 import type { Language, FontSize, User, Section, Poll } from './types';
 
@@ -126,13 +129,13 @@ export default function App() {
         );
 
       case 'polls':
-        return <PlaceholderScreen title="Kura zote" />;
+        return <PollsScreen onPollPress={navigateToPoll} />;
 
       case 'search':
-        return <PlaceholderScreen title="Tafuta" />;
+        return <SearchScreen onSectionPress={navigateToSection} />;
 
       case 'profile':
-        return <PlaceholderScreen title="Akaunti yangu" />;
+        return <ProfileScreen />;
 
       case 'home':
       default:
@@ -140,6 +143,8 @@ export default function App() {
           <HomeScreen
             onSectionPress={navigateToSection}
             onPollPress={navigateToPoll}
+            onSearchPress={() => handleTabPress('search')}
+            onBrowsePress={() => handleTabPress('browser')}
           />
         );
     }

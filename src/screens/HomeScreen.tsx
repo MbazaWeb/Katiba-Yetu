@@ -1,8 +1,9 @@
 import React, { useCallback, useRef } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, Pressable,
-  TextInput, RefreshControl, Animated,
+  RefreshControl, Animated,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Radius, Shadow } from '../constants/tokens';
 import { AppHeader } from '../components/sections/AppHeader';
 import { FeaturedPollCard } from '../components/sections/FeaturedPollCard';
@@ -18,6 +19,8 @@ import type { Section, Poll } from '../types';
 interface HomeScreenProps {
   onSectionPress: (section: Section) => void;
   onPollPress: (poll: Poll) => void;
+  onSearchPress: () => void;
+  onBrowsePress: () => void;
 }
 
 // ─── Recent Contributions (mock) ─────────────────────────────────────────────
@@ -53,9 +56,8 @@ const RECENT_CONTRIBS = [
   },
 ];
 
-export function HomeScreen({ onSectionPress, onPollPress }: HomeScreenProps) {
+export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrowsePress }: HomeScreenProps) {
   const { language } = useAppContext();
-  const [searchFocused, setSearchFocused] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -101,17 +103,25 @@ export function HomeScreen({ onSectionPress, onPollPress }: HomeScreenProps) {
             <Text style={styles.heroSub}>{heroSubtitle}</Text>
           </View>
 
-          {/* Search bar in hero */}
-          <View style={[styles.searchBar, searchFocused && styles.searchBarFocused]}>
-            <Text style={styles.searchIcon}>🔍</Text>
-            <TextInput
-              style={styles.searchInput}
-              placeholder={t('Tafuta ibara, neno, au mada...', 'Search articles, terms, topics...', language)}
-              placeholderTextColor={Colors.green[300]}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
-            />
-          </View>
+          <Pressable onPress={onSearchPress} style={({ pressed }) => [styles.searchBar, pressed && styles.searchBarFocused]} accessibilityRole="button">
+            <Ionicons name="search" size={19} color={Colors.green[200]} />
+            <Text style={styles.searchPlaceholder}>{t('Tafuta ibara, neno, au mada...', 'Search articles, terms, topics...', language)}</Text>
+            <Ionicons name="arrow-forward" size={18} color={Colors.green[300]} />
+          </Pressable>
+        </View>
+
+        <View style={styles.quickActions}>
+          <Pressable onPress={onBrowsePress} style={({pressed}) => [styles.quickAction, pressed && styles.contribRowPressed]}>
+            <View style={[styles.quickIcon,{backgroundColor:Colors.green[900]}]}><Ionicons name="book-outline" size={21} color={Colors.green[300]}/></View>
+            <View style={{flex:1}}><Text style={styles.quickTitle}>{t('Soma Katiba','Soma Katiba',language)}</Text><Text style={styles.quickSub}>{t('Vinjari sura na ibara','Browse chapters and articles',language)}</Text></View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.text.muted}/>
+          </Pressable>
+          <View style={styles.quickDivider}/>
+          <Pressable onPress={() => onPollPress(POLL_ART13)} style={({pressed}) => [styles.quickAction, pressed && styles.contribRowPressed]}>
+            <View style={[styles.quickIcon,{backgroundColor:Colors.gold[900]}]}><Ionicons name="stats-chart-outline" size={21} color={Colors.gold[300]}/></View>
+            <View style={{flex:1}}><Text style={styles.quickTitle}>{t('Piga kura','Vote now',language)}</Text><Text style={styles.quickSub}>{t('Kura 2 zinaendelea','2 active polls',language)}</Text></View>
+            <Ionicons name="chevron-forward" size={18} color={Colors.text.muted}/>
+          </Pressable>
         </View>
 
         {/* ── Featured Poll ──────────────────────────────────────────────── */}
@@ -295,16 +305,18 @@ const styles = StyleSheet.create({
     borderColor: Colors.gold[400],
     backgroundColor: 'rgba(0,0,0,0.35)',
   },
-  searchIcon: {
-    fontSize: 16,
-  },
-  searchInput: {
+  searchPlaceholder: {
     flex: 1,
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.base,
-    color: '#FFFFFF',
-    padding: 0,
+    color: Colors.green[100],
   },
+  quickActions:{marginHorizontal:Spacing[4],marginTop:-Spacing[3],backgroundColor:Colors.surface.raised,borderRadius:Radius.xl,borderWidth:1,borderColor:Colors.surface.border,overflow:'hidden',...Shadow.md},
+  quickAction:{minHeight:68,flexDirection:'row',alignItems:'center',gap:Spacing[3],paddingHorizontal:Spacing[4],paddingVertical:Spacing[3]},
+  quickDivider:{height:StyleSheet.hairlineWidth,backgroundColor:Colors.surface.border,marginLeft:Spacing[16]},
+  quickIcon:{width:40,height:40,borderRadius:Radius.md,alignItems:'center',justifyContent:'center'},
+  quickTitle:{fontSize:Typography.size.base,fontWeight:Typography.weight.semibold,color:Colors.text.primary},
+  quickSub:{fontSize:Typography.size.xs,color:Colors.text.muted,marginTop:3},
   // Sections
   section: {
     paddingHorizontal: Spacing[4],

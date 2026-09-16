@@ -2,6 +2,7 @@ import React from 'react';
 import {
   View, Text, Pressable, StyleSheet, SafeAreaView,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Shadow } from '../../constants/tokens';
 import { useAppContext } from '../../hooks/useAppContext';
 
@@ -9,28 +10,19 @@ export type TabKey = 'home' | 'browser' | 'polls' | 'search' | 'profile';
 
 interface TabItem {
   key: TabKey;
-  icon: string;
-  icon_active: string;
+  icon: React.ComponentProps<typeof Ionicons>['name'];
+  iconActive: React.ComponentProps<typeof Ionicons>['name'];
   label_sw: string;
   label_en: string;
 }
 
 const TABS: TabItem[] = [
-  { key: 'home',    icon: '⌂',  icon_active: '⌂',  label_sw: 'Nyumbani', label_en: 'Home'    },
-  { key: 'browser', icon: '📖', icon_active: '📖', label_sw: 'Katiba',   label_en: 'Browse'  },
-  { key: 'polls',   icon: '🗳',  icon_active: '🗳',  label_sw: 'Kura',     label_en: 'Polls'   },
-  { key: 'search',  icon: '🔍', icon_active: '🔍', label_sw: 'Tafuta',   label_en: 'Search'  },
-  { key: 'profile', icon: '👤', icon_active: '👤', label_sw: 'Akaunti',  label_en: 'Profile' },
+  { key: 'home',    icon: 'home-outline',   iconActive: 'home',   label_sw: 'Nyumbani', label_en: 'Home'    },
+  { key: 'browser', icon: 'book-outline',   iconActive: 'book',   label_sw: 'Katiba',   label_en: 'Browse'  },
+  { key: 'polls',   icon: 'stats-chart-outline', iconActive: 'stats-chart', label_sw: 'Kura', label_en: 'Polls' },
+  { key: 'search',  icon: 'search-outline', iconActive: 'search', label_sw: 'Tafuta',   label_en: 'Search'  },
+  { key: 'profile', icon: 'person-outline', iconActive: 'person', label_sw: 'Akaunti',  label_en: 'Profile' },
 ];
-
-// Text-based icons replace vector lib dependency — swap for @expo/vector-icons in real build
-const ICON_CHARS: Record<TabKey, { default: string; active: string }> = {
-  home:    { default: '△', active: '▲' },
-  browser: { default: '◻', active: '▪' },
-  polls:   { default: '○', active: '●' },
-  search:  { default: '◯', active: '⬤' },
-  profile: { default: '◇', active: '◆' },
-};
 
 interface BottomTabBarProps {
   activeTab: TabKey;
@@ -71,9 +63,11 @@ export function BottomTabBar({
 
                 {/* Icon area */}
                 <View style={styles.iconWrap}>
-                  <Text style={[styles.icon, isActive && styles.iconActive]}>
-                    {isActive ? ICON_CHARS[tab.key].active : ICON_CHARS[tab.key].default}
-                  </Text>
+                  <Ionicons
+                    name={isActive ? tab.iconActive : tab.icon}
+                    size={21}
+                    color={isActive ? Colors.green[300] : Colors.text.muted}
+                  />
                   {count > 0 && (
                     <View style={styles.badge}>
                       <Text style={styles.badgeText}>{count > 99 ? '99+' : count}</Text>
@@ -109,6 +103,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: 54,
     paddingVertical: Spacing[1.5],
     position: 'relative',
   },
@@ -128,14 +123,6 @@ const styles = StyleSheet.create({
   iconWrap: {
     position: 'relative',
     marginBottom: Spacing[1],
-  },
-  icon: {
-    fontSize: 20,
-    color: Colors.text.muted,
-    lineHeight: 24,
-  },
-  iconActive: {
-    color: Colors.green[400],
   },
   badge: {
     position: 'absolute',
@@ -162,8 +149,8 @@ const styles = StyleSheet.create({
     color: Colors.text.muted,
   },
   labelActive: {
-    color: Colors.green[400],
-    fontWeight: Typography.weight.medium,
+    color: Colors.green[300],
+    fontWeight: Typography.weight.semibold,
   },
 });
 

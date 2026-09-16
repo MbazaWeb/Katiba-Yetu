@@ -43,6 +43,8 @@ export function AppHeader({
               >
                 <Text style={styles.backIcon}>←</Text>
               </Pressable>
+            ) : title ? (
+              <Text style={styles.standaloneTitle}>{title}</Text>
             ) : (
               <View>
                 <Text style={styles.logoMark}>Katiba Yetu</Text>
@@ -147,6 +149,12 @@ const styles = StyleSheet.create({
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.base,
     fontWeight: Typography.weight.semibold,
+    color: '#FFFFFF',
+  },
+  standaloneTitle: {
+    fontFamily: Typography.family.serif,
+    fontSize: Typography.size.lg,
+    fontWeight: Typography.weight.bold,
     color: '#FFFFFF',
   },
   subtitleText: {
