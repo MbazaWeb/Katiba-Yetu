@@ -2,11 +2,12 @@ module.exports = {
   expo: {
     name: 'Katiba Yetu',
     slug: 'katiba-yetu',
-    version: '0.1.0',
+    version: '0.1.1',
     orientation: 'portrait',
     userInterfaceStyle: 'dark',
-    backgroundColor: '#0A0A0A',
+    icon: './assets/icon.png',
     splash: {
+      image: './assets/splash-icon.png',
       resizeMode: 'contain',
       backgroundColor: '#0A6233',
     },
@@ -18,6 +19,7 @@ module.exports = {
     android: {
       package: 'tz.katibayetu.app',
       adaptiveIcon: {
+        foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#0A6233',
       },
       permissions: [
@@ -32,6 +34,7 @@ module.exports = {
     web: {
       bundler: 'metro',
       output: 'single',
+      favicon: './assets/favicon.png',
     },
   },
 };
