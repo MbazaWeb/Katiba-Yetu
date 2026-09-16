@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Radius, Shadow } from '../../constants/tokens';
 import { Badge, StatChip } from '../ui/Badge';
 import type { Section } from '../../types';
@@ -66,14 +67,14 @@ export function ArticleCard({ section, onPress, showPollBadge = false, style }: 
           )}
           {(meta?.discussion_count ?? 0) > 0 && (
             <StatChip
-              icon="💬"
+              icon={<Ionicons name="chatbubble-outline" size={13} color={Colors.text.muted} />}
               count={meta!.discussion_count}
               color={Colors.text.muted}
             />
           )}
           {(meta?.suggestion_count ?? 0) > 0 && (
             <StatChip
-              icon="✏️"
+              icon={<Ionicons name="create-outline" size={13} color={Colors.text.muted} />}
               count={meta!.suggestion_count}
               color={Colors.text.muted}
             />

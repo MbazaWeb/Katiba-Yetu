@@ -1,7 +1,7 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, Pressable,
-  RefreshControl, Animated,
+  RefreshControl,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Radius, Shadow } from '../constants/tokens';
@@ -9,8 +9,6 @@ import { AppHeader } from '../components/sections/AppHeader';
 import { FeaturedPollCard } from '../components/sections/FeaturedPollCard';
 import { ArticleCard } from '../components/sections/ArticleCard';
 import { Avatar } from '../components/ui/Avatar';
-import { Badge } from '../components/ui/Badge';
-import { KatibaText } from '../components/ui/Text';
 import { POLL_ART13, POLL_ART19, TRENDING, MOCK_ORGS } from '../constants/mockData';
 import { useAppContext } from '../hooks/useAppContext';
 import { t, formatRelativeTime } from '../utils';
@@ -59,10 +57,10 @@ const RECENT_CONTRIBS = [
 export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrowsePress }: HomeScreenProps) {
   const { language } = useAppContext();
   const [refreshing, setRefreshing] = React.useState(false);
-  const scrollY = useRef(new Animated.Value(0)).current;
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    // TODO: replace with real data refetch once the API is integrated
     setTimeout(() => setRefreshing(false), 1200);
   }, []);
 
@@ -76,15 +74,10 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
     <View style={styles.root}>
       <AppHeader variant="home" />
 
-      <Animated.ScrollView
+      <ScrollView
         style={styles.scroll}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true },
-        )}
-        scrollEventThrottle={16}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -113,7 +106,7 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
         <View style={styles.quickActions}>
           <Pressable onPress={onBrowsePress} style={({pressed}) => [styles.quickAction, pressed && styles.contribRowPressed]}>
             <View style={[styles.quickIcon,{backgroundColor:Colors.green[900]}]}><Ionicons name="book-outline" size={21} color={Colors.green[300]}/></View>
-            <View style={{flex:1}}><Text style={styles.quickTitle}>{t('Soma Katiba','Soma Katiba',language)}</Text><Text style={styles.quickSub}>{t('Vinjari sura na ibara','Browse chapters and articles',language)}</Text></View>
+            <View style={{flex:1}}><Text style={styles.quickTitle}>{t('Soma Katiba','Read the Constitution',language)}</Text><Text style={styles.quickSub}>{t('Vinjari sura na ibara','Browse chapters and articles',language)}</Text></View>
             <Ionicons name="chevron-forward" size={18} color={Colors.text.muted}/>
           </Pressable>
           <View style={styles.quickDivider}/>
@@ -214,7 +207,7 @@ export function HomeScreen({ onSectionPress, onPollPress, onSearchPress, onBrows
         </View>
 
         <View style={styles.bottomPad} />
-      </Animated.ScrollView>
+      </ScrollView>
     </View>
   );
 }

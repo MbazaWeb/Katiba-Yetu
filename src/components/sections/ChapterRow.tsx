@@ -1,8 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, Pressable, StyleSheet, Animated, LayoutAnimation,
   Platform, UIManager,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Radius, Shadow } from '../../constants/tokens';
 import { Badge, StatChip } from '../ui/Badge';
 import { ArticleCard } from './ArticleCard';
@@ -37,7 +38,7 @@ function getIconColor(chapter: Section) {
 export function ChapterRow({ chapter, onArticlePress, defaultOpen = false }: ChapterRowProps) {
   const { language } = useAppContext();
   const [isOpen, setIsOpen] = useState(defaultOpen);
-  const rotateAnim = useRef(new Animated.Value(defaultOpen ? 1 : 0)).current;
+  const [rotateAnim] = useState(() => new Animated.Value(defaultOpen ? 1 : 0));
 
   const title   = t(chapter.title_sw,   chapter.title_en,   language);
   const iconColors = getIconColor(chapter);
@@ -89,10 +90,16 @@ export function ChapterRow({ chapter, onArticlePress, defaultOpen = false }: Cha
               <Badge label="Moderated" variant="muungano" size="sm" />
             )}
             {(meta?.discussion_count ?? 0) > 0 && (
-              <StatChip icon="💬" count={meta!.discussion_count} />
+              <StatChip
+                icon={<Ionicons name="chatbubble-outline" size={13} color={Colors.text.muted} />}
+                count={meta!.discussion_count}
+              />
             )}
             {meta?.has_active_poll && (
-              <StatChip icon="🗳" count={t('Kura', 'Poll', language)} />
+              <StatChip
+                icon={<Ionicons name="stats-chart-outline" size={13} color={Colors.text.muted} />}
+                count={t('Kura', 'Poll', language)}
+              />
             )}
           </View>
         </View>

@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   View, Text, Pressable, StyleSheet, StatusBar,
-  Platform, SafeAreaView,
+  SafeAreaView,
 } from 'react-native';
 import { Colors, Typography, Spacing, Shadow } from '../../constants/tokens';
 import { useAppContext } from '../../hooks/useAppContext';

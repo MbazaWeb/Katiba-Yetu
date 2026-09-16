@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Animated, StyleSheet, Pressable } from 'react-native';
 import { Colors, Typography, Spacing, Radius } from '../../constants/tokens';
 import type { PollOption } from '../../types';
@@ -20,7 +20,7 @@ export function PollBar({
   barColor = Colors.green[500],
   lang = 'sw',
 }: PollBarProps) {
-  const fillAnim = useRef(new Animated.Value(0)).current;
+  const [fillAnim] = useState(() => new Animated.Value(0));
   const pct = option.percentage ?? 0;
   const label = lang === 'sw' ? option.label_sw : option.label_en;
 
@@ -33,7 +33,7 @@ export function PollBar({
         useNativeDriver: false,
       }).start();
     }
-  }, [showResults, pct]);
+  }, [showResults, pct, fillAnim, option.order_index]);
 
   return (
     <Pressable

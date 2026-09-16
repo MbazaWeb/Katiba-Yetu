@@ -4,6 +4,39 @@
  * Inspired by Tanzania's landscape and civic dignity
  */
 
+import { Platform } from 'react-native';
+
+/**
+ * Font stacks must be platform-aware:
+ * - React Native (iOS/Android) expects a SINGLE font family name — CSS-style
+ *   comma stacks like "Georgia, serif" are invalid on native and silently
+ *   fall back to the system font.
+ * - react-native-web passes fontFamily straight through to CSS, so stacks are
+ *   fine on web.
+ */
+const fontFamilies = Platform.select({
+  ios: {
+    serif: 'Georgia',
+    sans: 'System',
+    mono: 'Courier',
+  },
+  android: {
+    serif: 'serif',       // Noto Serif (system)
+    sans: 'sans-serif',   // Roboto (system)
+    mono: 'monospace',    // Noto Mono / Droid Sans Mono (system)
+  },
+  web: {
+    serif: 'Georgia, serif',
+    sans: 'System',
+    mono: 'Courier, monospace',
+  },
+  default: {
+    serif: 'serif',
+    sans: 'System',
+    mono: 'monospace',
+  },
+})!;
+
 export const Colors = {
   // ── Brand Core ──────────────────────────────────────────────────────────
   green: {
@@ -88,11 +121,7 @@ export const Colors = {
 } as const;
 
 export const Typography = {
-  family: {
-    serif:  'Georgia, serif',          // Article body text — civic gravitas
-    sans:   'System',                  // UI chrome — clean and readable
-    mono:   'Courier, monospace',      // Article numbers, codes
-  },
+  family: fontFamilies,
   size: {
     xs:   11,
     sm:   12,

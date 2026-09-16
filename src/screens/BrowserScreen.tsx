@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View, Text, ScrollView, StyleSheet, Pressable,
   TextInput,
 } from 'react-native';
-import { Colors, Typography, Spacing, Radius, Shadow } from '../constants/tokens';
+import { Ionicons } from '@expo/vector-icons';
+import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
 import { AppHeader } from '../components/sections/AppHeader';
 import { ChapterRow } from '../components/sections/ChapterRow';
 import { Badge } from '../components/ui/Badge';
@@ -24,7 +25,9 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
   const [activeDoc, setActiveDoc] = useState<DocTab>('union');
   const [query, setQuery] = useState('');
 
-  const filtered = MOCK_SECTIONS.filter(ch => {
+  // Search only applies to the Union document — the Zanzibar document
+  // is not loaded yet (placeholder screen below).
+  const filtered = useMemo(() => MOCK_SECTIONS.filter(ch => {
     if (!query) return true;
     const q = query.toLowerCase();
     const matchTitle = ch.title_sw.toLowerCase().includes(q) ||
@@ -32,10 +35,11 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
     const matchChild = ch.children?.some(c =>
       c.title_sw.toLowerCase().includes(q) ||
       c.title_en.toLowerCase().includes(q) ||
-      c.body_sw.toLowerCase().includes(q),
+      c.body_sw.toLowerCase().includes(q) ||
+      c.body_en.toLowerCase().includes(q),
     );
     return matchTitle || matchChild;
-  });
+  }), [query]);
 
   return (
     <View style={styles.root}>
@@ -65,7 +69,7 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
       {/* Search bar */}
       <View style={styles.searchWrap}>
         <View style={styles.searchBar}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Ionicons name="search" size={16} color={Colors.text.muted} />
           <TextInput
             style={styles.searchInput}
             value={query}
@@ -81,7 +85,7 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
       {/* Doc header */}
       <View style={styles.docHeader}>
         <View style={[styles.docColorBar, { backgroundColor: activeDoc === 'union' ? Colors.green[500] : Colors.blue[400] }]} />
-        <View>
+        <View style={styles.docHeaderText}>
           <Text style={styles.docTitle}>
             {activeDoc === 'union'
               ? t('Katiba ya Jamhuri ya Muungano wa Tanzania, 1977', 'Constitution of the United Republic of Tanzania, 1977', language)
@@ -95,9 +99,6 @@ export function BrowserScreen({ onSectionPress, onBack }: BrowserScreenProps) {
             }
           </Text>
         </View>
-        <Pressable style={styles.downloadBtn}>
-          <Text style={styles.downloadIcon}>↓</Text>
-        </Pressable>
       </View>
 
       <ScrollView
@@ -154,7 +155,7 @@ function DocTabButton({
 function EmptySearch({ lang }: { lang: 'sw' | 'en' }) {
   return (
     <View style={styles.empty}>
-      <Text style={styles.emptyIcon}>🔍</Text>
+      <Ionicons name="search-outline" size={36} color={Colors.text.muted} />
       <Text style={styles.emptyTitle}>
         {lang === 'sw' ? 'Hakuna matokeo' : 'No results'}
       </Text>
@@ -172,7 +173,7 @@ function ZanzibarPlaceholder({ language }: { language: 'sw' | 'en' }) {
   return (
     <View style={styles.znzPlaceholder}>
       <View style={[styles.znzIcon, { backgroundColor: Colors.blue[900] }]}>
-        <Text style={{ fontSize: 28 }}>🏝</Text>
+        <Ionicons name="map-outline" size={30} color={Colors.blue[300]} />
       </View>
       <Text style={styles.znzTitle}>
         {language === 'sw' ? 'Katiba ya Zanzibar, 1984' : 'Constitution of Zanzibar, 1984'}
@@ -231,7 +232,6 @@ const styles = StyleSheet.create({
     borderWidth: 0.5,
     borderColor: Colors.surface.borderStrong,
   },
-  searchIcon: { fontSize: 15 },
   searchInput: {
     flex: 1,
     fontFamily: Typography.family.sans,
@@ -269,20 +269,8 @@ const styles = StyleSheet.create({
     color: Colors.text.muted,
     marginTop: 2,
   },
-  downloadBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: Radius.lg,
-    backgroundColor: Colors.surface.overlay,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 0.5,
-    borderColor: Colors.surface.border,
-    flexShrink: 0,
-  },
-  downloadIcon: {
-    fontSize: 16,
-    color: Colors.text.secondary,
+  docHeaderText: {
+    flex: 1,
   },
   // Scroll
   scroll: { flex: 1 },
@@ -296,7 +284,6 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing[16],
     gap: Spacing[3],
   },
-  emptyIcon: { fontSize: 36 },
   emptyTitle: {
     fontFamily: Typography.family.sans,
     fontSize: Typography.size.lg,

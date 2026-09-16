@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { View, Text, ViewStyle } from 'react-native';
 import { Colors, Typography, Spacing, Radius } from '../../constants/tokens';
 
 type BadgeVariant =
@@ -90,7 +90,7 @@ export function Badge({ label, variant = 'green', size = 'sm', icon, style }: Ba
 // ─── Stat Chip — icon + number ────────────────────────────────────────────────
 
 interface StatChipProps {
-  icon: string;
+  icon: React.ReactNode;
   count: number | string;
   color?: string;
   style?: ViewStyle;
@@ -99,7 +99,7 @@ interface StatChipProps {
 export function StatChip({ icon, count, color = Colors.text.muted, style }: StatChipProps) {
   return (
     <View style={[{ flexDirection: 'row', alignItems: 'center', gap: 4 }, style]}>
-      <Text style={{ fontSize: 13, color }}>{icon}</Text>
+      {icon}
       <Text
         style={{
           fontFamily: Typography.family.sans,

@@ -1,12 +1,12 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
   View, Text, ScrollView, Pressable, StyleSheet,
-  TextInput, Animated, Alert, Share,
+  TextInput, Share,
 } from 'react-native';
-import { Colors, Typography, Spacing, Radius, Shadow } from '../constants/tokens';
+import { Ionicons } from '@expo/vector-icons';
+import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
 import { AppHeader } from '../components/sections/AppHeader';
-import { Card, Divider } from '../components/ui/Card';
-import { Badge, StatChip, VerifDot } from '../components/ui/Badge';
+import { Badge, StatChip } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { PollBar } from '../components/ui/PollBar';
 import { Avatar } from '../components/ui/Avatar';
@@ -16,10 +16,15 @@ import {
 } from '../constants/mockData';
 import { useAppContext } from '../hooks/useAppContext';
 import {
+  StorageKeys, storageGetJSON, storageSetJSON,
+} from '../lib/storage';
+import {
   t, formatDate, formatRelativeTime, getSuggestionStatusLabel,
-  formatCount, truncate,
+  formatCount, scaledSize,
 } from '../utils';
-import type { Section, WorkspaceTab, Comment } from '../types';
+import type {
+  Section, WorkspaceTab, Discussion, SuggestionStatus, Organization,
+} from '../types';
 
 // ─── Tab definitions ──────────────────────────────────────────────────────────
 
@@ -51,9 +56,30 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
   const { language } = useAppContext();
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('text');
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const tabScrollRef = useRef<ScrollView>(null);
 
   const title = t(section.title_sw, section.title_en, language);
+
+  // ── Bookmark state persisted to local storage ──
+  useEffect(() => {
+    let cancelled = false;
+    storageGetJSON<string[]>(StorageKeys.bookmarks, []).then(ids => {
+      if (!cancelled) setIsBookmarked(ids.includes(section.id));
+    });
+    return () => { cancelled = true; };
+  }, [section.id]);
+
+  const toggleBookmark = useCallback(() => {
+    setIsBookmarked(prev => {
+      const next = !prev;
+      storageGetJSON<string[]>(StorageKeys.bookmarks, []).then(ids => {
+        const updated = next
+          ? Array.from(new Set([...ids, section.id]))
+          : ids.filter(id => id !== section.id);
+        storageSetJSON(StorageKeys.bookmarks, updated);
+      });
+      return next;
+    });
+  }, [section.id]);
 
   const handleShare = useCallback(async () => {
     try {
@@ -61,7 +87,9 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
         title: `Ibara ${section.article_number} — ${title}`,
         message: `Katiba Yetu | Ibara ${section.article_number}: ${title}\nhttps://katibayetu.tz/ibara/${section.id}`,
       });
-    } catch {}
+    } catch (e) {
+      console.warn('[SectionWorkspace] Share failed or was dismissed', e);
+    }
   }, [section, title]);
 
   return (
@@ -75,16 +103,18 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
         rightActions={
           <View style={styles.headerActions}>
             <Pressable
-              onPress={() => setIsBookmarked(b => !b)}
+              onPress={toggleBookmark}
               hitSlop={10}
               accessibilityLabel={isBookmarked ? 'Ondoa alama' : 'Weka alama'}
             >
-              <Text style={[styles.headerIcon, isBookmarked && styles.headerIconActive]}>
-                {isBookmarked ? '★' : '☆'}
-              </Text>
+              <Ionicons
+                name={isBookmarked ? 'bookmark' : 'bookmark-outline'}
+                size={20}
+                color={isBookmarked ? Colors.gold[300] : 'rgba(255,255,255,0.7)'}
+              />
             </Pressable>
             <Pressable onPress={handleShare} hitSlop={10} accessibilityLabel="Shiriki">
-              <Text style={styles.headerIcon}>⬆</Text>
+              <Ionicons name="share-social-outline" size={20} color="rgba(255,255,255,0.7)" />
             </Pressable>
           </View>
         }
@@ -93,7 +123,7 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
       {/* Muungano warning banner */}
       {section.is_muungano && (
         <View style={styles.muunganoBanner}>
-          <Text style={styles.muunganoIcon}>⚠</Text>
+          <Ionicons name="warning-outline" size={16} color={Colors.gold[400]} />
           <Text style={styles.muunganoText}>
             {t(
               'Mada hii inashughulikiwa kwa makini maalum na bodi ya usimamizi.',
@@ -107,7 +137,6 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
       {/* Tab rail */}
       <View style={styles.tabRailWrapper}>
         <ScrollView
-          ref={tabScrollRef}
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.tabRail}
@@ -169,9 +198,24 @@ export function SectionWorkspace({ section, onBack }: SectionWorkspaceProps) {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 function TabText({ section }: { section: Section }) {
-  const { language, setLanguage } = useAppContext();
+  const { language, setLanguage, fontSize } = useAppContext();
   const body = language === 'sw' ? section.body_sw : section.body_en;
   const title = language === 'sw' ? section.title_sw : section.title_en;
+
+  // Respect the user's reading-size preference on the main reading surface
+  const titleSize = scaledSize(Typography.size['2xl'], fontSize);
+  const bodySize = scaledSize(Typography.size.md, fontSize);
+
+  const handleArticleLink = useCallback(async () => {
+    try {
+      await Share.share({
+        title: `${language === 'sw' ? 'Ibara' : 'Article'} ${section.article_number}`,
+        message: `https://katibayetu.tz/ibara/${section.id}`,
+      });
+    } catch (e) {
+      console.warn('[SectionWorkspace] Copy link failed', e);
+    }
+  }, [section, language]);
 
   return (
     <View style={tabStyles.wrapper}>
@@ -206,33 +250,34 @@ function TabText({ section }: { section: Section }) {
       </Text>
 
       {/* Title */}
-      <Text style={tabStyles.articleTitle}>{title}</Text>
+      <Text style={[tabStyles.articleTitle, { fontSize: titleSize, lineHeight: Math.round(titleSize * 1.3) }]}>
+        {title}
+      </Text>
 
       {/* Gold rule */}
       <View style={tabStyles.goldRule} />
 
       {/* Body text */}
-      <Text style={tabStyles.articleBody} selectable>
+      <Text
+        style={[tabStyles.articleBody, { fontSize: bodySize, lineHeight: Math.round(bodySize * 1.65) }]}
+        selectable
+      >
         {body}
       </Text>
 
       {/* Action buttons */}
       <View style={tabStyles.textActions}>
-        <Pressable style={tabStyles.textActionBtn}>
-          <Text style={tabStyles.textActionIcon}>🔊</Text>
+        <Pressable style={tabStyles.textActionBtn} accessibilityLabel={t('Sikiliza', 'Listen', language)}>
+          <Ionicons name="volume-high-outline" size={15} color={Colors.text.secondary} />
           <Text style={tabStyles.textActionLabel}>{t('Sikiliza', 'Listen', language)}</Text>
         </Pressable>
-        <Pressable style={tabStyles.textActionBtn}>
-          <Text style={tabStyles.textActionIcon}>Aa</Text>
+        <Pressable style={tabStyles.textActionBtn} accessibilityLabel={t('Fonti', 'Font', language)}>
+          <Ionicons name="text" size={15} color={Colors.text.secondary} />
           <Text style={tabStyles.textActionLabel}>{t('Fonti', 'Font', language)}</Text>
         </Pressable>
-        <Pressable style={tabStyles.textActionBtn}>
-          <Text style={tabStyles.textActionIcon}>🔗</Text>
+        <Pressable style={tabStyles.textActionBtn} onPress={handleArticleLink} accessibilityLabel={t('Kiungo', 'Share link', language)}>
+          <Ionicons name="link-outline" size={15} color={Colors.text.secondary} />
           <Text style={tabStyles.textActionLabel}>{t('Kiungo', 'Share link', language)}</Text>
-        </Pressable>
-        <Pressable style={tabStyles.textActionBtn}>
-          <Text style={tabStyles.textActionIcon}>⬇</Text>
-          <Text style={tabStyles.textActionLabel}>{t('Pakua', 'Download', language)}</Text>
         </Pressable>
       </View>
     </View>
@@ -313,6 +358,8 @@ function TabDiscussion({ section }: { section: Section }) {
   const { language } = useAppContext();
   const [replyText, setReplyText] = useState('');
   const [sortBy, setSortBy] = useState<'top' | 'new' | 'verified'>('top');
+  // Comments posted by the user in this session (mock backend pending)
+  const [posted, setPosted] = useState<Discussion[]>([]);
   const meta = section.meta;
 
   const sortLabel = sortBy === 'top'
@@ -321,12 +368,48 @@ function TabDiscussion({ section }: { section: Section }) {
     ? t('Mapya', 'New', language)
     : t('Wataalamu', 'Verified', language);
 
+  // Sorting actually applies to the visible comment list
+  const visibleDiscussions = useMemo(() => {
+    const all = [...posted, ...DISCUSSIONS_ART19];
+    const sorted = [...all];
+    if (sortBy === 'top') {
+      sorted.sort((a, b) => b.upvotes - a.upvotes);
+    } else if (sortBy === 'new') {
+      sorted.sort((a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    } else {
+      sorted.sort((a, b) =>
+        Number(b.is_verified_author) - Number(a.is_verified_author));
+    }
+    return sorted;
+  }, [posted, sortBy]);
+
+  const handlePost = useCallback(() => {
+    const text = replyText.trim();
+    if (!text) return;
+    const newDisc: Discussion = {
+      id: `local-${Date.now()}`,
+      section_id: section.id,
+      user_id: 'user-anon',
+      title: '',
+      body: text,
+      is_anonymous: true,
+      upvotes: 0,
+      reply_count: 0,
+      is_verified_author: false,
+      created_at: new Date().toISOString(),
+      status: 'active',
+    };
+    setPosted(prev => [newDisc, ...prev]);
+    setReplyText('');
+  }, [replyText, section.id]);
+
   return (
     <View style={tabStyles.wrapper}>
       {/* Header row */}
       <View style={tabStyles.discHeader}>
         <Text style={tabStyles.discCount}>
-          {t('Maoni', 'Comments', language)} {meta?.discussion_count ?? 0}
+          {t('Maoni', 'Comments', language)} {meta?.discussion_count ?? visibleDiscussions.length}
         </Text>
         <Pressable
           style={tabStyles.sortBtn}
@@ -336,10 +419,11 @@ function TabDiscussion({ section }: { section: Section }) {
         </Pressable>
       </View>
 
-      {/* Comments */}
-      {DISCUSSIONS_ART19.map((disc) => (
+      {/* Comments — sorted by the active sort mode */}
+      {visibleDiscussions.map((disc) => (
         <CommentCard
           key={disc.id}
+          id={disc.id}
           authorName={disc.is_anonymous ? t('Mtumiaji asiyejulikana', 'Anonymous', language) : (disc.org?.name ?? disc.user?.display_name ?? '??')}
           authorType={disc.org ? 'org' : disc.is_anonymous ? 'anon' : 'user'}
           orgType={disc.org?.type}
@@ -371,6 +455,7 @@ function TabDiscussion({ section }: { section: Section }) {
             size="sm"
             label={t('Tuma', 'Post', language)}
             disabled={!replyText.trim()}
+            onPress={handlePost}
           />
         </View>
       </View>
@@ -379,12 +464,13 @@ function TabDiscussion({ section }: { section: Section }) {
 }
 
 function CommentCard({
-  authorName, authorType, orgType, badge,
+  id, authorName, authorType, orgType, badge,
   body, upvotes, replyCount, time,
 }: {
+  id: string;
   authorName: string;
   authorType: 'user' | 'org' | 'anon';
-  orgType?: any;
+  orgType?: Organization['type'];
   badge?: 'tls' | 'verified' | 'nida';
   body: string;
   upvotes: number;
@@ -393,7 +479,28 @@ function CommentCard({
 }) {
   const { language } = useAppContext();
   const [liked, setLiked] = useState(false);
-  const initials = authorName.split(' ').slice(0, 2).map(w => w[0]).join('');
+
+  // Like state persisted to local storage
+  useEffect(() => {
+    let cancelled = false;
+    storageGetJSON<string[]>(StorageKeys.likes, []).then(ids => {
+      if (!cancelled) setLiked(ids.includes(id));
+    });
+    return () => { cancelled = true; };
+  }, [id]);
+
+  const toggleLike = useCallback(() => {
+    setLiked(prev => {
+      const next = !prev;
+      storageGetJSON<string[]>(StorageKeys.likes, []).then(ids => {
+        const updated = next
+          ? Array.from(new Set([...ids, id]))
+          : ids.filter(x => x !== id);
+        storageSetJSON(StorageKeys.likes, updated);
+      });
+      return next;
+    });
+  }, [id]);
 
   return (
     <View style={commentStyles.card}>
@@ -415,20 +522,24 @@ function CommentCard({
       </View>
       <Text style={commentStyles.body}>{body}</Text>
       <View style={commentStyles.actions}>
-        <Pressable style={commentStyles.actionBtn} onPress={() => setLiked(l => !l)}>
-          <Text style={[commentStyles.actionIcon, liked && { color: Colors.green[400] }]}>↑</Text>
+        <Pressable style={commentStyles.actionBtn} onPress={toggleLike} accessibilityRole="button">
+          <Ionicons
+            name={liked ? 'arrow-up' : 'arrow-up-outline'}
+            size={14}
+            color={liked ? Colors.green[400] : Colors.text.muted}
+          />
           <Text style={[commentStyles.actionText, liked && { color: Colors.green[400] }]}>
             {liked ? upvotes + 1 : upvotes}
           </Text>
         </Pressable>
-        <Pressable style={commentStyles.actionBtn}>
-          <Text style={commentStyles.actionIcon}>↩</Text>
+        <Pressable style={commentStyles.actionBtn} accessibilityRole="button">
+          <Ionicons name="arrow-undo" size={14} color={Colors.text.muted} />
           <Text style={commentStyles.actionText}>
             {t('Jibu', 'Reply', language)} {replyCount > 0 ? `(${replyCount})` : ''}
           </Text>
         </Pressable>
-        <Pressable style={commentStyles.actionBtn}>
-          <Text style={commentStyles.actionIcon}>⚑</Text>
+        <Pressable style={commentStyles.actionBtn} accessibilityRole="button">
+          <Ionicons name="flag-outline" size={14} color={Colors.text.muted} />
           <Text style={commentStyles.actionText}>{t('Ripoti', 'Report', language)}</Text>
         </Pressable>
       </View>
@@ -443,13 +554,32 @@ function CommentCard({
 function TabSuggestions({ section }: { section: Section }) {
   const { language } = useAppContext();
 
-  const statusColors: Record<string, 'gold' | 'green' | 'red' | 'gray'> = {
+  // Endorsements toggle locally and persist (mock backend pending)
+  const [endorsements, setEndorsements] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    let cancelled = false;
+    storageGetJSON<Record<string, boolean>>(StorageKeys.endorsements, {}).then(stored => {
+      if (!cancelled) setEndorsements(stored);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  const toggleEndorse = useCallback((id: string) => {
+    setEndorsements(prev => {
+      const next = { ...prev, [id]: !prev[id] };
+      storageSetJSON(StorageKeys.endorsements, next);
+      return next;
+    });
+  }, []);
+
+  const statusColors: Record<SuggestionStatus, 'gold' | 'green' | 'red' | 'gray' | 'blue'> = {
     submitted: 'gray',
     under_review: 'gold',
     accepted: 'green',
     rejected: 'red',
-    merged: 'blue' as any,
-    polled: 'blue' as any,
+    merged: 'blue',
+    polled: 'blue',
   };
 
   return (
@@ -459,7 +589,7 @@ function TabSuggestions({ section }: { section: Section }) {
         size="md"
         fullWidth
         label={t('Pendekeza mabadiliko', 'Propose a change', language)}
-        leftIcon={<Text style={{ color: '#fff', fontSize: 18 }}>＋</Text>}
+        leftIcon={<Ionicons name="add" size={18} color="#fff" />}
       />
 
       <Text style={tabStyles.sectionHeading}>
@@ -467,12 +597,13 @@ function TabSuggestions({ section }: { section: Section }) {
       </Text>
 
       {SUGGESTIONS_ART19.map(sugg => {
-        const title = language === 'sw' ? sugg.title : sugg.title;
+        const title = sugg.title;
         const rationale = sugg.rationale;
         const proposed = language === 'sw' ? sugg.proposed_text_sw : sugg.proposed_text_en;
         const orgName = sugg.org?.name ?? t('Mtumiaji asiyejulikana', 'Anonymous', language);
         const statusLabel = getSuggestionStatusLabel(sugg.status, language);
-        const statusVar = statusColors[sugg.status] ?? 'gray';
+        const statusVar = statusColors[sugg.status];
+        const hasEndorsed = !!endorsements[sugg.id];
 
         return (
           <View key={sugg.id} style={suggStyles.card}>
@@ -507,13 +638,22 @@ function TabSuggestions({ section }: { section: Section }) {
 
             {/* Footer */}
             <View style={suggStyles.footer}>
-              <StatChip icon="👍" count={sugg.endorse_count} color={Colors.green[400]} />
-              <StatChip icon="👎" count={sugg.oppose_count} color={Colors.text.muted} />
+              <StatChip
+                icon={<Ionicons name="thumbs-up-outline" size={13} color={Colors.green[400]} />}
+                count={sugg.endorse_count + (hasEndorsed ? 1 : 0)}
+                color={Colors.green[400]}
+              />
+              <StatChip
+                icon={<Ionicons name="thumbs-down-outline" size={13} color={Colors.text.muted} />}
+                count={sugg.oppose_count}
+                color={Colors.text.muted}
+              />
               <View style={styles.flex1} />
               <Button
-                variant="ghost"
+                variant={hasEndorsed ? 'secondary' : 'ghost'}
                 size="sm"
-                label={t('Unga mkono', 'Endorse', language)}
+                label={hasEndorsed ? t('Umeunga mkono', 'Endorsed', language) : t('Unga mkono', 'Endorse', language)}
+                onPress={() => toggleEndorse(sugg.id)}
               />
             </View>
           </View>
@@ -534,8 +674,22 @@ function TabPolls({ section }: { section: Section }) {
   const poll = POLL_ART19;
   const pollTitle = language === 'sw' ? poll.title_sw : poll.title_en;
 
+  // Hydrate persisted vote for this poll
+  useEffect(() => {
+    let cancelled = false;
+    storageGetJSON<Record<string, string>>(StorageKeys.votes, {}).then(votes => {
+      if (!cancelled) setVoted(votes[poll.id] ?? poll.user_voted ?? null);
+    });
+    return () => { cancelled = true; };
+  }, [poll.id, poll.user_voted]);
+
   const handleVote = () => {
-    if (selectedOpt) setVoted(selectedOpt);
+    if (!selectedOpt) return;
+    setVoted(selectedOpt);
+    // Persist so the vote survives app restarts (mock backend pending)
+    storageGetJSON<Record<string, string>>(StorageKeys.votes, {}).then(votes => {
+      storageSetJSON(StorageKeys.votes, { ...votes, [poll.id]: selectedOpt });
+    });
   };
 
   return (
@@ -583,7 +737,7 @@ function TabPolls({ section }: { section: Section }) {
         />
       ) : (
         <View style={pollStyles.votedBanner}>
-          <Text style={pollStyles.votedIcon}>✓</Text>
+          <Ionicons name="checkmark-circle" size={16} color={Colors.green[400]} />
           <Text style={pollStyles.votedText}>
             {t('Kura yako imehifadhiwa', 'Your vote has been recorded', language)}
           </Text>
@@ -592,7 +746,11 @@ function TabPolls({ section }: { section: Section }) {
 
       {/* Stats */}
       <View style={pollStyles.stats}>
-        <StatChip icon="👥" count={`${formatCount(poll.total_votes, language)} ${t('wapiga kura', 'voters', language)}`} color={Colors.text.muted} />
+        <StatChip
+          icon={<Ionicons name="people-outline" size={13} color={Colors.text.muted} />}
+          count={`${formatCount(poll.total_votes, language)} ${t('wapiga kura', 'voters', language)}`}
+          color={Colors.text.muted}
+        />
         <Text style={pollStyles.statsDot}>·</Text>
         <Text style={pollStyles.statsText}>
           {t('Inafungwa', 'Closes', language)} {formatDate(poll.closes_at, language)}

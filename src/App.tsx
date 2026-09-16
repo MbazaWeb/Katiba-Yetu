@@ -1,7 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { AppContext } from './hooks/useAppContext';
 import { BottomTabBar, TabKey } from './components/navigation/BottomTabBar';
+import { AppErrorBoundary } from './components/ErrorBoundary';
 import { HomeScreen } from './screens/HomeScreen';
 import { BrowserScreen } from './screens/BrowserScreen';
 import { SectionWorkspace } from './screens/SectionWorkspace';
@@ -9,41 +10,8 @@ import { PollsScreen } from './screens/PollsScreen';
 import { SearchScreen } from './screens/SearchScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { Colors } from './constants/tokens';
+import { StorageKeys, storageGet, storageSet } from './lib/storage';
 import type { Language, FontSize, User, Section, Poll } from './types';
-
-// ─── Placeholder screens ──────────────────────────────────────────────────────
-
-import {
-  View as RNView, Text, StyleSheet as RNStyleSheet,
-} from 'react-native';
-
-function PlaceholderScreen({ title }: { title: string }) {
-  return (
-    <RNView style={pStyles.root}>
-      <Text style={pStyles.text}>{title}</Text>
-      <Text style={pStyles.sub}>Inakuja hivi karibuni · Coming soon</Text>
-    </RNView>
-  );
-}
-
-const pStyles = RNStyleSheet.create({
-  root: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.surface.base,
-    gap: 12,
-  },
-  text: {
-    fontFamily: 'Georgia, serif',
-    fontSize: 22,
-    color: Colors.text.primary,
-  },
-  sub: {
-    fontSize: 14,
-    color: Colors.text.muted,
-  },
-});
 
 // ─── Navigation State ─────────────────────────────────────────────────────────
 
@@ -67,7 +35,7 @@ interface NavState {
 // ─── Root App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  // ── App context state ──
+  // ── App context state (language + font size persist across launches) ──
   const [language, setLanguage] = useState<Language>('sw');
   const [fontSize, setFontSize] = useState<FontSize>('md');
   const [user, setUser] = useState<User | null>(null);
@@ -75,6 +43,33 @@ export default function App() {
   // ── Navigation state ──
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [nav, setNav] = useState<NavState>({ screen: 'home' });
+
+  // ── Hydrate persisted preferences on mount ──
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const [storedLang, storedFont] = await Promise.all([
+        storageGet(StorageKeys.language),
+        storageGet(StorageKeys.fontSize),
+      ]);
+      if (cancelled) return;
+      if (storedLang === 'sw' || storedLang === 'en') setLanguage(storedLang);
+      if (storedFont === 'sm' || storedFont === 'md' || storedFont === 'lg' || storedFont === 'xl') {
+        setFontSize(storedFont);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const changeLanguage = useCallback((l: Language) => {
+    setLanguage(l);
+    storageSet(StorageKeys.language, l);
+  }, []);
+
+  const changeFontSize = useCallback((f: FontSize) => {
+    setFontSize(f);
+    storageSet(StorageKeys.fontSize, f);
+  }, []);
 
   // ── Handlers ──
   const navigateToSection = useCallback((section: Section) => {
@@ -86,9 +81,8 @@ export default function App() {
   }, [activeTab]);
 
   const navigateToPoll = useCallback((poll: Poll) => {
-    // In a real app this would navigate to polls tab with the poll open
     setActiveTab('polls');
-    setNav({ screen: 'polls' });
+    setNav({ screen: 'polls', params: { poll } });
   }, []);
 
   const handleBack = useCallback(() => {
@@ -129,7 +123,12 @@ export default function App() {
         );
 
       case 'polls':
-        return <PollsScreen onPollPress={navigateToPoll} />;
+        return (
+          <PollsScreen
+            onPollPress={navigateToPoll}
+            initialPoll={nav.params?.poll}
+          />
+        );
 
       case 'search':
         return <SearchScreen onSectionPress={navigateToSection} />;
@@ -153,33 +152,35 @@ export default function App() {
   const isInWorkspace = nav.screen === 'section_workspace';
 
   return (
-    <AppContext.Provider
-      value={{
-        language,
-        setLanguage,
-        fontSize,
-        setFontSize,
-        user,
-        setUser,
-        isOffline: false,
-      }}
-    >
-      <View style={styles.root}>
-        {/* Screen content */}
-        <View style={styles.screenArea}>
-          {renderScreen()}
-        </View>
+    <AppErrorBoundary>
+      <AppContext.Provider
+        value={{
+          language,
+          setLanguage: changeLanguage,
+          fontSize,
+          setFontSize: changeFontSize,
+          user,
+          setUser,
+          isOffline: false,
+        }}
+      >
+        <View style={styles.root}>
+          {/* Screen content */}
+          <View style={styles.screenArea}>
+            {renderScreen()}
+          </View>
 
-        {/* Bottom nav — hidden when in workspace */}
-        {!isInWorkspace && (
-          <BottomTabBar
-            activeTab={activeTab}
-            onTabPress={handleTabPress}
-            notificationCount={{ polls: 2 }}
-          />
-        )}
-      </View>
-    </AppContext.Provider>
+          {/* Bottom nav — hidden when in workspace */}
+          {!isInWorkspace && (
+            <BottomTabBar
+              activeTab={activeTab}
+              onTabPress={handleTabPress}
+              notificationCount={{ polls: 2 }}
+            />
+          )}
+        </View>
+      </AppContext.Provider>
+    </AppErrorBoundary>
   );
 }
 

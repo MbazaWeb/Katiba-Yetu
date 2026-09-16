@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { Colors, Typography, Radius } from '../../constants/tokens';
 import { getInitials } from '../../utils';
 
@@ -40,8 +40,12 @@ const userColors = [
 ];
 
 function getColorForName(name: string): { bg: string; text: string } {
-  const idx = (name.charCodeAt(0) + (name.charCodeAt(1) || 0)) % userColors.length;
-  return userColors[idx];
+  // Guard against NaN for empty/short names — fall back to index 0
+  const code = (name.charCodeAt(0) || 0) + (name.charCodeAt(1) || 0);
+  const idx = Number.isFinite(code) && code > 0
+    ? code % userColors.length
+    : 0;
+  return userColors[idx] ?? userColors[0];
 }
 
 export function Avatar({

@@ -1,6 +1,5 @@
 import type {
-  Section, Poll, PollOption, Discussion, Comment,
-  Suggestion, Analysis, Organization, User,
+  Section, Poll, Discussion, Suggestion, Analysis, Organization, User,
 } from '../types';
 
 // ─── Organizations ────────────────────────────────────────────────────────────
