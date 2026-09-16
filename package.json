@@ -33,7 +33,15 @@
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
-    "@types/react": "^19.1.1",
-    "typescript": "^5.3.3"
+    "@types/react": "~19.2.4",
+    "typescript": "~6.0.3"
+  },
+  "expo": {
+    "install": {
+      "exclude": [
+        "react-native-safe-area-context",
+        "react-dom"
+      ]
+    }
   }
 }
