@@ -8,16 +8,21 @@ import { useAppContext } from '../../hooks/useAppContext';
 import { t } from '../../utils';
 import type { TabKey } from './BottomTabBar';
 
-export type SidebarKey = TabKey | 'contributions' | 'history' | 'resources' | 'discussion' | 'proposed_constitution';
+export type SidebarKey = TabKey | 'contributions' | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'citizen_submission' | 'multi_stage_polls' | 'draft_builder' | 'approval_workflow' | 'backend_status';
 
 interface SidebarNavProps {
   activeTab: SidebarKey;
   onTabPress: (tab: TabKey) => void;
-  onContributionsPress: () => void;
+  onContributionsPress?: () => void;
   onHistoryPress?: () => void;
   onResourcesPress?: () => void;
   onDiscussionPress?: () => void;
   onProposedConstitutionPress?: () => void;
+  onCitizenSubmissionPress?: () => void;
+  onMultiStagePollsPress?: () => void;
+  onDraftBuilderPress?: () => void;
+  onApprovalWorkflowPress?: () => void;
+  onBackendStatusPress?: () => void;
   notificationCount?: Partial<Record<TabKey, number>>;
 }
 
@@ -30,12 +35,17 @@ const ITEMS: {
   { key: 'home',                  icon: 'home',           label_sw: 'Nyumbani',           label_en: 'Home' },
   { key: 'browser',               icon: 'book-outline',   label_sw: 'Katiba',              label_en: 'Constitution' },
   { key: 'proposed_constitution', icon: 'create-outline',  label_sw: 'Katiba Inayopendekezwa', label_en: 'Proposed Constitution' },
+  { key: 'citizen_submission',   icon: 'megaphone-outline', label_sw: 'Wasilisha Pendekezo', label_en: 'Submit Proposal' },
+  { key: 'multi_stage_polls',    icon: 'stats-chart-outline', label_sw: 'Kura za Hatua', label_en: 'Multi-stage Polls' },
+  { key: 'draft_builder',        icon: 'construct-outline', label_sw: 'Mjenzi wa Rasimu', label_en: 'Draft Builder' },
+  { key: 'approval_workflow',    icon: 'git-branch-outline', label_sw: 'Mchakato wa Idhini', label_en: 'Approval Workflow' },
   { key: 'polls',                 icon: 'stats-chart',     label_sw: 'Kura',                label_en: 'Polls' },
   { key: 'search',                icon: 'search',          label_sw: 'Tafuta',              label_en: 'Search' },
   { key: 'contributions',         icon: 'chatbox-outline',  label_sw: 'Michango',            label_en: 'Contributions' },
   { key: 'discussion',            icon: 'people-outline',  label_sw: 'Majadiliano',          label_en: 'Discussions' },
   { key: 'history',               icon: 'time-outline',    label_sw: 'Historia',            label_en: 'History' },
   { key: 'resources',              icon: 'library-outline', label_sw: 'Maktaba',             label_en: 'Library' },
+  { key: 'backend_status',        icon: 'server-outline',  label_sw: 'Hadhi ya Nyuma',     label_en: 'Backend Status' },
   { key: 'profile',               icon: 'person-outline',  label_sw: 'Akaunti',             label_en: 'Account' },
 ];
 
@@ -47,17 +57,27 @@ export function SidebarNav({
   onResourcesPress,
   onDiscussionPress,
   onProposedConstitutionPress,
+  onCitizenSubmissionPress,
+  onMultiStagePollsPress,
+  onDraftBuilderPress,
+  onApprovalWorkflowPress,
+  onBackendStatusPress,
   notificationCount,
 }: SidebarNavProps) {
   const { language } = useAppContext();
   const { width } = useWindowDimensions();
 
   const handlePress = (key: SidebarKey) => {
-    if (key === 'contributions') { onContributionsPress(); return; }
+    if (key === 'contributions') { onContributionsPress?.(); return; }
     if (key === 'history') { onHistoryPress?.(); return; }
     if (key === 'resources') { onResourcesPress?.(); return; }
     if (key === 'discussion') { onDiscussionPress?.(); return; }
     if (key === 'proposed_constitution') { onProposedConstitutionPress?.(); return; }
+    if (key === 'citizen_submission') { onCitizenSubmissionPress?.(); return; }
+    if (key === 'multi_stage_polls') { onMultiStagePollsPress?.(); return; }
+    if (key === 'draft_builder') { onDraftBuilderPress?.(); return; }
+    if (key === 'approval_workflow') { onApprovalWorkflowPress?.(); return; }
+    if (key === 'backend_status') { onBackendStatusPress?.(); return; }
     onTabPress(key as TabKey);
   };
 

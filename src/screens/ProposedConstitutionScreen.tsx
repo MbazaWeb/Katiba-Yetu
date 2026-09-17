@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, useWindowDimensions, Platform } from 'react-native';
+import { View, Text, ScrollView, Pressable, StyleSheet, useWindowDimensions, Platform, Linking, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Typography, Spacing, Radius, Layout } from '../constants/tokens';
@@ -10,6 +10,7 @@ import {
   getCurrentDraftVersion, getDraftVersions, getParticipationSummary,
   PROPOSAL_DISCLAIMER,
 } from '../services/proposedConstitution';
+import { getPDFExportBackend } from '../services/backend';
 import { CHAPTER_STATUS_LABELS, PROPOSAL_STATUS_LABELS } from '../types';
 import type { ProposedArticle, ChapterProposalStatus } from '../types';
 
@@ -32,7 +33,7 @@ export function ProposedConstitutionScreen({ onOpenArticle, onOpenDraftReader, o
   const versions = getDraftVersions();
   const participation = getParticipationSummary();
   const [expandedChapters, setExpandedChapters] = useState<string[]>([]);
-  const copy = (sw: string, en: string) => language === 'sw' ? sw : en;
+  const copy = (sw: string, en?: string) => en === undefined ? sw : (language === 'sw' ? sw : en);
 
   function toggleChapter(id: string) {
     setExpandedChapters(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
@@ -185,6 +186,30 @@ export function ProposedConstitutionScreen({ onOpenArticle, onOpenDraftReader, o
                 <Text style={styles.versionMeta}>{version.totalArticles} {copy('ibara', 'articles')} · {version.changeLog.length} {copy('mabadiliko', 'changes')} · {version.publishedAt ? new Date(version.publishedAt).toLocaleDateString() : copy('Haijachapishwa', 'Unpublished')}</Text>
               </View>
               <Action label={copy('Fungua', 'Open')} onPress={() => onOpenDraftReader?.(version.id)} />
+              {version.immutable && (
+                <Pressable
+                  style={({ pressed }) => [styles.exportBtn, pressed && { opacity: 0.7 }]}
+                  onPress={async () => {
+                    try {
+                      const pdf = getPDFExportBackend();
+                      const result = await pdf.exportDraft(version.id, { language, includeMethodology: true });
+                      if (Platform.OS === 'web' && result.blobUri) {
+                        // Open the printable HTML view in a new tab.
+                        window.open(result.blobUri, '_blank');
+                      } else if (result.blobUri) {
+                        Linking.openURL(result.blobUri).catch(() => Alert.alert(copy('Hitilafu', 'Error'), copy('Faili halikufunguka. / Could not open file.')));
+                      }
+                    } catch (e) {
+                      Alert.alert(copy('Hitilafu', 'Error'), e instanceof Error ? e.message : copy('Hitilafu isiyotarajiwa. / Unexpected error.'));
+                    }
+                  }}
+                  accessibilityRole="button"
+                  accessibilityLabel={copy('Pakua PDF', 'Download PDF')}
+                >
+                  <Ionicons name="download-outline" size={18} color={Colors.green[300]} />
+                  <Text style={styles.exportBtnText}>{copy('Pakua PDF', 'Download PDF')}</Text>
+                </Pressable>
+              )}
             </View>
           ))}
         </View>
@@ -242,6 +267,8 @@ const styles = StyleSheet.create({
   versionName: { fontSize: Typography.size.md, fontWeight: Typography.weight.semibold, color: Colors.text.primary },
   immutableBadge: { fontSize: Typography.size.xs, color: Colors.gold[400], fontStyle: 'italic' },
   versionMeta: { fontSize: Typography.size.xs, color: Colors.text.muted, marginTop: 2 },
+  exportBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingVertical: Spacing[2], paddingHorizontal: Spacing[3], borderRadius: Radius.sm, borderWidth: 1, borderColor: Colors.green[400], backgroundColor: Colors.surface.overlay, minHeight: 36 },
+  exportBtnText: { color: Colors.green[300], fontSize: Typography.size.sm, fontWeight: Typography.weight.semibold },
   disclaimer: { fontSize: Typography.size.xs, color: Colors.text.muted, textAlign: 'center', paddingTop: Spacing[4], lineHeight: 18 },
 });
 

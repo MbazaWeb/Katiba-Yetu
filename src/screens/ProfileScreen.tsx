@@ -73,7 +73,7 @@ export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
           <Menu icon="help-circle-outline" label={t('Msaada', 'Help', language)} last />
         </View>
 
-        <Text style={styles.version}>Katiba Yetu · v0.2.0</Text>
+        <Text style={styles.version}>Katiba Yetu · v0.3.0</Text>
       </ScrollView>
     </View>
   );

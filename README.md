@@ -6,6 +6,99 @@
 
 A bilingual (Kiswahili-first) civic platform for Tanzania's constitutional deliberation process.
 
+## v0.3.0 — Phase 2 & Phase 3 Complete
+
+This release completes the **Katiba Inayopendekezwa** module by implementing Phase 2 (submission flow, multi-stage polling, draft builder, approval workflow) and Phase 3 (backend integration, AI generation, identity verification, moderation, PDF generation).
+
+### Phase 2 — Submission, Polling, Draft Builder, Approval Workflow
+
+**Citizen Submission Pipeline** (`CitizenSubmissionScreen`)
+- Submit a proposal with title, topic, affected article, problem, proposed wording, rationale, supporting evidence, region, anonymous preference
+- Pipeline runs: validation → harmful content screening → duplicate detection → topic classification → clustering
+- Duplicates are merged into clusters without deleting the original submission (preserved for audit)
+- Full moderation event history on every submission
+- Submission detail view shows classification confidence, alternatives, and all moderation events
+
+**Multi-stage Polling** (`MultiStagePollScreen`)
+- Four poll stages: Problem Confirmation · Policy Direction · Article Wording · Approval for Draft
+- Each poll tracks: total votes, verified votes, abstentions, region distribution, verification tier distribution, opening/closing dates, minimum participation, representativeness warning
+- A poll **never** auto-approves an article — `autoApproved: false` is enforced in the type system
+- Voters can vote or abstain; one vote per poll per user
+- Drafting committee can close polls
+
+**Draft Builder** (`DraftBuilderScreen`)
+- Authorized workspace for the Drafting Committee and Administrators
+- Create draft versions, edit article wording (with audit entry), assign article numbers, request polls, mark legally reviewed, send back for discussion, publish versions, archive, restore
+- Every action creates a DraftBuilderAction audit entry
+- Published drafts are immutable — restoration creates a new version rather than overwriting history
+- Role-based permission enforcement via `canPerform(role, permission)`
+- Full change log per version
+
+**Approval Workflow** (`ApprovalWorkflowScreen`)
+- Per-article approval stage tracker: Citizen Input → Moderation → Clustering → Legal Review → Committee Approval → Published
+- Configurable approval rules: minimum verified participants, minimum regions, minimum support %, required poll stages, requires legal review, requires committee approval
+- Eligibility evaluation showing reasons for non-eligibility
+- Decision modal requires rationale, recorded in the audit trail
+- Article context shows current support %, opposition %, abstentions, verified participants, regions, legal review status
+
+**Audit trail** — every submission, moderation event, generation run, wording edit, legal review, poll, approval decision, draft version change, publication, archival, and restoration is logged publicly (excluding protected personal/moderation information)
+
+### Phase 3 — Backend Integration Interfaces
+
+**Backend integration layer** (`src/services/backend.ts`)
+- Typed `HttpClient` (web fetch-based) with bearer-token auth and timeout
+- Adapter implementations of:
+  - `BackendRepository` — submissions, polls, votes, audit events
+  - `AIGenerationBackend` — draft generation with source mapping, minority position summary, legal risks
+  - `IdentityVerificationBackend` — NIDA initiation/confirmation and phone OTP
+  - `ModerationBackend` — harmful content screening, duplicate detection, bot detection, topic classification
+  - `PDFExportBackend` — draft export with methodology summary
+- Each adapter exposes `isConfigured()` and `kind` so the UI can show whether a real backend is connected
+- `configureBackend(config)` swaps mock adapters for HTTP adapters without changing call sites
+- Currently all adapters fall back to mock implementations (AsyncStorage-backed)
+
+**Backend Status screen** (`BackendStatusScreen`)
+- Visible panel showing which services are connected vs mock
+- PDF export details modal showing what content is included/excluded
+
+**AI generation service** (`src/services/draftGeneration.ts` + `AIGenerationBackend`)
+- Deterministic mock that re-frames citizen input as a clearly-labelled system draft
+- Real backend hook will call a grounded LLM that cites source inputs and preserves minority viewpoints
+- Governance rules enforced in the type system: never claims national consensus, never publishes directly, requires human approval, logs generation date/method/source IDs, supports regeneration without deleting prior versions
+
+**PDF generation** (`MockPDFExportBackend`)
+- Builds a printable HTML view of a published draft with title, version, date, disclaimer, chapters, articles, plain-language summaries, source mapping, methodology summary
+- "Pakua PDF" button on the Proposed Constitution dashboard exports any published (immutable) draft
+- Real server-side PDF generator will replace the mock when `pdfBaseUrl` is configured
+
+### Roles & Permissions
+
+| Role | Permissions |
+|---|---|
+| Citizen | submit, discuss, vote, endorse, report |
+| Verified Citizen | same as Citizen |
+| Legal Expert | discuss, vote, endorse, **legal review** |
+| Moderator | discuss, vote, endorse, **moderate, merge, reject, restore** |
+| Drafting Committee | discuss, vote, endorse, **request poll, send back, create version, edit wording, publish version** |
+| Administrator | all permissions + **manage roles, view audit** |
+
+### Governance rules followed (all phases)
+- Official constitutional text is never overwritten by proposed wording
+- AI-generated text is clearly labelled with `ProposalStatus`, never as official
+- Participation counts are never presented as national representation (warnings on every draft and poll)
+- A poll never auto-approves an article — legal review and committee approval are required
+- Drafts are immutable after publication; restoration creates a new version
+- All content actions are auditable; the public can see why an article was included/modified/rejected (except protected personal/moderation information)
+- Minority viewpoints are preserved in every cluster (supporting, opposing, neutral/alternative submissions)
+- Every clarification and draft carries a prominent disclaimer
+
+### Build status
+- `npm run type-check` — clean (0 errors)
+- `npm run lint` — clean (0 errors, 0 warnings)
+- `npx expo export --platform web` — succeeds
+
+---
+
 ## v0.2.0 — Digital Constitutional Library & Proposed Constitution Module
 
 This release upgrades Katiba Yetu into a complete digital constitutional library and adds the **Katiba Inayopendekezwa** (Proposed Constitution) module.

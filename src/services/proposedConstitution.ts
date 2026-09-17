@@ -27,7 +27,7 @@ import type { DraftGenerationInput } from './draftGeneration';
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
-const mockProposedConstitution: ProposedConstitution = {
+export const mockProposedConstitution: ProposedConstitution = {
   id: 'pc-1',
   name: { sw: 'Rasimu ya Wananchi ya Katiba', en: 'Citizens Draft Constitution' },
   description: {
@@ -40,7 +40,7 @@ const mockProposedConstitution: ProposedConstitution = {
   draftIds: ['dv-0-1', 'dv-0-2'],
 };
 
-const mockChapters: ProposedChapter[] = [
+export const mockChapters: ProposedChapter[] = [
   {
     id: 'pc-ch1',
     constitutionId: 'pc-1',
@@ -72,7 +72,7 @@ const mockRepresentation: RepresentationSummary = {
   minimumParticipationMet: false,
 };
 
-const mockArticles: ProposedArticle[] = [
+export const mockArticles: ProposedArticle[] = [
   {
     id: 'pa-1',
     draftId: 'dv-0-2',
@@ -231,7 +231,7 @@ const mockArticles: ProposedArticle[] = [
   },
 ];
 
-const mockVersions: DraftVersion[] = [
+export const mockVersions: DraftVersion[] = [
   {
     id: 'dv-0-1',
     constitutionId: 'pc-1',
