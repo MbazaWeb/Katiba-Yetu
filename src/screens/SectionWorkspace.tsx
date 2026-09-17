@@ -16,6 +16,8 @@ import { StorageKeys } from '../lib/storage';
 import { Colors, Layout } from '../constants/tokens';
 import { scaledSize } from '../utils';
 import type { ConstitutionArticle, ConstitutionClause, Section } from '../types';
+import { isSupabaseConfigured } from '../lib/supabase';
+import { getBookmark, setBookmark } from '../services/community';
 
 type ReaderTab = 'read' | 'explain' | 'discussions' | 'suggestions' | 'polls' | 'references';
 interface Props { section: Section; onBack: () => void; onSectionPress: (section: Section) => void }
@@ -26,7 +28,7 @@ export function SectionWorkspace({ section, onBack, onSectionPress }: Props) {
   return <ArticleReader key={article.id} article={article} onBack={onBack} onSelect={next => onSectionPress(asSection(next))} />;
 }
 function ArticleReader({ article, onBack, onSelect }: { article: ConstitutionArticle; onBack: () => void; onSelect: (article: ConstitutionArticle) => void }) {
-  const { language, setLanguage, fontSize } = useAppContext();
+  const { language, setLanguage, fontSize, user } = useAppContext();
   const { width } = useWindowDimensions();
   const desktop = Platform.OS === 'web' && width >= Layout.breakpointDesktop;
   const sidePanel = desktop && width >= 1600;
@@ -56,17 +58,27 @@ function ArticleReader({ article, onBack, onSelect }: { article: ConstitutionArt
   while (part) { parts.unshift(`${copy('Sehemu', 'Part')} ${part.number}: ${localized(part.title, language)}`); part = bundle.parts.find(p => p.id === part?.parentPartId); }
   useEffect(() => {
     let live = true;
+    if (isSupabaseConfigured && user) {
+      getBookmark(article.id).then(value => { if (live) { setBookmarked(Boolean(value)); setBookmarkReady(true); } }).catch(() => { if (live) setMessage('Hifadhi haipatikani / Storage unavailable'); });
+      return () => { live = false; };
+    }
     AsyncStorage.getItem(StorageKeys.bookmarks).then(raw => {
       const ids: unknown = JSON.parse(raw ?? '[]');
       if (!Array.isArray(ids)) throw new Error('Invalid bookmarks');
       if (live) { setBookmarked(ids.includes(article.id) || !!article.legacySectionId && ids.includes(article.legacySectionId)); setBookmarkReady(true); }
     }).catch(() => { if (live) setMessage('Hifadhi haipatikani / Storage unavailable'); });
     return () => { live = false; };
-  }, [article.id, article.legacySectionId]);
+  }, [article.id, article.legacySectionId, user]);
   async function bookmark() {
     if (!bookmarkReady || bookmarkBusy) return;
     setBookmarkBusy(true);
     try {
+      if (isSupabaseConfigured && user) {
+        await setBookmark(article.id, !bookmarked);
+        setBookmarked(!bookmarked);
+        setMessage(copy('Alama imehifadhiwa.', 'Bookmark updated.'));
+        return;
+      }
       const ids: string[] = JSON.parse(await AsyncStorage.getItem(StorageKeys.bookmarks) ?? '[]');
       const updated = ids.filter(id => id !== article.id && id !== article.legacySectionId);
       if (!bookmarked) updated.push(article.id);

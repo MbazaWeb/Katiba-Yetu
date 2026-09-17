@@ -169,8 +169,8 @@ This release upgrades Katiba Yetu into a complete digital constitutional library
 | Styling | StyleSheet-based design tokens (`src/constants/tokens.ts`) |
 | Storage (local) | @react-native-async-storage/async-storage (language, font size, bookmarks, votes, likes, endorsements) |
 | Icons | @expo/vector-icons (Ionicons) |
-| Backend (planned) | Node.js/Express on VPS |
-| DB (planned) | PostgreSQL + pgvector |
+| Backend | Supabase Auth + Data API |
+| Database | Supabase Postgres with RLS |
 | Cache (planned) | Redis |
 | Search (planned) | Meilisearch |
 | Files (planned) | MinIO / R2 |
@@ -253,6 +253,12 @@ npx expo run:android
 npm run lint
 npm run type-check
 ```
+
+## Supabase
+
+Copy `.env.example` to `.env` and provide the project URL and publishable/anon key. The Expo app only reads `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY`; the service-role key is restricted to server-side import scripts.
+
+The initial schema is in `supabase/migrations/`. Apply it with the Supabase CLI, then run `npm run seed:supabase` to import the verified local constitution bundles. Authentication, profiles, discussions, proposals, bookmarks, polls, votes, and reactions are protected by row-level security. Device storage remains the offline fallback for reading preferences and educational demo polls.
 
 ---
 

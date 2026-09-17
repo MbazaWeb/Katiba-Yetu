@@ -1,10 +1,12 @@
-import React from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+﻿import React, { useState } from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Radius, Spacing, Typography } from '../constants/tokens';
 import { useAppContext } from '../hooks/useAppContext';
 import { t } from '../utils';
+import { isSupabaseConfigured } from '../lib/supabase';
+import { signIn, signOut, signUp } from '../services/supabaseAuth';
 
 const FONT_SIZES = ['sm', 'md', 'lg', 'xl'] as const;
 const FONT_LABELS = ['A', 'A', 'A+', 'A++'] as const;
@@ -73,7 +75,7 @@ export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
           <Menu icon="help-circle-outline" label={t('Msaada', 'Help', language)} last />
         </View>
 
-        <Text style={styles.version}>Katiba Yetu · v0.3.0</Text>
+        <Text style={styles.version}>Katiba Yetu Â· v0.3.0</Text>
       </ScrollView>
     </View>
   );
@@ -146,6 +148,12 @@ const styles = StyleSheet.create({
     fontSize: Typography.size.sm,
     fontWeight: Typography.weight.semibold,
   },
+  authForm: { width: '100%', maxWidth: 420, gap: Spacing[3], marginTop: Spacing[4] },
+  input: { minHeight: 48, borderWidth: 1, borderColor: Colors.surface.borderStrong, backgroundColor: Colors.surface.raised, borderRadius: Radius.md, paddingHorizontal: Spacing[3], color: Colors.text.primary },
+  authActions: { flexDirection: 'row', justifyContent: 'center', gap: Spacing[3], flexWrap: 'wrap' },
+  secondary: { borderWidth: 1, borderColor: Colors.green[500], borderRadius: Radius.full, paddingHorizontal: Spacing[6], paddingVertical: Spacing[3], marginTop: Spacing[4], minHeight: 44, justifyContent: 'center' },
+  secondaryText: { color: Colors.green[700], fontSize: Typography.size.sm, fontWeight: Typography.weight.semibold },
+  message: { color: Colors.text.secondary, textAlign: 'center', fontSize: Typography.size.sm, marginTop: Spacing[2] },
   label: {
     fontSize: Typography.size.xs,
     fontWeight: Typography.weight.bold,
@@ -236,3 +244,4 @@ const styles = StyleSheet.create({
     marginTop: Spacing[8],
   },
 });
+

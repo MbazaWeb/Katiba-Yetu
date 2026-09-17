@@ -46,3 +46,13 @@ yarn-error.*
 .vscode/
 *.swp
 *.swo
+
+# Local artifacts
+_structure.txt
+_backup_*/
+*.bak
+supabase/.temp/
+supabase/.branches/
+.env
+.env.*
+!.env.example

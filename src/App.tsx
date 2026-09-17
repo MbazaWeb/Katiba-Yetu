@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+﻿import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, useWindowDimensions, Platform, Modal, SafeAreaView, Pressable, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DesktopHomeScreen } from './screens/DesktopHomeScreen';
@@ -28,7 +28,8 @@ import { Colors, Layout, Spacing, Typography, Radius } from './constants/tokens'
 import { StorageKeys, storageGet, storageSet } from './lib/storage';
 import { authService } from './services/auth';
 import type { Language, FontSize, User, Section, Poll, ProposedArticle } from './types';
-
+import { isSupabaseConfigured, supabase } from './lib/supabase';
+import { loadProfile } from './services/supabaseAuth';
 type ScreenName =
   | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions'
   | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'proposal_workspace' | 'auth' | 'more'
@@ -87,6 +88,19 @@ export default function App() {
       }
     })();
     return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let live = true;
+    const syncUser = async (authUser: Parameters<typeof loadProfile>[0] | null) => {
+      if (!authUser) { if (live) setUser(null); return; }
+      try { const profile = await loadProfile(authUser); if (live) setUser(profile); }
+      catch (error) { console.warn('[auth] profile load failed', error); if (live) setUser(null); }
+    };
+    supabase.auth.getUser().then(({ data }) => syncUser(data.user));
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { void syncUser(session?.user ?? null); });
+    return () => { live = false; listener.subscription.unsubscribe(); };
   }, []);
 
   const changeLanguage = useCallback((l: Language) => {
@@ -263,7 +277,7 @@ export default function App() {
           </View>
         </View>
 
-        {/* Mobile "More" modal — opens access to Historia, Maktaba, Majadiliano, Katiba Inayopendekezwa */}
+        {/* Mobile "More" modal â€” opens access to Historia, Maktaba, Majadiliano, Katiba Inayopendekezwa */}
         <Modal visible={moreOpen} animationType="slide" transparent onRequestClose={() => setMoreOpen(false)}>
           <SafeAreaView style={styles.moreSheet}>
             <View style={styles.moreHeader}>
@@ -325,3 +339,4 @@ const styles = StyleSheet.create({
   moreItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing[3], paddingVertical: Spacing[4], paddingHorizontal: Spacing[3], borderRadius: Radius.lg, backgroundColor: Colors.surface.raised, borderWidth: 1, borderColor: Colors.surface.border },
   moreItemText: { flex: 1, color: Colors.text.primary, fontSize: Typography.size.lg, fontWeight: Typography.weight.medium },
 });
+
