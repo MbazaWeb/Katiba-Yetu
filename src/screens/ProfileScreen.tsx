@@ -9,8 +9,8 @@ import { t } from '../utils';
 const FONT_SIZES = ['sm', 'md', 'lg', 'xl'] as const;
 const FONT_LABELS = ['A', 'A', 'A+', 'A++'] as const;
 
-export function ProfileScreen() {
-  const { language, fontSize, setFontSize } = useAppContext();
+export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
+  const { language, fontSize, setFontSize, user } = useAppContext();
 
   return (
     <View style={styles.root}>
@@ -20,15 +20,19 @@ export function ProfileScreen() {
           <View style={styles.avatar}>
             <Ionicons name="person" size={30} color={Colors.green[200]} />
           </View>
-          <Text style={styles.name}>{t('Mwananchi', 'Citizen', language)}</Text>
+          <Text style={styles.name}>{user ? user.display_name : t('Mwananchi', 'Citizen', language)}</Text>
           <Text style={styles.meta}>
-            {t('Ingia ili kuhifadhi michango na kura zako', 'Sign in to save your contributions and votes', language)}
+            {user
+              ? t(`Ameingia ${new Date(user.created_at).toLocaleDateString()}`, `Signed in ${new Date(user.created_at).toLocaleDateString()}`, language)
+              : t('Ingia ili kuhifadhi michango na kura zako', 'Sign in to save your contributions and votes', language)}
           </Text>
-          <Pressable style={styles.primary}>
-            <Text style={styles.primaryText}>
-              {t('Ingia au jisajili', 'Sign in or register', language)}
-            </Text>
-          </Pressable>
+          {!user && (
+            <Pressable style={styles.primary} onPress={() => onAuthPress?.()}>
+              <Text style={styles.primaryText}>
+                {t('Ingia au jisajili', 'Sign in or register', language)}
+              </Text>
+            </Pressable>
+          )}
         </View>
 
         <Text style={styles.label}>{t('USOMAJI', 'READING', language)}</Text>
@@ -69,7 +73,7 @@ export function ProfileScreen() {
           <Menu icon="help-circle-outline" label={t('Msaada', 'Help', language)} last />
         </View>
 
-        <Text style={styles.version}>Katiba Yetu · v0.1.1</Text>
+        <Text style={styles.version}>Katiba Yetu · v0.2.0</Text>
       </ScrollView>
     </View>
   );

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, ScrollView, Modal, Platform, Linking, StyleSheet, useWindowDimensions, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, Modal, Platform, Linking, StyleSheet, useWindowDimensions, KeyboardAvoidingView, SafeAreaView, Pressable } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Action, Notice, libraryStyles as s } from '../components/library/LibraryUI';
@@ -10,6 +11,7 @@ import { useArticleCommunity } from '../hooks/useArticleCommunity';
 import { useAppContext } from '../hooks/useAppContext';
 import { DISCLAIMER, asSection, citationFor, documents, getArticle, getBundle, localized, officialText } from '../services/constitution';
 import { copyCitation, downloadArticle, shareArticle } from '../services/articleActions';
+import { katibaAudioService, type AudioController } from '../services/audio';
 import { StorageKeys } from '../lib/storage';
 import { Colors, Layout } from '../constants/tokens';
 import { scaledSize } from '../utils';
@@ -36,6 +38,9 @@ function ArticleReader({ article, onBack, onSelect }: { article: ConstitutionArt
   const [bookmarkReady, setBookmarkReady] = useState(false);
   const [bookmarkBusy, setBookmarkBusy] = useState(false);
   const [message, setMessage] = useState('');
+  const [audioPlaying, setAudioPlaying] = useState(false);
+  const [audioRate, setAudioRate] = useState(1);
+  const audioControllerRef = useRef<AudioController | null>(null);
   const scroll = useRef<ScrollView>(null);
   const community = useArticleCommunity(article);
   const bundle = getBundle(article.documentId), doc = bundle.document;
@@ -79,6 +84,44 @@ function ArticleReader({ article, onBack, onSelect }: { article: ConstitutionArt
       if (action === 'source' && source.sourceUrl) await Linking.openURL(source.sourceUrl);
     } catch { setMessage(copy('Hatua haijakamilika. Jaribu tena.', 'Action did not complete. Please retry.')); }
   }
+  function toggleAudio() {
+    if (!katibaAudioService.isSupported()) {
+      setMessage(copy('Sauti haipatikani kwenye kifaa hiki.', 'Audio is not supported on this device.'));
+      return;
+    }
+    if (audioPlaying) {
+      audioControllerRef.current?.pause();
+      setAudioPlaying(false);
+      return;
+    }
+    if (audioControllerRef.current) {
+      audioControllerRef.current.resume();
+      setAudioPlaying(true);
+      return;
+    }
+    audioControllerRef.current = katibaAudioService.speak(article, language, {
+      onstart: () => setAudioPlaying(true),
+      onend: () => { setAudioPlaying(false); audioControllerRef.current = null; },
+      onpause: () => setAudioPlaying(false),
+      onresume: () => setAudioPlaying(true),
+      onerror: (err) => { setMessage(err); setAudioPlaying(false); audioControllerRef.current = null; },
+    });
+    if (audioControllerRef.current) {
+      audioControllerRef.current.setRate(audioRate);
+    }
+  }
+  function changeRate() {
+    const rates = [1, 1.25, 1.5, 0.75];
+    const next = rates[(rates.indexOf(audioRate) + 1) % rates.length];
+    setAudioRate(next);
+    audioControllerRef.current?.setRate(next);
+  }
+  function stopAudio() {
+    audioControllerRef.current?.stop();
+    audioControllerRef.current = null;
+    setAudioPlaying(false);
+  }
+  useEffect(() => () => { stopAudio(); }, [article.id]);
   const navTree = <ScrollView contentContainerStyle={{ padding: 14, gap: 14 }}>
     <Text style={s.heading}>{copy('Hati na sura', 'Documents and chapters')}</Text>
     {!desktop && <Action label={copy('Funga menyu', 'Close navigation')} onPress={() => setDrawer(false)} />}
@@ -111,6 +154,15 @@ function ArticleReader({ article, onBack, onSelect }: { article: ConstitutionArt
             <Action label={copy('Pakua ibara', 'Download article')} disabled={!text} onPress={() => { void perform('download'); }} />
             <Action primary label={copy('Uliza ufafanuzi', 'Ask for clarification')} onPress={() => setClarify(true)} />
           </View>
+          <View style={s.row}>
+            <Pressable accessibilityRole="button" accessibilityLabel={audioPlaying ? copy('Sitisha sauti', 'Pause audio') : copy('Sikiliza sauti', 'Listen to article')} disabled={!text} onPress={toggleAudio} style={({ pressed }) => [styles.audioBtn, !text && { opacity: 0.4 }, pressed && { opacity: 0.7 }]}>
+              <Ionicons name={audioPlaying ? 'pause-circle' : 'volume-high'} size={20} color={text ? Colors.green[300] : Colors.text.muted} />
+              <Text style={styles.audioBtnText}>{audioPlaying ? copy('Sitisha', 'Pause') : copy('Sikiliza', 'Listen')}</Text>
+            </Pressable>
+            {audioPlaying && <Pressable accessibilityRole="button" accessibilityLabel={copy('Mwendo wa sauti', 'Playback speed')} onPress={changeRate} style={styles.audioBtn}><Text style={styles.audioBtnText}>{audioRate}×</Text></Pressable>}
+            {audioPlaying && <Pressable accessibilityRole="button" accessibilityLabel={copy('Sitisha kabisa', 'Stop audio')} onPress={stopAudio} style={styles.audioBtn}><Ionicons name="stop-circle-outline" size={20} color={Colors.red[300]} /></Pressable>}
+          </View>
+          <Text style={s.small}>{copy('Katiba kwa Sauti: sauti hutokana na kifaa/kivinjari. Lugha ya Kiswahili inaweza kutopatikana kwenye kifaa chako.', 'Katiba kwa Sauti: audio uses device/browser text-to-speech. Swahili voices may not be available on your device.')}</Text>
           {message ? <Text accessibilityLiveRegion="polite" style={s.body}>{message}</Text> : null}
           <Text style={s.small}>{copy('Toleo', 'Version')}: {source.documentVersion} · {text ? copy('Maandishi yamehakikiwa', 'Text verified') : copy('Maandishi hayajathibitishwa / hayajapatikana', 'Text not verified / unavailable')}</Text>
           {tab === 'read' && <View style={{ gap: 16 }}>
@@ -166,5 +218,7 @@ const styles = StyleSheet.create({
   clarification: { width: 340, borderLeftWidth: 1, borderColor: Colors.surface.borderStrong },
   scrim: { flex: 1, backgroundColor: '#00000099' },
   drawer: { flex: 1, backgroundColor: Colors.surface.base, paddingTop: 30 },
+  audioBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, minHeight: 44, paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8, borderWidth: 1, borderColor: Colors.surface.borderStrong, backgroundColor: Colors.surface.overlay },
+  audioBtnText: { color: Colors.text.primary, fontSize: 14 },
 });
 export default SectionWorkspace;

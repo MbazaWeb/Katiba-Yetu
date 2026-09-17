@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Shadow } from '../../constants/tokens';
 import { useAppContext } from '../../hooks/useAppContext';
 
-export type TabKey = 'home' | 'browser' | 'polls' | 'search' | 'profile';
+export type TabKey = 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'more';
 
 interface TabItem {
   key: TabKey;
@@ -21,6 +21,7 @@ const TABS: TabItem[] = [
   { key: 'browser', icon: 'book-outline',   iconActive: 'book',   label_sw: 'Katiba',   label_en: 'Browse'  },
   { key: 'polls',   icon: 'stats-chart-outline', iconActive: 'stats-chart', label_sw: 'Kura', label_en: 'Polls' },
   { key: 'search',  icon: 'search-outline', iconActive: 'search', label_sw: 'Tafuta',   label_en: 'Search'  },
+  { key: 'more',    icon: 'menu-outline',   iconActive: 'menu',   label_sw: 'Zaidi',    label_en: 'More'    },
   { key: 'profile', icon: 'person-outline', iconActive: 'person', label_sw: 'Akaunti',  label_en: 'Profile' },
 ];
 

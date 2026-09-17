@@ -6,6 +6,66 @@
 
 A bilingual (Kiswahili-first) civic platform for Tanzania's constitutional deliberation process.
 
+## v0.2.0 — Digital Constitutional Library & Proposed Constitution Module
+
+This release upgrades Katiba Yetu into a complete digital constitutional library and adds the **Katiba Inayopendekezwa** (Proposed Constitution) module.
+
+### New Features
+
+**Constitution Library**
+- Document selector: Katiba ya Jamhuri ya Muungano wa Tanzania + Katiba ya Zanzibar
+- Document cards with year, version, chapters, articles, language, download button
+- Navigation hierarchy: Document → Chapter → Part → Article → Clause
+- Article reader with tabs: Soma · Ufafanuzi · Majadiliano · Mapendekezo · Kura · Marejeo
+- Article actions: bookmark, share, copy citation, download, previous/next, SW/EN switch
+
+**Katiba kwa Sauti** (Listen to articles)
+- Device/browser text-to-speech implementation
+- Play / pause / resume / stop, playback speed control
+- No external audio files downloaded or copied
+
+**Historia ya Katiba** (Constitutional history timeline)
+- Structured timeline entries 1961–2015
+- Each entry marked pending verification
+
+**Maktaba ya Rasilimali** (Resource library)
+- Original constitution files registered as verified primary documents
+- Categories: original, amendment, draft, report, educational, judgment
+- Search and filter by category
+
+**Jukwaa la Majadiliano** (Discussion forum)
+- 8 categories: Historia · Mjadala wa Jumla · Tafsiri ya Kisheria · Maboresho · Haki na Wajibu · Muungano · Serikali na Taasisi · Rasilimali za Elimu
+- Filters: unanswered / answered / pinned
+- Article-linked discussions, threaded replies, on-device storage
+
+**Katiba Inayopendekezwa** (Proposed Constitution module)
+- Proposed constitution dashboard with current draft, participation summary, chapters
+- Proposal workspace with 8 tabs: Rasimu · Sababu · Vyanzo vya Maoni · Mjadala · Kura · Mapitio ya Kisheria · Historia ya Mabadiliko · Linganisha
+- Side-by-side comparison (current vs proposed) with diff
+- Version history with audit trail
+- Governance rule: every item labelled with ProposalStatus; AI-generated text never presented as official
+- Deterministic mock DraftGenerationService behind a clean interface
+- Disclaimer shown prominently on every draft
+
+**Auth page** — local demo sign-in / registration with role-based session model
+
+**Navigation**
+- Sidebar (desktop): Nyumbani · Katiba · Katiba Inayopendekezwa · Kura · Tafuta · Michango · Majadiliano · Historia · Maktaba · Akaunti
+- Bottom tab bar (mobile): Nyumbani · Katiba · Kura · Tafuta · Zaidi · Akaunti
+- "More" sheet on mobile for Historia, Maktaba, Majadiliano, Katiba Inayopendekezwa, Michango
+
+### Governance rules followed
+- Official constitutional text is never overwritten by proposed wording
+- Two local constitution files registered as verified primary documents
+- AI-generated text is clearly labelled as system draft, never as official
+- Participation counts are never presented as national representation
+- All clarifications and drafts carry prominent disclaimers
+
+### Build status
+- `npm run type-check` — clean
+- `npm run lint` — clean
+- `npx expo export --platform web` — succeeds
+
 ---
 
 ## Tech Stack

@@ -4,6 +4,8 @@ export type DocumentType = 'union' | 'zanzibar' | 'review_act' | 'other';
 export type DocumentStatus = 'draft' | 'published' | 'archived';
 
 export * from './constitution';
+export * from './library';
+export * from './proposed';
 
 export type SectionLevel = 'chapter' | 'part' | 'article' | 'clause' | 'subclause';
 

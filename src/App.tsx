@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, useWindowDimensions, Platform } from 'react-native';
+import { View, StyleSheet, useWindowDimensions, Platform, Modal, SafeAreaView, Pressable, Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { DesktopHomeScreen } from './screens/DesktopHomeScreen';
 import { ContributionsScreen } from './screens/ContributionsScreen';
 import { AppContext } from './hooks/useAppContext';
@@ -12,22 +13,30 @@ import { SectionWorkspace } from './screens/SectionWorkspace';
 import { PollsScreen } from './screens/PollsScreen';
 import { SearchScreen } from './screens/SearchScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
-import { Colors, Layout } from './constants/tokens';
+import { AuthScreen } from './screens/AuthScreen';
+import { HistoryScreen } from './screens/HistoryScreen';
+import { ResourcesScreen } from './screens/ResourcesScreen';
+import { DiscussionScreen } from './screens/DiscussionScreen';
+import { ProposedConstitutionScreen } from './screens/ProposedConstitutionScreen';
+import { ProposalWorkspaceScreen } from './screens/ProposalWorkspaceScreen';
+import { Colors, Layout, Spacing, Typography, Radius } from './constants/tokens';
 import { StorageKeys, storageGet, storageSet } from './lib/storage';
-import type { Language, FontSize, User, Section, Poll } from './types';
+import { authService } from './services/auth';
+import type { Language, FontSize, User, Section, Poll, ProposedArticle } from './types';
 
 type ScreenName =
-  | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions';
+  | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions'
+  | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'proposal_workspace' | 'auth' | 'more';
 
 interface NavState {
   screen: ScreenName;
-  params?: { section?: Section; poll?: Poll };
-  previousTab?: TabKey | 'contributions';
+  params?: { section?: Section; poll?: Poll; proposedArticle?: ProposedArticle };
+  previousTab?: TabKey | 'contributions' | 'more';
 }
 
 const TAB_TO_SCREEN: Record<TabKey, ScreenName> = {
   home: 'home', browser: 'browser', polls: 'polls',
-  search: 'search', profile: 'profile',
+  search: 'search', profile: 'profile', more: 'more',
 };
 
 export default function App() {
@@ -40,18 +49,35 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [nav, setNav] = useState<NavState>({ screen: 'home' });
   const [libraryDocumentId, setLibraryDocumentId] = useState('doc-union-1977');
+  const [moreOpen, setMoreOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const [storedLang, storedFont] = await Promise.all([
+      const [storedLang, storedFont, session] = await Promise.all([
         storageGet(StorageKeys.language),
         storageGet(StorageKeys.fontSize),
+        authService.getCurrentSession(),
       ]);
       if (cancelled) return;
       if (storedLang === 'sw' || storedLang === 'en') setLanguage(storedLang);
       if (['sm','md','lg','xl'].includes(storedFont as string)) {
         setFontSize(storedFont as FontSize);
+      }
+      if (session) {
+        setUser({
+          id: session.userId,
+          display_name: session.displayName,
+          email: session.email,
+          phone: session.phone,
+          nida_verified: false,
+          verification_tier: session.verificationTier,
+          role: 'registered',
+          anonymity_default: false,
+          region: session.region,
+          language_pref: session.languagePref,
+          created_at: session.signedInAt,
+        });
       }
     })();
     return () => { cancelled = true; };
@@ -78,20 +104,34 @@ export default function App() {
     setNav({ screen: 'polls', params: { poll } });
   }, []);
 
+  const navigateToProposedArticle = useCallback((article: ProposedArticle) => {
+    setNav({
+      screen: 'proposal_workspace',
+      params: { proposedArticle: article },
+      previousTab: nav.screen === 'proposal_workspace' ? nav.previousTab : activeTab,
+    });
+  }, [activeTab, nav.screen, nav.previousTab]);
+
   const handleBack = useCallback(() => {
     const prevTab = nav.previousTab ?? 'home';
-    if (prevTab === 'contributions') {
-      setNav({ screen: 'contributions' });
-      return;
-    }
+    if (prevTab === 'contributions') { setNav({ screen: 'contributions' }); return; }
+    if (prevTab === 'more') { setMoreOpen(false); setActiveTab('home'); setNav({ screen: 'home' }); return; }
     setActiveTab(prevTab);
     setNav({ screen: TAB_TO_SCREEN[prevTab] });
   }, [nav.previousTab]);
 
   const handleTabPress = useCallback((tab: TabKey) => {
+    setMoreOpen(false);
+    if (tab === 'more') { setMoreOpen(true); return; }
     setActiveTab(tab);
     setNav({ screen: TAB_TO_SCREEN[tab] });
   }, []);
+
+  const handleHistoryPress = useCallback(() => setNav({ screen: 'history', previousTab: activeTab }), [activeTab]);
+  const handleResourcesPress = useCallback(() => setNav({ screen: 'resources', previousTab: activeTab }), [activeTab]);
+  const handleDiscussionPress = useCallback(() => setNav({ screen: 'discussion', previousTab: activeTab }), [activeTab]);
+  const handleProposedConstitutionPress = useCallback(() => setNav({ screen: 'proposed_constitution', previousTab: activeTab }), [activeTab]);
+  const handleAuthPress = useCallback(() => setNav({ screen: 'auth', previousTab: 'profile' }), []);
 
   const renderScreen = () => {
     switch (nav.screen) {
@@ -101,19 +141,28 @@ export default function App() {
         return nav.params?.section ? (
           <SectionWorkspace section={nav.params.section} onBack={handleBack} onSectionPress={navigateToSection} />
         ) : null;
-
       case 'browser':
         return <BrowserScreen onSectionPress={navigateToSection} onBack={handleBack} initialDocumentId={libraryDocumentId} onDocumentChange={setLibraryDocumentId} />;
-
       case 'polls':
         return <PollsScreen onPollPress={navigateToPoll} initialPoll={nav.params?.poll} />;
-
       case 'search':
         return <SearchScreen onSectionPress={navigateToSection} />;
-
       case 'profile':
-        return <ProfileScreen />;
-
+        return <ProfileScreen onAuthPress={handleAuthPress} />;
+      case 'auth':
+        return <AuthScreen onBack={() => handleTabPress('profile')} onAuthenticated={() => handleTabPress('profile')} />;
+      case 'history':
+        return <HistoryScreen onBack={handleBack} />;
+      case 'resources':
+        return <ResourcesScreen onBack={handleBack} />;
+      case 'discussion':
+        return <DiscussionScreen onBack={handleBack} />;
+      case 'proposed_constitution':
+        return <ProposedConstitutionScreen onOpenArticle={navigateToProposedArticle} onBack={handleBack} />;
+      case 'proposal_workspace':
+        return nav.params?.proposedArticle ? (
+          <ProposalWorkspaceScreen article={nav.params.proposedArticle} onBack={() => setNav({ screen: 'proposed_constitution' })} />
+        ) : null;
       case 'home':
       default:
         if (isDesktop) return <DesktopHomeScreen onSectionPress={navigateToSection} onPollPress={navigateToPoll} onSearchPress={() => handleTabPress('search')} onBrowsePress={() => handleTabPress('browser')} onProfilePress={() => handleTabPress('profile')} />;
@@ -128,7 +177,18 @@ export default function App() {
     }
   };
 
-  const isInWorkspace = nav.screen === 'section_workspace';
+  const isInWorkspace = nav.screen === 'section_workspace' || nav.screen === 'proposal_workspace';
+
+  // Determine which sidebar key is active
+  const sidebarActive: 'contributions' | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | TabKey = (() => {
+    if (nav.screen === 'contributions') return 'contributions';
+    if (nav.screen === 'history') return 'history';
+    if (nav.screen === 'resources') return 'resources';
+    if (nav.screen === 'discussion') return 'discussion';
+    if (nav.screen === 'proposed_constitution' || nav.screen === 'proposal_workspace') return 'proposed_constitution';
+    if (nav.screen === 'section_workspace') return 'browser';
+    return activeTab;
+  })();
 
   return (
     <AppErrorBoundary>
@@ -144,23 +204,24 @@ export default function App() {
         }}
       >
         <View style={styles.root}>
-          {/* Desktop navigation stays available alongside the article reader. */}
           {isDesktop && (
             <SidebarNav
-              activeTab={isInWorkspace ? 'browser' : nav.screen === 'contributions' ? 'contributions' : activeTab}
+              activeTab={sidebarActive}
               onTabPress={handleTabPress}
               onContributionsPress={() => setNav({ screen: 'contributions' })}
+              onHistoryPress={handleHistoryPress}
+              onResourcesPress={handleResourcesPress}
+              onDiscussionPress={handleDiscussionPress}
+              onProposedConstitutionPress={handleProposedConstitutionPress}
               notificationCount={{ polls: 2 }}
             />
           )}
 
-          {/* Main column */}
           <View style={styles.main}>
             <View style={styles.screenArea}>
               {renderScreen()}
             </View>
 
-            {/* Mobile bottom tabs — hidden in workspace & on desktop */}
             {!isDesktop && !isInWorkspace && (
               <BottomTabBar
                 activeTab={activeTab}
@@ -170,8 +231,42 @@ export default function App() {
             )}
           </View>
         </View>
+
+        {/* Mobile "More" modal — opens access to Historia, Maktaba, Majadiliano, Katiba Inayopendekezwa */}
+        <Modal visible={moreOpen} animationType="slide" transparent onRequestClose={() => setMoreOpen(false)}>
+          <SafeAreaView style={styles.moreSheet}>
+            <View style={styles.moreHeader}>
+              <Text style={styles.moreTitle}>{language === 'sw' ? 'Zaidi' : 'More'}</Text>
+              <Pressable onPress={() => setMoreOpen(false)} accessibilityRole="button" accessibilityLabel={language === 'sw' ? 'Funga' : 'Close'}>
+                <Ionicons name="close" size={24} color={Colors.text.muted} />
+              </Pressable>
+            </View>
+            <View style={styles.moreList}>
+              <MoreItem icon="create-outline" label={language === 'sw' ? 'Katiba Inayopendekezwa' : 'Proposed Constitution'} onPress={() => { setMoreOpen(false); handleProposedConstitutionPress(); }} />
+              <MoreItem icon="people-outline" label={language === 'sw' ? 'Majadiliano' : 'Discussions'} onPress={() => { setMoreOpen(false); handleDiscussionPress(); }} />
+              <MoreItem icon="time-outline" label={language === 'sw' ? 'Historia' : 'History'} onPress={() => { setMoreOpen(false); handleHistoryPress(); }} />
+              <MoreItem icon="library-outline" label={language === 'sw' ? 'Maktaba' : 'Library'} onPress={() => { setMoreOpen(false); handleResourcesPress(); }} />
+              <MoreItem icon="chatbox-outline" label={language === 'sw' ? 'Michango' : 'Contributions'} onPress={() => { setMoreOpen(false); setNav({ screen: 'contributions' }); }} />
+            </View>
+          </SafeAreaView>
+        </Modal>
       </AppContext.Provider>
     </AppErrorBoundary>
+  );
+}
+
+function MoreItem({ icon, label, onPress }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; onPress: () => void }) {
+  return (
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.moreItem, pressed && { opacity: 0.7 }]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <Ionicons name={icon} size={24} color={Colors.green[300]} />
+      <Text style={styles.moreItemText}>{label}</Text>
+      <Ionicons name="chevron-forward" size={20} color={Colors.text.muted} />
+    </Pressable>
   );
 }
 
@@ -187,4 +282,10 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.surface.base,
   },
+  moreSheet: { flex: 1, backgroundColor: Colors.surface.base, paddingTop: Spacing[4] },
+  moreHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: Spacing[5], paddingBottom: Spacing[3], borderBottomWidth: 1, borderBottomColor: Colors.surface.border },
+  moreTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size['2xl'], fontWeight: Typography.weight.bold, color: Colors.text.primary },
+  moreList: { padding: Spacing[4], gap: Spacing[2] },
+  moreItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing[3], paddingVertical: Spacing[4], paddingHorizontal: Spacing[3], borderRadius: Radius.lg, backgroundColor: Colors.surface.raised, borderWidth: 1, borderColor: Colors.surface.border },
+  moreItemText: { flex: 1, color: Colors.text.primary, fontSize: Typography.size.lg, fontWeight: Typography.weight.medium },
 });

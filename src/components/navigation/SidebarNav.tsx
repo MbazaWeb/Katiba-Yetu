@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, Pressable, StyleSheet, useWindowDimensions, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
   Colors, Typography, Spacing, Radius,
@@ -8,37 +8,61 @@ import { useAppContext } from '../../hooks/useAppContext';
 import { t } from '../../utils';
 import type { TabKey } from './BottomTabBar';
 
+export type SidebarKey = TabKey | 'contributions' | 'history' | 'resources' | 'discussion' | 'proposed_constitution';
+
 interface SidebarNavProps {
-  activeTab: TabKey | 'contributions';
+  activeTab: SidebarKey;
   onTabPress: (tab: TabKey) => void;
   onContributionsPress: () => void;
+  onHistoryPress?: () => void;
+  onResourcesPress?: () => void;
+  onDiscussionPress?: () => void;
+  onProposedConstitutionPress?: () => void;
   notificationCount?: Partial<Record<TabKey, number>>;
 }
 
 const ITEMS: {
-  key: TabKey | 'contributions';
+  key: SidebarKey;
   icon: React.ComponentProps<typeof Ionicons>['name'];
   label_sw: string;
   label_en: string;
 }[] = [
-  { key: 'home',    icon: 'home',           label_sw: 'Nyumbani', label_en: 'Home'         },
-  { key: 'browser', icon: 'book-outline',   label_sw: 'Katiba',   label_en: 'Constitution' },
-  { key: 'polls',   icon: 'stats-chart',    label_sw: 'Kura',     label_en: 'Polls'        },
-  { key: 'search',  icon: 'search',         label_sw: 'Tafuta',   label_en: 'Search'       },
-  { key: 'contributions', icon: 'chatbox-outline', label_sw: 'Michango', label_en: 'Contributions' },
-  { key: 'profile', icon: 'person-outline', label_sw: 'Akaunti',  label_en: 'Account'      },
+  { key: 'home',                  icon: 'home',           label_sw: 'Nyumbani',           label_en: 'Home' },
+  { key: 'browser',               icon: 'book-outline',   label_sw: 'Katiba',              label_en: 'Constitution' },
+  { key: 'proposed_constitution', icon: 'create-outline',  label_sw: 'Katiba Inayopendekezwa', label_en: 'Proposed Constitution' },
+  { key: 'polls',                 icon: 'stats-chart',     label_sw: 'Kura',                label_en: 'Polls' },
+  { key: 'search',                icon: 'search',          label_sw: 'Tafuta',              label_en: 'Search' },
+  { key: 'contributions',         icon: 'chatbox-outline',  label_sw: 'Michango',            label_en: 'Contributions' },
+  { key: 'discussion',            icon: 'people-outline',  label_sw: 'Majadiliano',          label_en: 'Discussions' },
+  { key: 'history',               icon: 'time-outline',    label_sw: 'Historia',            label_en: 'History' },
+  { key: 'resources',              icon: 'library-outline', label_sw: 'Maktaba',             label_en: 'Library' },
+  { key: 'profile',               icon: 'person-outline',  label_sw: 'Akaunti',             label_en: 'Account' },
 ];
 
 export function SidebarNav({
   activeTab,
   onTabPress,
   onContributionsPress,
+  onHistoryPress,
+  onResourcesPress,
+  onDiscussionPress,
+  onProposedConstitutionPress,
+  notificationCount,
 }: SidebarNavProps) {
   const { language } = useAppContext();
   const { width } = useWindowDimensions();
 
+  const handlePress = (key: SidebarKey) => {
+    if (key === 'contributions') { onContributionsPress(); return; }
+    if (key === 'history') { onHistoryPress?.(); return; }
+    if (key === 'resources') { onResourcesPress?.(); return; }
+    if (key === 'discussion') { onDiscussionPress?.(); return; }
+    if (key === 'proposed_constitution') { onProposedConstitutionPress?.(); return; }
+    onTabPress(key as TabKey);
+  };
+
   return (
-    <View style={[styles.sidebar, { width: width >= 1400 ? 304 : 240 }]}>
+    <View style={[styles.sidebar, { width: width >= 1400 ? 304 : 260 }]}>
       {/* Brand */}
       <View style={styles.brand}>
         <View style={styles.brandMark}>
@@ -55,15 +79,14 @@ export function SidebarNav({
       </View>
 
       {/* Nav items */}
-      <View style={styles.nav}>
+      <ScrollView style={styles.navScroll} contentContainerStyle={styles.nav}>
         {ITEMS.map(item => {
           const active = activeTab === item.key;
           const label = language === 'sw' ? item.label_sw : item.label_en;
-
           return (
             <Pressable
               key={item.key}
-              onPress={() => item.key === 'contributions' ? onContributionsPress() : onTabPress(item.key)}
+              onPress={() => handlePress(item.key)}
               style={({ pressed }) => [
                 styles.item,
                 active && styles.itemActive,
@@ -75,19 +98,19 @@ export function SidebarNav({
             >
               <Ionicons
                 name={item.icon}
-                size={30}
+                size={26}
                 color={active ? '#00d477' : '#b7c1d2'}
               />
               <Text
                 style={[styles.itemLabel, active && styles.itemLabelActive]}
-                numberOfLines={1}
+                numberOfLines={2}
               >
                 {label}
               </Text>
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
 
     </View>
   );
@@ -100,6 +123,7 @@ const styles = StyleSheet.create({
     borderRightColor: Colors.surface.border,
     paddingVertical: 28,
     paddingHorizontal: 7,
+    height: '100%',
   },
   brand: {
     flexDirection: 'row',
@@ -133,15 +157,16 @@ const styles = StyleSheet.create({
     marginTop: 2,
     letterSpacing: 0.3,
   },
-  nav: { gap: Spacing[1] },
+  navScroll: { flex: 1 },
+  nav: { gap: Spacing[1], paddingBottom: Spacing[5] },
   item: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 26,
-    paddingHorizontal: 30,
-    paddingVertical: 18,
+    gap: 22,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
     borderRadius: Radius.lg,
-    minHeight: 66,
+    minHeight: 56,
   },
   itemActive: {
     backgroundColor: '#003c2c',
@@ -152,7 +177,7 @@ const styles = StyleSheet.create({
   itemLabel: {
     flex: 1,
     fontFamily: Typography.family.sans,
-    fontSize: 20,
+    fontSize: 17,
     fontWeight: Typography.weight.medium,
     color: '#b7c1d2',
   },
