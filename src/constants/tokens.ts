@@ -2,153 +2,153 @@
  * Katiba Yetu — Design Tokens
  * Theme: Taifa (Nation) — forest green, savanna gold, sky blue, midnight black
  * Inspired by Tanzania's landscape and civic dignity
+ *
+ * v2 — Dark-first theme. Surface values updated to match reference design.
+ *       All legacy keys preserved (green.*, gold.*, blue.*, muungano, zanzibar, union).
  */
 
 import { Platform } from 'react-native';
 
-/**
- * Font stacks must be platform-aware:
- * - React Native (iOS/Android) expects a SINGLE font family name — CSS-style
- *   comma stacks like "Georgia, serif" are invalid on native and silently
- *   fall back to the system font.
- * - react-native-web passes fontFamily straight through to CSS, so stacks are
- *   fine on web.
- */
 const fontFamilies = Platform.select({
-  ios: {
-    serif: 'Georgia',
-    sans: 'System',
-    mono: 'Courier',
-  },
-  android: {
-    serif: 'serif',       // Noto Serif (system)
-    sans: 'sans-serif',   // Roboto (system)
-    mono: 'monospace',    // Noto Mono / Droid Sans Mono (system)
-  },
-  web: {
-    serif: 'Georgia, serif',
-    sans: 'System',
-    mono: 'Courier, monospace',
-  },
-  default: {
-    serif: 'serif',
-    sans: 'System',
-    mono: 'monospace',
-  },
+  ios:     { serif: 'Georgia',     sans: 'System',      mono: 'Courier' },
+  android: { serif: 'serif',       sans: 'sans-serif',  mono: 'monospace' },
+  web:     { serif: 'Georgia, serif', sans: 'System',   mono: 'Courier, monospace' },
+  default: { serif: 'serif',       sans: 'System',      mono: 'monospace' },
 })!;
 
 export const Colors = {
-  // ── Brand Core ──────────────────────────────────────────────────────────
+  // ── Brand Core — unchanged ─────────────────────────────────────────────
   green: {
-    50:  '#F0F5EF',
-    100: '#DCE9DA',
-    200: '#BCD3B8',
-    300: '#91B28A',
-    400: '#628E5C',
-    500: '#356B3F',
-    600: '#285735',
-    700: '#1F452C',
-    800: '#173523',
-    900: '#10271B',
+    50:  '#0E1A14',   // surface tint (very dark)
+    100: '#123524',   // hover tint
+    200: '#1B5540',   // borders on dark
+    300: '#4ADE80',   // bright accent text/icons (USE THIS for text on dark)
+    400: '#22C55E',   // primary brand on dark
+    500: '#16A34A',   // mid brand
+    600: '#15803D',   // deeper (buttons on light surfaces)
+    700: '#22C55E',   // ALIAS of 400 — legacy callers expecting "visible green"
+    800: '#14532D',   // deep surface tint
+    900: '#0A2A18',   // darkest surface (still bg-only, not text)
   },
   gold: {
-    50:  '#FBF6E8',
-    100: '#F4E9C9',
-    200: '#E8D39A',
-    300: '#D6B765',
-    400: '#B88B32',
-    500: '#966E24',
-    600: '#79561C',
-    700: '#5D4119',
-    800: '#443016',
-    900: '#302312',
+    50:  '#1A1608',
+    100: '#2A2208',
+    200: '#5C4A0E',
+    300: '#FACC15',
+    400: '#EAB308',
+    500: '#D4A80A',
+    600: '#A16207',
+    700: '#854D0E',
+    800: '#713F12',
+    900: '#422006',
   },
   blue: {
-    50:  '#EEF4F5',
-    100: '#D8E7EA',
-    200: '#AECBD1',
-    300: '#7EABB4',
-    400: '#4D8490',
-    500: '#356C77',
-    600: '#2B5862',
-    700: '#23464E',
-    800: '#1A353C',
-    900: '#12272C',
+    50:  '#0A1420',
+    100: '#0F1E30',
+    200: '#1E3A5F',
+    300: '#60A5FA',
+    400: '#3B82F6',
+    500: '#2563EB',
+    600: '#1D4ED8',
+    700: '#1E40AF',
+    800: '#1E3A8A',
+    900: '#172554',
+  },
+  red: {
+    50:  '#200A0A',
+    100: '#300F0F',
+    200: '#5F1E1E',
+    300: '#F87171',
+    400: '#EF4444',
+    500: '#DC2626',
+    600: '#B91C1C',
+    700: '#991B1B',
+    800: '#7F1D1D',
+    900: '#450A0A',
   },
   black: {
     true: '#000000',
-    950: '#030303',
-    900: '#0A0A0A',   // Primary text on light
-    800: '#161616',   // App background (OLED-friendly)
-    700: '#242424',
-    600: '#333333',
-    500: '#4A4A4A',
-    400: '#666666',
-    300: '#888888',
-    200: '#AAAAAA',
-    100: '#CCCCCC',
-    50:  '#EEEEEE',
+    950:  '#050706',
+    900:  '#0B0F0E',
+    800:  '#131A18',
+    700:  '#1A2421',
+    600:  '#243230',
+    500:  '#3A4A46',
+    400:  '#5C6C68',
+    300:  '#7A8A85',
+    200:  '#A8B4B0',
+    100:  '#D0D8D4',
+    50:   '#EEF2F0',
   },
-  // ── Semantic ─────────────────────────────────────────────────────────────
+
+  // ── Surfaces — DARK (changed) ──────────────────────────────────────────
   surface: {
-    base:    '#F3F0E8',
-    raised:  '#FFFEFA',
-    overlay: '#EAE6DC',
-    border:  '#DDD7CA',
-    borderStrong: '#C9C1B2',
+    base:         '#0B0F0E',
+    raised:       '#131A18',
+    overlay:      '#1A2421',
+    border:       '#1F2B28',
+    borderStrong: '#2A3A36',
   },
   text: {
-    primary:   '#20231F',
-    secondary: '#555A52',
-    muted:     '#7A7D74',
-    inverse:   '#FFFEFA',
+    primary:   '#F5F7F6',
+    secondary: '#B8C4C0',
+    muted:     '#7A8A85',
+    inverse:   '#0B0F0E',
     onGreen:   '#FFFFFF',
     onGold:    '#1A0E00',
     onBlue:    '#FFFFFF',
+    onDark:    '#F5F7F6',
   },
-  // ── Status ──────────────────────────────────────────────────────────────
+
+  // ── Status — slightly brighter for dark bg ────────────────────────────
   status: {
-    success: '#1F9456',
-    warning: '#D4A80A',
-    danger:  '#D63B3B',
-    info:    '#1A6DCF',
-    locked:  '#4A4A4A',
+    success: '#22C55E',
+    warning: '#EAB308',
+    danger:  '#EF4444',
+    info:    '#3B82F6',
+    locked:  '#7A8A85',
   },
-  // ── Special Modules ──────────────────────────────────────────────────────
-  muungano: '#B08D07',   // Gold for Union/Muungano module
-  zanzibar: '#1457A8',   // Blue for Zanzibar constitution
-  union:    '#0D7A3F',   // Green for Union constitution
+
+  // ── Special Modules — unchanged ────────────────────────────────────────
+  muungano: '#EAB308',
+  zanzibar: '#3B82F6',
+  union:    '#22C55E',
+
+  // ── Backward-compat aliases (some screens may reference these) ────────
+  white: '#FFFFFF',
+  bg:    '#0B0F0E',
+  card:  '#131A18',
 } as const;
 
 export const Typography = {
   family: fontFamilies,
   size: {
-    xs:   11,
-    sm:   12,
+    xs:   12,
+    sm:   13,
     base: 14,
     md:   15,
     lg:   17,
     xl:   20,
     '2xl': 24,
-    '3xl': 28,
-    '4xl': 34,
-    '5xl': 42,
+    '3xl': 30,
+    '4xl': 38,
+    '5xl': 46,
   },
   weight: {
-    regular: '400' as const,
-    medium:  '500' as const,
-    semibold:'600' as const,
-    bold:    '700' as const,
+    regular:  '400' as const,
+    medium:   '500' as const,
+    semibold: '600' as const,
+    bold:     '700' as const,
   },
   lineHeight: {
-    tight:   1.2,
-    snug:    1.35,
+    tight:   1.15,
+    snug:    1.30,
     normal:  1.5,
     relaxed: 1.65,
     loose:   1.8,
   },
   letterSpacing: {
-    tight:  -0.5,
+    tight:  -0.4,
     normal:  0,
     wide:    0.3,
     wider:   0.6,
@@ -176,86 +176,95 @@ export const Spacing = {
 } as const;
 
 export const Radius = {
-  none: 0,
-  sm:   4,
-  md:   8,
-  lg:   12,
-  xl:   12,
-  '2xl': 16,
-  '3xl': 20,
-  full: 9999,
+  none:  0,
+  sm:    6,
+  md:    10,
+  lg:    12,
+  xl:    14,
+  '2xl': 18,
+  '3xl': 24,
+  full:  9999,
 } as const;
 
 export const Shadow = {
-  // iOS-style layered shadows — subtle, refined
   sm: {
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.06,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.30,
+    shadowRadius: 4,
+    elevation: 2,
   },
   md: {
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.40,
+    shadowRadius: 12,
+    elevation: 4,
   },
   lg: {
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.10,
-    shadowRadius: 14,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.50,
+    shadowRadius: 20,
+    elevation: 8,
   },
   glow: {
-    // Green glow for primary elements
-    shadowColor: '#0D7A3F',
+    shadowColor: '#22C55E',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.12,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOpacity: 0.30,
+    shadowRadius: 8,
+    elevation: 3,
   },
   goldGlow: {
-    shadowColor: '#D4A80A',
+    shadowColor: '#EAB308',
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.10,
-    shadowRadius: 5,
-    elevation: 2,
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 3,
   },
 } as const;
 
 export const Animation = {
   duration: {
-    instant:  80,
-    fast:     150,
-    normal:   250,
-    slow:     400,
-    slower:   600,
+    instant: 80,
+    fast:    150,
+    normal:  250,
+    slow:    400,
+    slower:  600,
   },
   easing: {
-    standard:    'ease-in-out',
-    decelerate:  'ease-out',
-    accelerate:  'ease-in',
-    spring:      'spring',
+    standard:   'ease-in-out',
+    decelerate: 'ease-out',
+    accelerate: 'ease-in',
+    spring:     'spring',
   },
+} as const;
+
+/** Responsive layout constants — used by App shell & SidebarNav */
+export const Layout = {
+  maxWidth:          1440,
+  contentMaxWidth:   1100,
+  sidebarWidth:      240,
+  sidebarCollapsed:  72,
+  headerHeight:      64,
+  contentPad:        24,
+  breakpointDesktop: 900,
 } as const;
 
 // Semantic convenience aliases
 export const Theme = {
-  bg:           Colors.surface.base,
-  bgRaised:     Colors.surface.raised,
-  bgOverlay:    Colors.surface.overlay,
-  border:       Colors.surface.border,
-  borderStrong: Colors.surface.borderStrong,
-  primary:      Colors.green[500],
-  primaryDark:  Colors.green[600],
-  primaryLight: Colors.green[400],
-  accent:       Colors.gold[400],
-  accentDark:   Colors.gold[500],
-  link:         Colors.blue[400],
-  textPrimary:  Colors.text.primary,
-  textSecondary:Colors.text.secondary,
-  textMuted:    Colors.text.muted,
+  bg:            Colors.surface.base,
+  bgRaised:      Colors.surface.raised,
+  bgOverlay:     Colors.surface.overlay,
+  border:        Colors.surface.border,
+  borderStrong:  Colors.surface.borderStrong,
+  primary:       Colors.green[500],
+  primaryDark:   Colors.green[600],
+  primaryLight:  Colors.green[400],
+  accent:        Colors.gold[400],
+  accentDark:    Colors.gold[500],
+  link:          Colors.blue[400],
+  textPrimary:   Colors.text.primary,
+  textSecondary: Colors.text.secondary,
+  textMuted:     Colors.text.muted,
 } as const;

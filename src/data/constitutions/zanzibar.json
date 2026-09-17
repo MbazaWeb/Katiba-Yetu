@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "document": {
+    "id": "doc-zanzibar-1984",
+    "title": {
+      "sw": "Katiba ya Zanzibar",
+      "en": "Constitution of Zanzibar"
+    },
+    "year": 1984,
+    "version": "Toleo la 2020",
+    "amendmentNote": {
+      "sw": "Toleo la 2020 linajumuisha marekebisho hadi 2016. Hali ya sasa haijathibitishwa.",
+      "en": "The 2020 edition consolidates amendments through 2016. Current consolidation not verified."
+    },
+    "chapterCount": 13,
+    "articleCount": null,
+    "source": {
+      "officialSource": "Zanzibar House of Representatives",
+      "sourceUrl": "https://zanzibarassembly.go.tz/storage/documents/Workingdocuments/all/1679905323.pdf",
+      "documentVersion": "Toleo la 2020",
+      "amendmentDate": null,
+      "verificationStatus": "unavailable",
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "sourceLocator": "Contents only; full article text has not been imported or verified.",
+      "checksum": null
+    },
+    "downloads": {
+      "sw": "https://zanzibarassembly.go.tz/storage/documents/Workingdocuments/all/1679905323.pdf"
+    },
+    "inventoryComplete": false
+  },
+  "chapters": [
+    {
+      "id": "doc-zanzibar-1984-ch1",
+      "documentId": "doc-zanzibar-1984",
+      "number": "1",
+      "title": {
+        "sw": "Zanzibar na Watu"
+      },
+      "order": 1
+    },
+    {
+      "id": "doc-zanzibar-1984-ch3",
+      "documentId": "doc-zanzibar-1984",
+      "number": "3",
+      "title": {
+        "sw": "Kinga ya Haki za Lazima, Wajibu na Uhuru wa Mtu Binafsi"
+      },
+      "order": 3
+    }
+  ],
+  "parts": [
+    {
+      "id": "doc-zanzibar-1984-part1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch1",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "Zanzibar"
+      },
+      "order": 1
+    }
+  ],
+  "articles": [
+    {
+      "id": "zanzibar-1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch1",
+      "partId": "doc-zanzibar-1984-part1",
+      "number": "1",
+      "order": 1,
+      "title": {
+        "sw": "Zanzibar na mipaka yake."
+      },
+      "source": {
+        "officialSource": "Zanzibar House of Representatives",
+        "sourceUrl": "https://zanzibarassembly.go.tz/storage/documents/Workingdocuments/all/1679905323.pdf",
+        "documentVersion": "Toleo la 2020",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "union"
+      ],
+      "rights": [],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": false
+    },
+    {
+      "id": "zanzibar-2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch1",
+      "partId": "doc-zanzibar-1984-part1",
+      "number": "2",
+      "order": 2,
+      "title": {
+        "sw": "Zanzibar na Muungano."
+      },
+      "source": {
+        "officialSource": "Zanzibar House of Representatives",
+        "sourceUrl": "https://zanzibarassembly.go.tz/storage/documents/Workingdocuments/all/1679905323.pdf",
+        "documentVersion": "Toleo la 2020",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "union"
+      ],
+      "rights": [],
+      "duties": [],
+      "unionMatter": true,
+      "fundamentalRights": false
+    },
+    {
+      "id": "zanzibar-18",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch3",
+      "partId": null,
+      "number": "18",
+      "order": 18,
+      "title": {
+        "sw": "Uhuru wa maoni."
+      },
+      "source": {
+        "officialSource": "Zanzibar House of Representatives",
+        "sourceUrl": "https://zanzibarassembly.go.tz/storage/documents/Workingdocuments/all/1679905323.pdf",
+        "documentVersion": "Toleo la 2020",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "expression"
+      ],
+      "rights": [
+        "expression"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true
+    },
+    {
+      "id": "zanzibar-19",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch3",
+      "partId": null,
+      "number": "19",
+      "order": 19,
+      "title": {
+        "sw": "Uhuru wa mtu kuamini dini atakayo."
+      },
+      "source": {
+        "officialSource": "Zanzibar House of Representatives",
+        "sourceUrl": "https://zanzibarassembly.go.tz/storage/documents/Workingdocuments/all/1679905323.pdf",
+        "documentVersion": "Toleo la 2020",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "religion"
+      ],
+      "rights": [
+        "religion"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true
+    }
+  ],
+  "explanations": []
+}

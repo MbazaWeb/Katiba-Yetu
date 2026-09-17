@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text as RNText, TextStyle, StyleSheet } from 'react-native';
+import { Text as RNText, TextStyle } from 'react-native';
 import { Colors, Typography } from '../../constants/tokens';
 import { useAppContext } from '../../hooks/useAppContext';
 import { scaledSize } from '../../utils';

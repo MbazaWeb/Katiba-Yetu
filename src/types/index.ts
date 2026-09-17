@@ -3,19 +3,7 @@
 export type DocumentType = 'union' | 'zanzibar' | 'review_act' | 'other';
 export type DocumentStatus = 'draft' | 'published' | 'archived';
 
-export interface ConstitutionDocument {
-  id: string;
-  country: 'TZ' | 'ZNZ';
-  title_sw: string;
-  title_en: string;
-  year: number;
-  type: DocumentType;
-  source_url?: string;
-  checksum?: string;
-  status: DocumentStatus;
-  created_at: string;
-  updated_at: string;
-}
+export * from './constitution';
 
 export type SectionLevel = 'chapter' | 'part' | 'article' | 'clause' | 'subclause';
 

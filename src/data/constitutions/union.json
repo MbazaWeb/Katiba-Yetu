@@ -1,0 +1,362 @@
+{
+  "schemaVersion": 1,
+  "document": {
+    "id": "doc-union-1977",
+    "title": {
+      "sw": "Katiba ya Jamhuri ya Muungano wa Tanzania",
+      "en": "Constitution of the United Republic of Tanzania"
+    },
+    "year": 1977,
+    "version": "2005 revised edition",
+    "amendmentNote": {
+      "sw": "Toleo hili linajumuisha marekebisho hadi 2005. Hali ya sasa haijathibitishwa.",
+      "en": "This edition incorporates amendments through 2005. Current consolidation not verified."
+    },
+    "chapterCount": 10,
+    "articleCount": null,
+    "source": {
+      "officialSource": "National Audit Office of Tanzania",
+      "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+      "documentVersion": "2005 revised edition",
+      "amendmentDate": null,
+      "verificationStatus": "unavailable",
+      "verifiedBy": null,
+      "verifiedAt": null,
+      "sourceLocator": "Contents only; full article text has not been imported or verified.",
+      "checksum": null
+    },
+    "downloads": {
+      "en": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf"
+    },
+    "inventoryComplete": false
+  },
+  "chapters": [
+    {
+      "id": "doc-union-1977-ch1",
+      "documentId": "doc-union-1977",
+      "number": "1",
+      "title": {
+        "en": "THE UNITED REPUBLIC, POLITICAL PARTIES, THE PEOPLE AND THE POLICY OF SOCIALISM AND SELF RELIANCE"
+      },
+      "order": 1
+    }
+  ],
+  "parts": [
+    {
+      "id": "doc-union-1977-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "en": "THE UNITED REPUBLIC AND THE PEOPLE"
+      },
+      "order": 1
+    },
+    {
+      "id": "doc-union-1977-part3",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "en": "BASIC RIGHTS AND DUTIES"
+      },
+      "order": 3
+    }
+  ],
+  "articles": [
+    {
+      "id": "union-1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part1",
+      "number": "1",
+      "order": 1,
+      "title": {
+        "en": "Proclamation of the United Republic."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "state"
+      ],
+      "rights": [],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": false,
+      "legacySectionId": "sec-art1"
+    },
+    {
+      "id": "union-3",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part1",
+      "number": "3",
+      "order": 3,
+      "title": {
+        "en": "Declaration of Multi-Party State."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "state"
+      ],
+      "rights": [],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": false,
+      "legacySectionId": "sec-art3"
+    },
+    {
+      "id": "union-4",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part1",
+      "number": "4",
+      "order": 4,
+      "title": {
+        "en": "Exercise of State Authority of the United Republic."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "union"
+      ],
+      "rights": [],
+      "duties": [],
+      "unionMatter": true,
+      "fundamentalRights": false,
+      "legacySectionId": "sec-art4"
+    },
+    {
+      "id": "union-13",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part3",
+      "number": "13",
+      "order": 13,
+      "title": {
+        "en": "Equality before the law."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "equality"
+      ],
+      "rights": [
+        "equality"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true,
+      "legacySectionId": "sec-art13"
+    },
+    {
+      "id": "union-18",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part3",
+      "number": "18",
+      "order": 18,
+      "title": {
+        "en": "The freedom of expression."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "expression"
+      ],
+      "rights": [
+        "expression"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true,
+      "legacySectionId": "sec-art18"
+    },
+    {
+      "id": "union-19",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part3",
+      "number": "19",
+      "order": 19,
+      "title": {
+        "en": "Right to freedom of religion."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "religion"
+      ],
+      "rights": [
+        "religion"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true,
+      "legacySectionId": "sec-art19"
+    },
+    {
+      "id": "union-20",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part3",
+      "number": "20",
+      "order": 20,
+      "title": {
+        "en": "Person?s freedom of association."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "association"
+      ],
+      "rights": [
+        "association"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true,
+      "legacySectionId": "sec-art20"
+    },
+    {
+      "id": "union-24",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part3",
+      "number": "24",
+      "order": 24,
+      "title": {
+        "en": "Right to own property."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "property"
+      ],
+      "rights": [
+        "property"
+      ],
+      "duties": [],
+      "unionMatter": false,
+      "fundamentalRights": true,
+      "legacySectionId": "sec-art24"
+    },
+    {
+      "id": "union-26",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "partId": "doc-union-1977-part3",
+      "number": "26",
+      "order": 26,
+      "title": {
+        "en": "Duty to abide by the laws of the land."
+      },
+      "source": {
+        "officialSource": "National Audit Office of Tanzania",
+        "sourceUrl": "https://www.nao.go.tz/uploads/Constitution_of_the_United_Republic_of_Tanzania_en.pdf",
+        "documentVersion": "2005 revised edition",
+        "amendmentDate": null,
+        "verificationStatus": "unavailable",
+        "verifiedBy": null,
+        "verifiedAt": null,
+        "sourceLocator": "Contents only; full article text has not been imported or verified.",
+        "checksum": null
+      },
+      "texts": {},
+      "topics": [
+        "duties"
+      ],
+      "rights": [],
+      "duties": [
+        "obey-laws"
+      ],
+      "unionMatter": false,
+      "fundamentalRights": true,
+      "legacySectionId": "sec-art26"
+    }
+  ],
+  "explanations": []
+}

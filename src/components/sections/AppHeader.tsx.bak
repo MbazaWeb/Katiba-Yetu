@@ -19,7 +19,7 @@ export function AppHeader({ showBack = false, onBack, title, subtitle, rightActi
           <View style={styles.left}>
             {showBack ? (
               <Pressable onPress={onBack} hitSlop={12} style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]} accessibilityRole="button" accessibilityLabel="Rudi nyuma">
-                <Ionicons name="arrow-back" size={20} color={Colors.green[300]} />
+                <Ionicons name="arrow-back" size={20} color={Colors.green[700]} />
               </Pressable>
             ) : title ? <Text style={styles.standaloneTitle}>{title}</Text> : (
               <View style={styles.brandLockup}>
@@ -55,18 +55,18 @@ const styles = StyleSheet.create({
   wrapper: { backgroundColor: Colors.surface.raised, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Colors.surface.border },
   container: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: Spacing[4], paddingVertical: Spacing[2.5], minHeight: 62, gap: Spacing[3], width: '100%', maxWidth: 960, alignSelf: 'center' },
   left: { flexShrink: 0 }, center: { flex: 1, alignItems: 'center' }, right: { flexDirection: 'row', alignItems: 'center', gap: Spacing[3], flexShrink: 0 }, pressed: { opacity: 0.65 },
-  backBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.green[900], borderWidth: 1, borderColor: Colors.green[700] },
+  backBtn: { width: 36, height: 36, borderRadius: 18, alignItems: 'center', justifyContent: 'center', backgroundColor: Colors.green[50] },
   brandLockup: { flexDirection: 'row', alignItems: 'center', gap: Spacing[2.5] },
-  brandMark: { width: 35, height: 35, borderRadius: 18, backgroundColor: Colors.green[900], alignItems: 'center', justifyContent: 'center', borderWidth: 1.5, borderColor: Colors.gold[500] },
+  brandMark: { width: 35, height: 35, borderRadius: 18, backgroundColor: Colors.green[600], alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: Colors.gold[300] },
   brandMarkText: { color: '#FFFFFF', fontFamily: Typography.family.serif, fontSize: 11, fontWeight: Typography.weight.bold },
-  logoMark: { fontFamily: Typography.family.serif, fontSize: Typography.size.xl, fontWeight: Typography.weight.bold, color: Colors.text.primary, letterSpacing: Typography.letterSpacing.tight },
+  logoMark: { fontFamily: Typography.family.serif, fontSize: Typography.size.xl, fontWeight: Typography.weight.bold, color: Colors.green[800], letterSpacing: Typography.letterSpacing.tight },
   logoSub: { fontFamily: Typography.family.sans, fontSize: Typography.size.xs, color: Colors.text.muted, marginTop: 1 },
   titleText: { fontFamily: Typography.family.sans, fontSize: Typography.size.base, fontWeight: Typography.weight.semibold, color: Colors.text.primary },
   standaloneTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size.lg, fontWeight: Typography.weight.bold, color: Colors.text.primary },
   subtitleText: { fontFamily: Typography.family.sans, fontSize: Typography.size.xs, color: Colors.text.muted, marginTop: 1 },
-  langPill: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.surface.overlay, borderRadius: 20, paddingHorizontal: Spacing[2], paddingVertical: Spacing[1], borderWidth: 1, borderColor: Colors.surface.borderStrong, gap: Spacing[1.5] },
-  langText: { fontFamily: Typography.family.sans, fontSize: Typography.size.xs, fontWeight: Typography.weight.medium, color: Colors.text.muted }, langActive: { color: Colors.green[300] },
-  langDivider: { width: StyleSheet.hairlineWidth, height: 12, backgroundColor: Colors.surface.borderStrong },
+  langPill: { flexDirection: 'row', alignItems: 'center', backgroundColor: Colors.green[50], borderRadius: 20, paddingHorizontal: Spacing[2], paddingVertical: Spacing[1], borderWidth: 1, borderColor: Colors.green[100], gap: Spacing[1.5] },
+  langText: { fontFamily: Typography.family.sans, fontSize: Typography.size.xs, fontWeight: Typography.weight.medium, color: Colors.text.muted }, langActive: { color: Colors.green[700] },
+  langDivider: { width: StyleSheet.hairlineWidth, height: 12, backgroundColor: Colors.green[200] },
 });
 
 export default AppHeader;

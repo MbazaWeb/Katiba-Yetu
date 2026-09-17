@@ -1,9 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, useWindowDimensions, Platform } from 'react-native';
-import { DesktopHomeScreen } from './screens/DesktopHomeScreen';
-import { ContributionsScreen } from './screens/ContributionsScreen';
+import { View, StyleSheet } from 'react-native';
 import { AppContext } from './hooks/useAppContext';
-import { SidebarNav } from './components/navigation/SidebarNav';
 import { BottomTabBar, TabKey } from './components/navigation/BottomTabBar';
 import { AppErrorBoundary } from './components/ErrorBoundary';
 import { HomeScreen } from './screens/HomeScreen';
@@ -12,35 +9,42 @@ import { SectionWorkspace } from './screens/SectionWorkspace';
 import { PollsScreen } from './screens/PollsScreen';
 import { SearchScreen } from './screens/SearchScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
-import { Colors, Layout } from './constants/tokens';
+import { Colors } from './constants/tokens';
 import { StorageKeys, storageGet, storageSet } from './lib/storage';
 import type { Language, FontSize, User, Section, Poll } from './types';
 
+// ─── Navigation State ─────────────────────────────────────────────────────────
+
 type ScreenName =
-  | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions';
+  | 'home'
+  | 'browser'
+  | 'polls'
+  | 'search'
+  | 'profile'
+  | 'section_workspace';
 
 interface NavState {
   screen: ScreenName;
-  params?: { section?: Section; poll?: Poll };
-  previousTab?: TabKey | 'contributions';
+  params?: {
+    section?: Section;
+    poll?: Poll;
+  };
+  previousTab?: TabKey;
 }
 
-const TAB_TO_SCREEN: Record<TabKey, ScreenName> = {
-  home: 'home', browser: 'browser', polls: 'polls',
-  search: 'search', profile: 'profile',
-};
+// ─── Root App ─────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const { width } = useWindowDimensions();
-  const isDesktop = Platform.OS === 'web' && width >= Layout.breakpointDesktop;
-
+  // ── App context state (language + font size persist across launches) ──
   const [language, setLanguage] = useState<Language>('sw');
   const [fontSize, setFontSize] = useState<FontSize>('md');
   const [user, setUser] = useState<User | null>(null);
+
+  // ── Navigation state ──
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [nav, setNav] = useState<NavState>({ screen: 'home' });
-  const [libraryDocumentId, setLibraryDocumentId] = useState('doc-union-1977');
 
+  // ── Hydrate persisted preferences on mount ──
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -50,28 +54,31 @@ export default function App() {
       ]);
       if (cancelled) return;
       if (storedLang === 'sw' || storedLang === 'en') setLanguage(storedLang);
-      if (['sm','md','lg','xl'].includes(storedFont as string)) {
-        setFontSize(storedFont as FontSize);
+      if (storedFont === 'sm' || storedFont === 'md' || storedFont === 'lg' || storedFont === 'xl') {
+        setFontSize(storedFont);
       }
     })();
     return () => { cancelled = true; };
   }, []);
 
   const changeLanguage = useCallback((l: Language) => {
-    setLanguage(l); storageSet(StorageKeys.language, l);
-  }, []);
-  const changeFontSize = useCallback((f: FontSize) => {
-    setFontSize(f); storageSet(StorageKeys.fontSize, f);
+    setLanguage(l);
+    storageSet(StorageKeys.language, l);
   }, []);
 
+  const changeFontSize = useCallback((f: FontSize) => {
+    setFontSize(f);
+    storageSet(StorageKeys.fontSize, f);
+  }, []);
+
+  // ── Handlers ──
   const navigateToSection = useCallback((section: Section) => {
-    if (section.document_id === 'doc-union-1977' || section.document_id === 'doc-zanzibar-1984') setLibraryDocumentId(section.document_id);
     setNav({
       screen: 'section_workspace',
       params: { section },
-      previousTab: nav.screen === 'section_workspace' ? nav.previousTab : nav.screen === 'contributions' ? 'contributions' : activeTab,
+      previousTab: activeTab,
     });
-  }, [activeTab, nav.screen, nav.previousTab]);
+  }, [activeTab]);
 
   const navigateToPoll = useCallback((poll: Poll) => {
     setActiveTab('polls');
@@ -80,33 +87,48 @@ export default function App() {
 
   const handleBack = useCallback(() => {
     const prevTab = nav.previousTab ?? 'home';
-    if (prevTab === 'contributions') {
-      setNav({ screen: 'contributions' });
-      return;
-    }
     setActiveTab(prevTab);
-    setNav({ screen: TAB_TO_SCREEN[prevTab] });
+    setNav({ screen: prevTab === 'home' ? 'home' : prevTab });
   }, [nav.previousTab]);
 
   const handleTabPress = useCallback((tab: TabKey) => {
     setActiveTab(tab);
-    setNav({ screen: TAB_TO_SCREEN[tab] });
+    const screenMap: Record<TabKey, ScreenName> = {
+      home:    'home',
+      browser: 'browser',
+      polls:   'polls',
+      search:  'search',
+      profile: 'profile',
+    };
+    setNav({ screen: screenMap[tab] });
   }, []);
 
+  // ── Render active screen ──
   const renderScreen = () => {
     switch (nav.screen) {
-      case 'contributions':
-        return <ContributionsScreen onSectionPress={navigateToSection} />;
       case 'section_workspace':
         return nav.params?.section ? (
-          <SectionWorkspace section={nav.params.section} onBack={handleBack} onSectionPress={navigateToSection} />
+          <SectionWorkspace
+            section={nav.params.section}
+            onBack={handleBack}
+          />
         ) : null;
 
       case 'browser':
-        return <BrowserScreen onSectionPress={navigateToSection} onBack={handleBack} initialDocumentId={libraryDocumentId} onDocumentChange={setLibraryDocumentId} />;
+        return (
+          <BrowserScreen
+            onSectionPress={navigateToSection}
+            onBack={handleBack}
+          />
+        );
 
       case 'polls':
-        return <PollsScreen onPollPress={navigateToPoll} initialPoll={nav.params?.poll} />;
+        return (
+          <PollsScreen
+            onPollPress={navigateToPoll}
+            initialPoll={nav.params?.poll}
+          />
+        );
 
       case 'search':
         return <SearchScreen onSectionPress={navigateToSection} />;
@@ -116,7 +138,6 @@ export default function App() {
 
       case 'home':
       default:
-        if (isDesktop) return <DesktopHomeScreen onSectionPress={navigateToSection} onPollPress={navigateToPoll} onSearchPress={() => handleTabPress('search')} onBrowsePress={() => handleTabPress('browser')} onProfilePress={() => handleTabPress('profile')} />;
         return (
           <HomeScreen
             onSectionPress={navigateToSection}
@@ -144,31 +165,19 @@ export default function App() {
         }}
       >
         <View style={styles.root}>
-          {/* Desktop navigation stays available alongside the article reader. */}
-          {isDesktop && (
-            <SidebarNav
-              activeTab={isInWorkspace ? 'browser' : nav.screen === 'contributions' ? 'contributions' : activeTab}
+          {/* Screen content */}
+          <View style={styles.screenArea}>
+            {renderScreen()}
+          </View>
+
+          {/* Bottom nav — hidden when in workspace */}
+          {!isInWorkspace && (
+            <BottomTabBar
+              activeTab={activeTab}
               onTabPress={handleTabPress}
-              onContributionsPress={() => setNav({ screen: 'contributions' })}
               notificationCount={{ polls: 2 }}
             />
           )}
-
-          {/* Main column */}
-          <View style={styles.main}>
-            <View style={styles.screenArea}>
-              {renderScreen()}
-            </View>
-
-            {/* Mobile bottom tabs — hidden in workspace & on desktop */}
-            {!isDesktop && !isInWorkspace && (
-              <BottomTabBar
-                activeTab={activeTab}
-                onTabPress={handleTabPress}
-                notificationCount={{ polls: 2 }}
-              />
-            )}
-          </View>
         </View>
       </AppContext.Provider>
     </AppErrorBoundary>
@@ -178,13 +187,13 @@ export default function App() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    flexDirection: 'row',
     backgroundColor: Colors.surface.base,
   },
-  main: { flex: 1 },
   screenArea: {
     flex: 1,
     width: '100%',
+    maxWidth: 960,
+    alignSelf: 'center',
     backgroundColor: Colors.surface.base,
   },
 });
