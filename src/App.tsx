@@ -53,6 +53,7 @@ export default function App() {
   const [language, setLanguage] = useState<Language>('sw');
   const [fontSize, setFontSize] = useState<FontSize>('md');
   const [user, setUser] = useState<User | null>(null);
+  const [authReady, setAuthReady] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [nav, setNav] = useState<NavState>({ screen: 'home' });
   const [libraryDocumentId, setLibraryDocumentId] = useState('doc-union-1977');
@@ -86,6 +87,7 @@ export default function App() {
           created_at: session.signedInAt,
         });
       }
+      if (!cancelled) setAuthReady(true);
     })();
     return () => { cancelled = true; };
   }, []);
@@ -98,7 +100,7 @@ export default function App() {
       try { const profile = await loadProfile(authUser); if (live) setUser(profile); }
       catch (error) { console.warn('[auth] profile load failed', error); if (live) setUser(null); }
     };
-    supabase.auth.getUser().then(({ data }) => syncUser(data.user));
+    supabase.auth.getUser().then(({ data }) => { void syncUser(data.user); setAuthReady(true); });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { void syncUser(session?.user ?? null); });
     return () => { live = false; listener.subscription.unsubscribe(); };
   }, []);
@@ -175,7 +177,8 @@ export default function App() {
       case 'profile':
         return <ProfileScreen onAuthPress={handleAuthPress} />;
       case 'auth':
-        return <AuthScreen onBack={() => handleTabPress('profile')} onAuthenticated={() => handleTabPress('profile')} />;
+        // Auth is now a top-level gate — this case is unreachable when user is signed in
+        return null;
       case 'history':
         return <HistoryScreen onBack={handleBack} />;
       case 'resources':
@@ -211,6 +214,34 @@ export default function App() {
         );
     }
   };
+
+  // ── Auth gate ────────────────────────────────────────────────────────────────
+  if (!authReady) {
+    // Still resolving session — show a minimal splash
+    return (
+      <AppErrorBoundary>
+        <View style={styles.splash}>
+          <Text style={styles.splashTitle}>Katiba Yetu 🇹🇿</Text>
+          <Text style={styles.splashSub}>{language === 'sw' ? 'Inapakia…' : 'Loading…'}</Text>
+        </View>
+      </AppErrorBoundary>
+    );
+  }
+
+  if (!user) {
+    return (
+      <AppErrorBoundary>
+        <AppContext.Provider value={{ language, setLanguage: changeLanguage, fontSize, setFontSize: changeFontSize, user, setUser, isOffline: false }}>
+          <AuthScreen
+            onAuthenticated={() => {
+              // user state is already set inside AuthScreen via setUser from context
+              // nothing else needed — re-render will show the app
+            }}
+          />
+        </AppContext.Provider>
+      </AppErrorBoundary>
+    );
+  }
 
   const isInWorkspace = nav.screen === 'section_workspace' || nav.screen === 'proposal_workspace' || nav.screen === 'citizen_submission' || nav.screen === 'multi_stage_polls' || nav.screen === 'draft_builder' || nav.screen === 'approval_workflow' || nav.screen === 'backend_status';
 
@@ -338,5 +369,8 @@ const styles = StyleSheet.create({
   moreList: { padding: Spacing[4], gap: Spacing[2] },
   moreItem: { flexDirection: 'row', alignItems: 'center', gap: Spacing[3], paddingVertical: Spacing[4], paddingHorizontal: Spacing[3], borderRadius: Radius.lg, backgroundColor: Colors.surface.raised, borderWidth: 1, borderColor: Colors.surface.border },
   moreItemText: { flex: 1, color: Colors.text.primary, fontSize: Typography.size.lg, fontWeight: Typography.weight.medium },
+  splash: { flex: 1, backgroundColor: Colors.surface.base, alignItems: 'center', justifyContent: 'center', gap: Spacing[3] },
+  splashTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size['3xl'], fontWeight: Typography.weight.bold, color: Colors.green[300] },
+  splashSub: { fontSize: Typography.size.base, color: Colors.text.muted },
 });
 
