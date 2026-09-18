@@ -40,6 +40,8 @@ import { draftGenerationService } from './draftGeneration';
 import type { DraftGenerationInput } from './draftGeneration';
 import { getProposedChapters, getProposedArticles, getDraftVersion, getProposedConstitution } from './proposedConstitution';
 import { PROPOSAL_DISCLAIMER } from '../types';
+import { SupabaseBackendRepository } from './supabaseRepository';
+import { isSupabaseConfigured } from '../lib/supabase';
 
 // ─── HTTP client (web fetch-based) ────────────────────────────────────────────
 
@@ -200,13 +202,19 @@ class HttpBackendRepository implements BackendRepository {
   }
 }
 
-let backendRepository: BackendRepository = new MockBackendRepository();
+let backendRepository: BackendRepository = isSupabaseConfigured
+  ? new SupabaseBackendRepository()
+  : new MockBackendRepository();
 
 export function getBackendRepository(): BackendRepository {
   const config = getBackendConfig();
   if (config.apiBaseUrl) {
+    // Explicit HTTP backend takes highest priority (custom API server)
     const client = new HttpClient({ baseUrl: config.apiBaseUrl, getToken: config.getToken });
     backendRepository = new HttpBackendRepository(client);
+  } else if (isSupabaseConfigured && !(backendRepository instanceof SupabaseBackendRepository)) {
+    // Auto-use Supabase when configured and no custom API is set
+    backendRepository = new SupabaseBackendRepository();
   }
   return backendRepository;
 }
@@ -487,7 +495,7 @@ export function getPDFExportBackend(): PDFExportBackend {
 // ─── Backend status reporting ─────────────────────────────────────────────────
 
 export interface BackendStatus {
-  api: { kind: 'mock' | 'http'; configured: boolean; baseUrl: string };
+  api: { kind: 'mock' | 'http' | 'supabase'; configured: boolean; baseUrl: string };
   ai: { kind: 'mock_deterministic' | 'ai_backend'; configured: boolean; baseUrl: string };
   identity: { kind: 'mock' | 'nida' | 'otp'; configured: boolean; baseUrl: string };
   moderation: { kind: 'mock' | 'classifier'; configured: boolean; baseUrl: string };
@@ -497,7 +505,11 @@ export interface BackendStatus {
 export function getBackendStatus(): BackendStatus {
   const config = getBackendConfig();
   return {
-    api: { kind: config.apiBaseUrl ? 'http' : 'mock', configured: Boolean(config.apiBaseUrl), baseUrl: config.apiBaseUrl },
+    api: {
+      kind: config.apiBaseUrl ? 'http' : isSupabaseConfigured ? 'supabase' : 'mock',
+      configured: Boolean(config.apiBaseUrl) || isSupabaseConfigured,
+      baseUrl: config.apiBaseUrl || (isSupabaseConfigured ? process.env.EXPO_PUBLIC_SUPABASE_URL ?? '' : ''),
+    },
     ai: { kind: config.aiBaseUrl ? 'ai_backend' : 'mock_deterministic', configured: Boolean(config.aiBaseUrl), baseUrl: config.aiBaseUrl },
     identity: { kind: config.nidaBaseUrl ? 'nida' : 'mock', configured: Boolean(config.nidaBaseUrl), baseUrl: config.nidaBaseUrl },
     moderation: { kind: config.moderationBaseUrl ? 'classifier' : 'mock', configured: Boolean(config.moderationBaseUrl), baseUrl: config.moderationBaseUrl },
