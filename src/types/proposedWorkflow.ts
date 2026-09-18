@@ -335,7 +335,8 @@ export interface AuditEvent {
   submissionId?: string;
   clusterId?: string;
   pollId?: string;
-  actorId: string;
+  /** Optional — system-generated events may have no actor. */
+  actorId?: string;
   actorName: string;
   actorRole: DraftBuilderRole;
   description: string;
@@ -353,7 +354,7 @@ export interface AuditEvent {
  * Do NOT call this directly from UI components — use the typed service wrappers.
  */
 export interface BackendRepository {
-  readonly kind: 'mock' | 'http';
+  readonly kind: 'mock' | 'http' | 'supabase';
   /** Returns true if a real backend URL has been configured. */
   isConfigured(): boolean;
   listSubmissions(): Promise<CitizenSubmission[]>;

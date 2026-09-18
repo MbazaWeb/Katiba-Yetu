@@ -118,11 +118,11 @@ function mapAuditRow(row: Record<string, unknown>): AuditEvent {
     kind: row.kind as AuditEvent['kind'],
     articleId: (payload.article_id as string | null) ?? (row.subject_id as string | null) ?? undefined,
     actorId: (row.actor_id as string | null) ?? undefined,
+    actorName: (row.actor_name as string | null) ?? 'Mfumo',
     actorRole: 'citizen',
     description: String(row.kind).replace(/_/g, ' '),
-    payload,
+    publicMetadata: payload as Record<string, string | number | boolean | null>,
     at: row.at as string,
-    isPublic: true,
   };
 }
 
