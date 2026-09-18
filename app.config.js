@@ -2,7 +2,7 @@ module.exports = {
   expo: {
     name: 'Katiba Yetu',
     slug: 'katiba-yetu',
-    version: '0.3.0',
+    version: '0.3.1',
     orientation: 'portrait',
     userInterfaceStyle: 'dark',
     icon: './assets/icon.png',

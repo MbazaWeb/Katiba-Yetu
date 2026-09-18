@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Radius, Spacing, Typography } from '../constants/tokens';
 import { useAppContext } from '../hooks/useAppContext';
+import { getRegion, getDistrict, localizedRegionName, localizedDistrictName } from '../constants/regions';
 import { t } from '../utils';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { signIn, signOut, signUp } from '../services/supabaseAuth';
@@ -28,6 +29,18 @@ export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
               ? t(`Ameingia ${new Date(user.created_at).toLocaleDateString()}`, `Signed in ${new Date(user.created_at).toLocaleDateString()}`, language)
               : t('Ingia ili kuhifadhi michango na kura zako', 'Sign in to save your contributions and votes', language)}
           </Text>
+          {user && (user.region || user.district) && (
+            <Text style={styles.meta}>
+              {(() => {
+                const regionEntry = user.region ? getRegion(user.region) : undefined;
+                const districtEntry = user.region && user.district ? getDistrict(user.region, user.district) : undefined;
+                const parts: string[] = [];
+                if (regionEntry) parts.push(localizedRegionName(regionEntry, language));
+                if (districtEntry) parts.push(localizedDistrictName(districtEntry, language));
+                return parts.length ? parts.join(' · ') : null;
+              })() ?? ''}
+            </Text>
+          )}
           {!user && (
             <Pressable style={styles.primary} onPress={() => onAuthPress?.()}>
               <Text style={styles.primaryText}>
@@ -75,7 +88,7 @@ export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
           <Menu icon="help-circle-outline" label={t('Msaada', 'Help', language)} last />
         </View>
 
-        <Text style={styles.version}>Katiba Yetu Â· v0.3.0</Text>
+        <Text style={styles.version}>Katiba Yetu · v0.3.1</Text>
       </ScrollView>
     </View>
   );

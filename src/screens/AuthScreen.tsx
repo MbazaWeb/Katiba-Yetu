@@ -5,19 +5,10 @@ import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
 import { authService, AUTH_DISCLAIMER } from '../services/auth';
 import { useAppContext } from '../hooks/useAppContext';
-import type { AuthSession, RegistrationInput, TanzaniaRegion, LibraryLanguage } from '../types';
+import { RegionDistrictPicker, type RegionDistrictValue } from '../components/RegionDistrictPicker';
+import type { AuthSession, RegistrationInput, LibraryLanguage } from '../types';
 
 type Mode = 'signin' | 'register';
-
-const REGIONS: { value: TanzaniaRegion; sw: string; en: string }[] = [
-  { value: 'dar_es_salaam', sw: 'Dar es Salaam', en: 'Dar es Salaam' },
-  { value: 'dodoma', sw: 'Dodoma', en: 'Dodoma' },
-  { value: 'mwanza', sw: 'Mwanza', en: 'Mwanza' },
-  { value: 'arusha', sw: 'Arusha', en: 'Arusha' },
-  { value: 'mbeya', sw: 'Mbeya', en: 'Mbeya' },
-  { value: 'zanzibar_west', sw: 'Zanzibar Magharibi', en: 'Zanzibar West' },
-  { value: 'pemba_north', sw: 'Pemba Kaskazini', en: 'Pemba North' },
-];
 
 interface AuthScreenProps {
   onAuthenticated?: (session: AuthSession) => void;
@@ -32,7 +23,7 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
   const [displayName, setDisplayName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [region, setRegion] = useState<TanzaniaRegion | ''>('');
+  const [location, setLocation] = useState<RegionDistrictValue>({});
   const [anonymous, setAnonymous] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -51,7 +42,8 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
           email: email.trim() || undefined,
           phone: phone.trim() || undefined,
           password,
-          region: region || undefined,
+          region: location.region,
+          district: location.district,
           languagePref: language as LibraryLanguage,
           anonymous,
         };
@@ -67,6 +59,7 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
         role: 'registered',
         anonymity_default: anonymous,
         region: session.region,
+        district: session.district,
         language_pref: session.languagePref,
         created_at: session.signedInAt,
       });
@@ -153,21 +146,11 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
                   accessibilityLabel={copy('Simu', 'Phone')}
                 />
               </Field>
-              <Field label={copy('Mkoa', 'Region')}>
-                <View style={styles.pillRow}>
-                  {REGIONS.map(r => (
-                    <Pressable
-                      key={r.value}
-                      onPress={() => setRegion(region === r.value ? '' : r.value)}
-                      style={[styles.pill, region === r.value && styles.pillActive]}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: region === r.value }}
-                    >
-                      <Text style={[styles.pillText, region === r.value && styles.pillTextActive]}>{language === 'sw' ? r.sw : r.en}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </Field>
+              <RegionDistrictPicker
+                value={location}
+                onChange={setLocation}
+                disabled={busy}
+              />
               <Pressable
                 onPress={() => setAnonymous(!anonymous)}
                 style={styles.checkboxRow}
@@ -261,11 +244,6 @@ const styles = StyleSheet.create({
   field: { gap: Spacing[2] },
   label: { fontSize: Typography.size.sm, color: Colors.text.secondary, fontWeight: Typography.weight.medium },
   input: { color: Colors.text.primary, padding: Spacing[3], minHeight: 48, borderWidth: 1, borderColor: Colors.surface.borderStrong, borderRadius: Radius.md, backgroundColor: Colors.surface.overlay, fontSize: 16 },
-  pillRow: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing[2] },
-  pill: { paddingVertical: Spacing[2], paddingHorizontal: Spacing[3], borderRadius: Radius.full, backgroundColor: Colors.surface.overlay, borderWidth: 1, borderColor: Colors.surface.borderStrong, minHeight: 36 },
-  pillActive: { backgroundColor: Colors.green[700], borderColor: Colors.green[400] },
-  pillText: { color: Colors.text.secondary, fontSize: Typography.size.sm },
-  pillTextActive: { color: '#fff' },
   checkboxRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing[2], paddingVertical: Spacing[2] },
   checkbox: { width: 22, height: 22, borderRadius: 6, borderWidth: 2, borderColor: Colors.surface.borderStrong, alignItems: 'center', justifyContent: 'center' },
   checkboxActive: { backgroundColor: Colors.green[700], borderColor: Colors.green[400] },

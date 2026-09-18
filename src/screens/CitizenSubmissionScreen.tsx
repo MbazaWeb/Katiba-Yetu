@@ -11,18 +11,22 @@ import {
 } from '../services/submissionWorkflow';
 import { SUBMISSION_DISCLAIMER } from '../constants/submissionConstants';
 import { CONSTITUTIONAL_TOPIC_LABELS } from '../types';
+import { RegionDistrictPicker, type RegionDistrictValue } from '../components/RegionDistrictPicker';
+import { getRegion, getDistrict, localizedRegionName, localizedDistrictName } from '../constants/regions';
 import type { CitizenSubmission, ConstitutionalTopic, SubmissionStatus } from '../types';
 
-const REGIONS: { value: import('../types').TanzaniaRegion; sw: string; en: string }[] = [
-  { value: 'dar_es_salaam', sw: 'Dar es Salaam', en: 'Dar es Salaam' },
-  { value: 'dodoma', sw: 'Dodoma', en: 'Dodoma' },
-  { value: 'mwanza', sw: 'Mwanza', en: 'Mwanza' },
-  { value: 'arusha', sw: 'Arusha', en: 'Arusha' },
-  { value: 'mbeya', sw: 'Mbeya', en: 'Mbeya' },
-  { value: 'tanga', sw: 'Tanga', en: 'Tanga' },
-  { value: 'morogoro', sw: 'Morogoro', en: 'Morogoro' },
-  { value: 'zanzibar_west', sw: 'Zanzibar Magharibi', en: 'Zanzibar West' },
-];
+/** Format a submission's region + district as a single readable string. */
+function formatLocation(sub: CitizenSubmission, language: 'sw' | 'en'): string | null {
+  if (!sub.region) return null;
+  const region = getRegion(sub.region);
+  if (!region) return sub.region;
+  const parts: string[] = [localizedRegionName(region, language)];
+  if (sub.district) {
+    const district = getDistrict(sub.region, sub.district);
+    if (district) parts.push(localizedDistrictName(district, language));
+  }
+  return parts.join(' · ');
+}
 
 const STATUS_LABELS: Record<SubmissionStatus, { sw: string; en: string }> = {
   submitted:               { sw: 'Imewasilishwa',                en: 'Submitted' },
@@ -58,7 +62,7 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
   const [proposedWordingSw, setProposedWordingSw] = useState('');
   const [rationale, setRationale] = useState('');
   const [supportingEvidence, setSupportingEvidence] = useState('');
-  const [region, setRegion] = useState<import('../types').TanzaniaRegion | ''>('');
+  const [location, setLocation] = useState<RegionDistrictValue>({});
   const [anonymous, setAnonymous] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -96,7 +100,8 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
       proposedWordingSw: proposedWordingSw.trim() || undefined,
       rationale,
       supportingEvidence: supportingEvidence.trim() || undefined,
-      region: region || undefined,
+      region: location.region,
+      district: location.district,
       anonymous,
       authorId: user.id,
       authorDisplayName: user.display_name,
@@ -115,7 +120,7 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
         ? copy('Pendekezo lako limeunganishwa na pendekezo lingine linalofanana. Asili yako imehifadhiwa kwa ajili ya ukaguzi. / Your proposal was merged with a similar one. Your original is preserved for audit.')
         : copy('Pendekezo lako limewasilishwa na limepitia uthibitisho wa awali. / Your proposal has been submitted and passed initial validation.'));
       // Reset form
-      setTitle(''); setProblem(''); setProposedWordingSw(''); setRationale(''); setSupportingEvidence(''); setAffectedArticleId('');
+      setTitle(''); setProblem(''); setProposedWordingSw(''); setRationale(''); setSupportingEvidence(''); setAffectedArticleId(''); setLocation({});
       setShowForm(false);
       await refresh();
     } catch (e) {
@@ -190,6 +195,7 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
                 <View style={styles.cardFooter}>
                   <Text style={styles.metaText}>{sub.anonymous ? copy('Mwananchi', 'Anonymous') : sub.authorDisplayName}</Text>
                   <Text style={styles.metaText}>· {new Date(sub.createdAt).toLocaleDateString()}</Text>
+                  {formatLocation(sub, language) && <Text style={styles.clusterText}>· {formatLocation(sub, language)}</Text>}
                   {sub.clusterId && <Text style={styles.clusterText}>· {copy('Kundi', 'Cluster')}: {sub.clusterId}</Text>}
                 </View>
               </Pressable>
@@ -302,21 +308,13 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
                 />
               </Field>
 
-              <Field label={copy('Mkoa wako (hiari)', 'Your region (optional)')}>
-                <View style={styles.pillRow}>
-                  {REGIONS.map(r => (
-                    <Pressable
-                      key={r.value}
-                      onPress={() => setRegion(region === r.value ? '' : r.value)}
-                      style={[styles.pill, region === r.value && styles.pillActive]}
-                      accessibilityRole="button"
-                      accessibilityState={{ selected: region === r.value }}
-                    >
-                      <Text style={[styles.pillText, region === r.value && styles.pillTextActive]}>{language === 'sw' ? r.sw : r.en}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              </Field>
+              <RegionDistrictPicker
+                value={location}
+                onChange={setLocation}
+                regionLabel={copy('Mkoa wako (hiari)', 'Your region (optional)')}
+                districtLabel={copy('Wilaya yako (hiari)', 'Your district (optional)')}
+                disabled={submitting}
+              />
 
               <Pressable
                 onPress={() => setAnonymous(!anonymous)}

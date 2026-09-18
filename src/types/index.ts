@@ -57,6 +57,7 @@ export interface User {
   role: UserRole;
   anonymity_default: boolean;
   region?: TanzaniaRegion;
+  district?: string;
   language_pref: 'sw' | 'en';
   avatar_url?: string;
   created_at: string;

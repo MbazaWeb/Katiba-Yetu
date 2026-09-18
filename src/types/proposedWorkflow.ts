@@ -80,6 +80,8 @@ export interface CitizenSubmission {
   rationale: string;
   supportingEvidence?: string;
   region?: TanzaniaRegion;
+  /** Optional district id within the region (see src/constants/regions.ts). */
+  district?: string;
   /** Anonymous preference — submissions may be displayed without author identity. */
   anonymous: boolean;
   authorId: string;

@@ -212,6 +212,7 @@ export interface AuthSession {
   role: ProposedUserRole;
   verificationTier: VerificationTier;
   region?: TanzaniaRegion;
+  district?: string;
   languagePref: LibraryLanguage;
   signedInAt: string;
   /** Demo only — no real credentials are stored. */
@@ -229,6 +230,7 @@ export interface RegistrationInput {
   phone?: string;
   password: string;
   region?: TanzaniaRegion;
+  district?: string;
   languagePref: LibraryLanguage;
   anonymous: boolean;
 }

@@ -161,6 +161,7 @@ export interface SubmissionInput {
   rationale: string;
   supportingEvidence?: string;
   region?: TanzaniaRegion;
+  district?: string;
   anonymous: boolean;
   authorId: string;
   authorDisplayName: string;
@@ -259,6 +260,7 @@ export async function createSubmission(input: SubmissionInput): Promise<{ submis
     rationale: sanitizeText(input.rationale),
     supportingEvidence: input.supportingEvidence ? sanitizeText(input.supportingEvidence) : undefined,
     region: input.region,
+    district: input.district,
     anonymous: input.anonymous,
     authorId: input.authorId,
     authorDisplayName: input.anonymous ? 'Mwananchi' : sanitizeText(input.authorDisplayName, 100),
@@ -278,7 +280,7 @@ export async function createSubmission(input: SubmissionInput): Promise<{ submis
     id: makeId('audit'), kind: 'submission_created', submissionId: id,
     actorId: input.authorId, actorName: submission.authorDisplayName, actorRole: input.authorVerified ? 'verified_citizen' : 'citizen',
     description: `Submission "${submission.title}" created on topic ${CONSTITUTIONAL_TOPIC_LABELS[submission.topic].en}.`,
-    publicMetadata: { topic: submission.topic, region: submission.region ?? null, anonymous: submission.anonymous, duplicate: dup.isDuplicate, clusterId: clusterId ?? null },
+    publicMetadata: { topic: submission.topic, region: submission.region ?? null, district: submission.district ?? null, anonymous: submission.anonymous, duplicate: dup.isDuplicate, clusterId: clusterId ?? null },
     at: now,
   });
 
@@ -527,6 +529,7 @@ function seedSubmissions(): CitizenSubmission[] {
       proposedWordingSw: 'Jamhuri ya Muungano wa Tanzania ni dola inayojitegemea inayojengwa juu ya misingi ya utu, haki na uwajibikaji.',
       rationale: 'Washiriki 18 walipendekeza kuimarisha utu na uwajibikaji katika utangulizi wa Jamhuri.',
       region: 'dar_es_salaam',
+      district: 'ilala',
       anonymous: false,
       authorId: 'demo-1', authorDisplayName: 'Mwananchi (mfano)', authorVerified: true, authorVerificationTier: 'phone',
       createdAt: '2026-09-08T10:00:00Z', updatedAt: '2026-09-08T10:00:00Z',
@@ -545,6 +548,7 @@ function seedSubmissions(): CitizenSubmission[] {
       proposedWordingSw: 'Kila mtu ana haki ya kutoa na kupokea maoni bila ya woga, isipokuwa kama inavyoelezwa kisheria kwa ajili ya haki za wengine na usalama wa taifa.',
       rationale: 'Washiriki 26 walipendekeza kufafanua mipaka ya uhuru wa maoni kwa uwazi zaidi.',
       region: 'mbeya',
+      district: 'rungwe',
       anonymous: true,
       authorId: 'demo-2', authorDisplayName: 'Mwananchi', authorVerified: false, authorVerificationTier: 'none',
       createdAt: '2026-09-10T10:00:00Z', updatedAt: '2026-09-10T10:00:00Z',
@@ -563,6 +567,7 @@ function seedSubmissions(): CitizenSubmission[] {
       proposedWordingSw: 'Wanaume na wanawake wana haki sawa mbele ya sheria, na wanapaswa kupewa fursa sawa katika siasa, uchumi na maisha ya kijamii.',
       rationale: 'Washiriki 31 walipendekeza kuongeza uwazi kuhusu usawa wa kijinsia.',
       region: 'mwanza',
+      district: 'nyamagana',
       anonymous: false,
       authorId: 'demo-3', authorDisplayName: 'Mwananchi (mfano)', authorVerified: true, authorVerificationTier: 'nida',
       createdAt: '2026-09-11T10:00:00Z', updatedAt: '2026-09-11T10:00:00Z',

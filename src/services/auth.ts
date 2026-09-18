@@ -20,6 +20,7 @@ interface StoredUser {
   phone?: string;
   passwordHash: string; // demo only — never store real passwords
   region?: string;
+  district?: string;
   languagePref: 'sw' | 'en';
   anonymous: boolean;
   createdAt: string;
@@ -91,6 +92,7 @@ export const authService: AuthService = {
       phone,
       passwordHash: demoHash(input.password),
       region: input.region,
+      district: input.district,
       languagePref: input.languagePref,
       anonymous: input.anonymous,
       createdAt: new Date().toISOString(),
@@ -105,6 +107,7 @@ export const authService: AuthService = {
       role: 'citizen',
       verificationTier: 'none',
       region: user.region as AuthSession['region'],
+      district: user.district,
       languagePref: user.languagePref,
       signedInAt: new Date().toISOString(),
       isDemo: true,
