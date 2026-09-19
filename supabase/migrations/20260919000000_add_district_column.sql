@@ -36,6 +36,12 @@ comment on column public.citizen_submissions.district is
 grant update(district) on public.profiles to authenticated;
 
 -- 4. Update the submit_citizen_proposal function to accept p_district.
+-- Must DROP the old version first because the parameter list changed.
+-- PostgreSQL treats functions with different parameter lists as distinct
+-- signatures; "create or replace" cannot change a function's signature.
+drop function if exists public.submit_citizen_proposal(
+  text, public.constitutional_topic, text, text, text, text, text, text, text, boolean
+);
 create or replace function public.submit_citizen_proposal(
   p_title               text,
   p_topic               public.constitutional_topic,
