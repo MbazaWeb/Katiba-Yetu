@@ -1,12 +1,12 @@
 /**
- * Katiba Yetu â€” Supabase Backend Repository
+ * Katiba Yetu — Supabase Backend Repository
  *
  * Real implementation of BackendRepository backed by the Supabase Postgres
  * database (via the JS client). Automatically used when EXPO_PUBLIC_SUPABASE_URL
  * and EXPO_PUBLIC_SUPABASE_ANON_KEY are set and valid.
  *
  * Maps between DB snake_case rows and the camelCase TypeScript types used
- * throughout the app. Falls back gracefully â€” any error surfaces as a thrown
+ * throughout the app. Falls back gracefully — any error surfaces as a thrown
  * exception so callers can fall back to mock data if needed.
  */
 
@@ -23,7 +23,7 @@ import type {
 } from '../types';
 import type { ConstitutionalTopic, SubmissionStatus, PollStageLike, DraftBuilderRole } from '../types/proposedWorkflow';
 
-// â”€â”€â”€ Row â†’ Domain mappers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Row → Domain mappers ─────────────────────────────────────────────────────
 
 function mapSubmissionRow(row: Record<string, unknown>): CitizenSubmission {
   return {
@@ -127,7 +127,7 @@ function mapAuditRow(row: Record<string, unknown>): AuditEvent {
   };
 }
 
-// â”€â”€â”€ SupabaseBackendRepository â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SupabaseBackendRepository ────────────────────────────────────────────────
 
 export class SupabaseBackendRepository implements BackendRepository {
   readonly kind = 'supabase' as const;
@@ -136,7 +136,7 @@ export class SupabaseBackendRepository implements BackendRepository {
     return true; // only instantiated when Supabase is configured
   }
 
-  // â”€â”€ Submissions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Submissions ─────────────────────────────────────────────────────────────
 
   async listSubmissions(): Promise<CitizenSubmission[]> {
     const { data, error } = await supabase
@@ -206,7 +206,7 @@ export class SupabaseBackendRepository implements BackendRepository {
     return mapSubmissionRow(data as unknown as Record<string, unknown>);
   }
 
-  // â”€â”€ Polls â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Polls ───────────────────────────────────────────────────────────────────
 
   async listPolls(articleId?: string): Promise<MultiStagePoll[]> {
     let query = supabase
@@ -248,7 +248,7 @@ export class SupabaseBackendRepository implements BackendRepository {
     return updated;
   }
 
-  // â”€â”€ Audit Events â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Audit Events ────────────────────────────────────────────────────────────
 
   async listAuditEvents(articleId?: string): Promise<AuditEvent[]> {
     let query = supabase
@@ -267,17 +267,16 @@ export class SupabaseBackendRepository implements BackendRepository {
     return (data ?? []).map(row => mapAuditRow(row as unknown as Record<string, unknown>));
   }
 
-  // â”€â”€ Moderate submission â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Moderate submission ─────────────────────────────────────────────────────
 
   async moderateSubmission(
     id: string,
-    moderatorId: string,
+    _moderatorId: string,
     decision: 'approve' | 'reject' | 'merge' | 'flag',
     reason: string,
   ): Promise<CitizenSubmission> {
     const { error } = await supabase.rpc('moderate_submission', {
       p_submission_id: id,
-      p_moderator_id: moderatorId,
       p_decision: decision,
       p_reason: reason,
     });
@@ -292,18 +291,14 @@ export class SupabaseBackendRepository implements BackendRepository {
     return mapSubmissionRow(row as unknown as Record<string, unknown>);
   }
 
-  // â”€â”€ Abstain â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Abstain ──────────────────────────────────────────────────────────────────
 
   async abstain(
     pollId: string,
-    voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier },
+    _voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier },
   ): Promise<MultiStagePoll> {
     const { error } = await supabase.rpc('abstain_workflow_vote', {
       p_poll_id: pollId,
-      p_voter_id: voter.id,
-      p_verified: voter.verified,
-      p_region: voter.region ?? null,
-      p_tier: voter.tier,
     });
     if (error) throw error;
     // Return fresh poll data
@@ -313,15 +308,14 @@ export class SupabaseBackendRepository implements BackendRepository {
     return updated;
   }
 
-  // â”€â”€ Close poll â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Close poll ───────────────────────────────────────────────────────────────
 
   async closePoll(
     pollId: string,
-    closer: { id: string; name: string; role: DraftBuilderRole },
+    _closer: { id: string; name: string; role: DraftBuilderRole },
   ): Promise<MultiStagePoll> {
     const { error } = await supabase.rpc('close_workflow_poll', {
       p_poll_id: pollId,
-      p_closer_id: closer.id,
     });
     if (error) throw error;
     // Return fresh poll data
@@ -331,19 +325,18 @@ export class SupabaseBackendRepository implements BackendRepository {
     return updated;
   }
 
-  // â”€â”€ Has voted â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Has voted ────────────────────────────────────────────────────────────────
 
-  async hasVoted(pollId: string, voterId: string): Promise<boolean> {
+  async hasVoted(pollId: string, _voterId: string): Promise<boolean> {
     const { data, error } = await supabase.rpc('has_voted', {
       p_poll_id: pollId,
-      p_voter_id: voterId,
     });
     if (error) throw error;
     return Boolean(data);
   }
 }
 
-// â”€â”€â”€ Supabase-backed moderation helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Supabase-backed moderation helpers ───────────────────────────────────────
 
 /**
  * Load moderation events for a submission. Used by moderator screens.
@@ -479,4 +472,3 @@ export async function getArticleParticipationSummary(articleId: string) {
   if (error) throw error;
   return data;
 }
-
