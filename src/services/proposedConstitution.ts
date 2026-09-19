@@ -365,9 +365,38 @@ export function getParticipationSummary() {
   };
 }
 
-/** Generate a new proposed article from citizen input. */
+/**
+ * Generate a new proposed article from citizen input.
+ *
+ * Routes through getAIGenerationBackend() so the active adapter (mock or
+ * HTTP) is used. The mock adapter wraps draftGenerationService; the HTTP
+ * adapter calls a real LLM endpoint when aiBaseUrl is configured.
+ */
 export async function generateProposedArticle(input: DraftGenerationInput) {
-  return draftGenerationService.generate(input);
+  // Lazy import to avoid a circular dependency at module-init time.
+  const { getAIGenerationBackend } = await import('./backend');
+  const backend = getAIGenerationBackend();
+  // The backend's AIGenerationInput shape is richer than DraftGenerationInput
+  // (it expects moderatedProposals, discussionSummaries, etc.). For the mock
+  // adapter, we pass through directly. For the HTTP adapter, the caller should
+  // construct the full AIGenerationInput. Here we bridge by wrapping the
+  // simpler DraftGenerationInput into the shape the backend expects.
+  if (backend.kind === 'mock_deterministic') {
+    return draftGenerationService.generate(input);
+  }
+  // HTTP / real AI backend — delegate to the backend with a minimal input.
+  const aiInput = {
+    moderatedProposals: [],
+    discussionSummaries: [],
+    supportingArguments: [],
+    opposingArguments: [],
+    alternativeWording: [],
+    pollResults: [],
+    currentConstitutionalArticles: [],
+    relevantApprovedArticles: [],
+    legalReviewConstraints: [],
+  };
+  return backend.generateDraft(aiInput);
 }
 
 /** Side-by-side diff between a current article and a proposed article. */

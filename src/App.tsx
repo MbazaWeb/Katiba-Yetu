@@ -26,10 +26,8 @@ import { ApprovalWorkflowScreen } from './screens/ApprovalWorkflowScreen';
 import { BackendStatusScreen } from './screens/BackendStatusScreen';
 import { Colors, Layout, Spacing, Typography, Radius } from './constants/tokens';
 import { StorageKeys, storageGet, storageSet } from './lib/storage';
-import { authService } from './services/auth';
+import { getAuthService } from './services/authService';
 import type { Language, FontSize, User, Section, Poll, ProposedArticle } from './types';
-import { isSupabaseConfigured, supabase } from './lib/supabase';
-import { loadProfile } from './services/supabaseAuth';
 type ScreenName =
   | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions'
   | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'proposal_workspace' | 'auth' | 'more'
@@ -59,50 +57,44 @@ export default function App() {
   const [libraryDocumentId, setLibraryDocumentId] = useState('doc-union-1977');
   const [moreOpen, setMoreOpen] = useState(false);
 
+  // Single auth bootstrap: language/font + current user via the unified
+  // AuthService (which picks demo or supabase based on env config).
   useEffect(() => {
     let cancelled = false;
+    let unsubscribe: (() => void) | undefined;
     (async () => {
-      const [storedLang, storedFont, session] = await Promise.all([
+      const [storedLang, storedFont] = await Promise.all([
         storageGet(StorageKeys.language),
         storageGet(StorageKeys.fontSize),
-        authService.getCurrentSession(),
       ]);
       if (cancelled) return;
       if (storedLang === 'sw' || storedLang === 'en') setLanguage(storedLang);
       if (['sm','md','lg','xl'].includes(storedFont as string)) {
         setFontSize(storedFont as FontSize);
       }
-      if (session) {
-        setUser({
-          id: session.userId,
-          display_name: session.displayName,
-          email: session.email,
-          phone: session.phone,
-          nida_verified: false,
-          verification_tier: session.verificationTier,
-          role: 'registered',
-          anonymity_default: false,
-          region: session.region,
-          language_pref: session.languagePref,
-          created_at: session.signedInAt,
-        });
+      // Resolve the current user through the unified service.
+      const service = getAuthService();
+      try {
+        const current = await service.getCurrentUser();
+        if (cancelled) return;
+        if (current) setUser(current);
+      } catch (e) {
+        console.warn('[auth] getCurrentUser failed', e);
       }
+      // Subscribe to subsequent auth-state changes (Supabase only; demo is no-op).
+      unsubscribe = service.onAuthStateChange(u => { if (!cancelled) setUser(u); });
       if (!cancelled) setAuthReady(true);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
-  useEffect(() => {
-    if (!isSupabaseConfigured) return;
-    let live = true;
-    const syncUser = async (authUser: Parameters<typeof loadProfile>[0] | null) => {
-      if (!authUser) { if (live) setUser(null); return; }
-      try { const profile = await loadProfile(authUser); if (live) setUser(profile); }
-      catch (error) { console.warn('[auth] profile load failed', error); if (live) setUser(null); }
-    };
-    supabase.auth.getUser().then(({ data }) => { void syncUser(data.user); setAuthReady(true); });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => { void syncUser(session?.user ?? null); });
-    return () => { live = false; listener.subscription.unsubscribe(); };
+  const handleSignOut = useCallback(async () => {
+    try { await getAuthService().signOut(); }
+    catch (e) { console.warn('[auth] signOut failed', e); }
+    finally { setUser(null); setNav({ screen: 'home' }); setActiveTab('home'); }
   }, []);
 
   const changeLanguage = useCallback((l: Language) => {
@@ -175,7 +167,7 @@ export default function App() {
       case 'search':
         return <SearchScreen onSectionPress={navigateToSection} />;
       case 'profile':
-        return <ProfileScreen onAuthPress={handleAuthPress} />;
+        return <ProfileScreen onAuthPress={handleAuthPress} onSignOut={handleSignOut} />;
       case 'auth':
         // Auth is now a top-level gate — this case is unreachable when user is signed in
         return null;

@@ -26,6 +26,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isSupabaseConfigured } from '../lib/supabase';
 import type {
   CitizenSubmission,
   ConstitutionalTopic,
@@ -69,6 +70,31 @@ class Mutex {
   }
 }
 const voteMutex = new Mutex();
+
+// ─── Backend delegation (lazy to avoid circular import with backend.ts) ──────
+//
+// submissionWorkflow.ts is the public API the screens call. When Supabase is
+// configured, it delegates the CRUD operations (loadSubmissions,
+// createSubmission, updateSubmission, loadPolls, castVote, loadAuditEvents)
+// and the moderation helpers (screenForHarmfulContent, detectDuplicates,
+// classifyTopic) to the active backend adapters. Otherwise it uses the
+// AsyncStorage-backed mock implementation below.
+//
+// The import is lazy (inside a function body) to avoid a circular-import
+// problem: backend.ts imports mock helpers from this module, so importing
+// backend.ts at module-init time here would create a cycle.
+async function resolveRepository() {
+  if (!isSupabaseConfigured) return null;
+  const { getBackendRepository } = await import('./backend');
+  return getBackendRepository();
+}
+
+// Note: moderation helpers (screenForHarmfulContent, detectDuplicates,
+// classifyTopic) stay local to this module. They are only called in the
+// AsyncStorage mock path of createSubmission(). When Supabase is configured,
+// createSubmission() delegates to the server-side submit_citizen_proposal()
+// RPC which performs moderation server-side — so these helpers are not
+// invoked in the Supabase path.
 
 // ─── Sanitization & validation ────────────────────────────────────────────────
 
@@ -197,6 +223,10 @@ function makeId(prefix: string): string {
 }
 
 export async function loadSubmissions(): Promise<CitizenSubmission[]> {
+  // Delegate to the active backend when configured (Supabase); otherwise use
+  // the AsyncStorage-backed mock. This is the swappability seam.
+  const repo = await resolveRepository();
+  if (repo) return repo.listSubmissions();
   try {
     const raw = await AsyncStorage.getItem(SUBMISSIONS_KEY);
     if (!raw) return seedSubmissions();
@@ -214,6 +244,17 @@ export async function createSubmission(input: SubmissionInput): Promise<{ submis
   const validation = validateSubmissionInput(input);
   if (!validation.ok) throw new Error(validation.errors[0].message);
 
+  // Delegate to the active backend when configured. The server-side
+  // submit_citizen_proposal() RPC handles validation, harmful-content
+  // screening, duplicate detection, topic classification, clustering,
+  // and audit logging — so we return early with the server-created row.
+  const repo = await resolveRepository();
+  if (repo) {
+    const submission = await repo.createSubmission(input);
+    return { submission, events: [], duplicate: undefined };
+  }
+
+  // ─── Local mock pipeline (AsyncStorage) ────────────────────────────────────
   const now = new Date().toISOString();
   const id = makeId('sub');
   const events: ModerationEvent[] = [];
@@ -314,6 +355,8 @@ export async function createSubmission(input: SubmissionInput): Promise<{ submis
 
 /** Update a submission's mutable fields (used by the backend adapter). */
 export async function updateSubmission(id: string, patch: Partial<CitizenSubmission>): Promise<CitizenSubmission> {
+  const repo = await resolveRepository();
+  if (repo) return repo.updateSubmission(id, patch);
   const list = await loadSubmissions();
   const idx = list.findIndex(s => s.id === id);
   if (idx === -1) throw new Error('Submission not found');
@@ -350,6 +393,8 @@ export async function moderateSubmission(id: string, moderatorId: string, modera
 // ─── Multi-stage polling ──────────────────────────────────────────────────────
 
 export async function loadPolls(): Promise<MultiStagePoll[]> {
+  const repo = await resolveRepository();
+  if (repo) return repo.listPolls();
   try {
     const raw = await AsyncStorage.getItem(POLLS_KEY);
     if (!raw) return seedPolls();
@@ -398,6 +443,13 @@ export function createPoll(input: {
 }
 
 export async function castVote(pollId: string, optionId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
+  // Delegate to the active backend when configured. The server-side
+  // cast_workflow_vote() RPC enforces one-vote-per-poller via RLS + unique
+  // constraint, so the client-side mutex is not needed in that path. We keep
+  // the mutex for the local-mock path below.
+  const repo = await resolveRepository();
+  if (repo) return repo.castVote(pollId, optionId, voter);
+
   return voteMutex.run(async () => {
     const polls = await loadPolls();
     const idx = polls.findIndex(p => p.id === pollId);
@@ -514,6 +566,8 @@ async function saveVotes(votes: Record<string, Record<string, string>>): Promise
 // ─── Audit log ────────────────────────────────────────────────────────────────
 
 export async function loadAuditEvents(articleId?: string): Promise<AuditEvent[]> {
+  const repo = await resolveRepository();
+  if (repo) return repo.listAuditEvents(articleId);
   try {
     const raw = await AsyncStorage.getItem(AUDIT_KEY);
     const list: AuditEvent[] = raw ? JSON.parse(raw) : seedAuditEvents();

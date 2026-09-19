@@ -1,18 +1,20 @@
-import React from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Radius, Spacing, Typography } from '../constants/tokens';
 import { useAppContext } from '../hooks/useAppContext';
 import { getRegion, getDistrict, localizedRegionName, localizedDistrictName } from '../constants/regions';
+import { getAuthService } from '../services/authService';
 import { t } from '../utils';
 import { isSupabaseConfigured } from '../lib/supabase';
 
 const FONT_SIZES = ['sm', 'md', 'lg', 'xl'] as const;
 const FONT_LABELS = ['A', 'A', 'A+', 'A++'] as const;
 
-export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
+export function ProfileScreen({ onAuthPress, onSignOut }: { onAuthPress?: () => void; onSignOut?: () => Promise<void> | void }) {
   const { language, fontSize, setFontSize, user } = useAppContext();
+  const [signingOut, setSigningOut] = useState(false);
 
   return (
     <View style={styles.root}>
@@ -44,6 +46,37 @@ export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
             <Pressable style={styles.primary} onPress={() => onAuthPress?.()}>
               <Text style={styles.primaryText}>
                 {t('Ingia au jisajili', 'Sign in or register', language)}
+              </Text>
+            </Pressable>
+          )}
+          {user && (
+            <Pressable
+              style={({ pressed }) => [styles.signOutBtn, pressed && styles.signOutBtnPressed, signingOut && { opacity: 0.6 }]}
+              onPress={async () => {
+                if (signingOut) return;
+                setSigningOut(true);
+                try {
+                  // Always call the unified service so the underlying session
+                  // (demo AsyncStorage or Supabase) is cleared.
+                  await getAuthService().signOut();
+                } catch (e) {
+                  console.warn('[auth] signOut failed', e);
+                } finally {
+                  setSigningOut(false);
+                  // Delegate to App.tsx to clear user state + reset nav.
+                  onSignOut?.();
+                }
+              }}
+              disabled={signingOut}
+              accessibilityRole="button"
+              accessibilityLabel={t('Toka', 'Sign out', language)}
+              accessibilityState={{ disabled: signingOut }}
+            >
+              {signingOut
+                ? <ActivityIndicator size="small" color={Colors.red[300]} />
+                : <Ionicons name="log-out-outline" size={20} color={Colors.red[300]} />}
+              <Text style={styles.signOutBtnText}>
+                {signingOut ? t('Inatoka…', 'Signing out…', language) : t('Toka kwenye akaunti', 'Sign out', language)}
               </Text>
             </Pressable>
           )}
@@ -162,6 +195,26 @@ const styles = StyleSheet.create({
   },
   primaryText: {
     color: '#fff',
+    fontSize: Typography.size.sm,
+    fontWeight: Typography.weight.semibold,
+  },
+  signOutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing[2],
+    marginTop: Spacing[4],
+    paddingVertical: Spacing[3],
+    paddingHorizontal: Spacing[5],
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.red[400],
+    backgroundColor: Colors.red[50],
+    minHeight: 44,
+  },
+  signOutBtnPressed: { opacity: 0.7 },
+  signOutBtnText: {
+    color: Colors.red[300],
     fontSize: Typography.size.sm,
     fontWeight: Typography.weight.semibold,
   },

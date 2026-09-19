@@ -3,15 +3,16 @@ import { View, Text, TextInput, Pressable, ScrollView, StyleSheet, Platform } fr
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
-import { authService, AUTH_DISCLAIMER } from '../services/auth';
+import { getAuthService } from '../services/authService';
+import { AUTH_DISCLAIMER } from '../services/auth';
 import { useAppContext } from '../hooks/useAppContext';
 import { RegionDistrictPicker, type RegionDistrictValue } from '../components/RegionDistrictPicker';
-import type { AuthSession, RegistrationInput, LibraryLanguage } from '../types';
+import type { RegistrationInput, LibraryLanguage, User } from '../types';
 
 type Mode = 'signin' | 'register';
 
 interface AuthScreenProps {
-  onAuthenticated?: (session: AuthSession) => void;
+  onAuthenticated?: (user: User) => void;
   onBack?: () => void;
 }
 
@@ -32,9 +33,10 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
   async function handleSubmit() {
     setError(''); setBusy(true);
     try {
-      let session: AuthSession;
+      const service = getAuthService();
+      let signedInUser: User;
       if (mode === 'signin') {
-        session = await authService.signInWithCredentials({ identifier, password });
+        signedInUser = await service.signInWithCredentials({ identifier, password });
       } else {
         if (!displayName.trim()) throw new Error('Tafadhali jaza jina lako. / Please enter your name.');
         const input: RegistrationInput = {
@@ -47,24 +49,11 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
           languagePref: language as LibraryLanguage,
           anonymous,
         };
-        session = await authService.register(input);
+        signedInUser = await service.register(input);
       }
-      setUser({
-        id: session.userId,
-        display_name: session.displayName,
-        email: session.email,
-        phone: session.phone,
-        nida_verified: false,
-        verification_tier: session.verificationTier,
-        role: 'registered',
-        anonymity_default: anonymous,
-        region: session.region,
-        district: session.district,
-        language_pref: session.languagePref,
-        created_at: session.signedInAt,
-      });
-      if (session.languagePref !== language) setLanguage(session.languagePref);
-      onAuthenticated?.(session);
+      setUser(signedInUser);
+      if (signedInUser.language_pref !== language) setLanguage(signedInUser.language_pref);
+      onAuthenticated?.(signedInUser);
     } catch (e) {
       const msg = e instanceof Error ? e.message : 'Hitilafu isiyotarajiwa. / Unexpected error.';
       setError(msg);
