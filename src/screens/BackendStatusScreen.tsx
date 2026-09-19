@@ -96,7 +96,7 @@ export function BackendStatusScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Maelezo ya Uundaji wa PDF', 'PDF Generation Details')}</Text>
-              <Pressable onPress={() => setExportModal(false)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setExportModal(false)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <ScrollView contentContainerStyle={{ gap: Spacing[3] }}>
               <Text style={styles.bodyText}>

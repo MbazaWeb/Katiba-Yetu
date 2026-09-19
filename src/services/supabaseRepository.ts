@@ -37,6 +37,7 @@ function mapSubmissionRow(row: Record<string, unknown>): CitizenSubmission {
     rationale: row.rationale as string,
     supportingEvidence: (row.supporting_evidence as string | null) ?? undefined,
     region: (row.region as TanzaniaRegion | null) ?? undefined,
+    district: (row.district as string | null) ?? undefined,
     anonymous: row.anonymous as boolean,
     authorId: row.author_id as string,
     authorDisplayName: (row as { profiles?: { display_name?: string } }).profiles?.display_name ?? 'Mwananchi',
@@ -171,6 +172,7 @@ export class SupabaseBackendRepository implements BackendRepository {
       p_supporting_evidence: input.supportingEvidence ?? null,
       p_affected_article_id: input.affectedArticleId ?? null,
       p_region: input.region ?? null,
+      p_district: input.district ?? null,
       p_anonymous: input.anonymous,
     });
 

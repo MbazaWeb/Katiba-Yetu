@@ -296,7 +296,7 @@ export function ApprovalWorkflowScreen({ onBack }: Props) {
             <View style={styles.sheet}>
               <View style={styles.sheetHeader}>
                 <Text style={styles.sheetTitle}>{decisionModal?.status === 'completed' ? copy('Idhinisha Hatua', 'Approve Stage') : copy('Kataa Hatua', 'Reject Stage')}</Text>
-                <Pressable onPress={() => setDecisionModal(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+                <Pressable onPress={() => setDecisionModal(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
               </View>
               <View style={{ gap: Spacing[3] }}>
                 {decisionModal && <Text style={styles.contextText}>{language === 'sw' ? STAGE_LABELS[decisionModal.stage].sw : STAGE_LABELS[decisionModal.stage].en}</Text>}

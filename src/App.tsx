@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, StyleSheet, useWindowDimensions, Platform, Modal, SafeAreaView, Pressable, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { DesktopHomeScreen } from './screens/DesktopHomeScreen';

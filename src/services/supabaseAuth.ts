@@ -14,6 +14,7 @@ export async function loadProfile(authUser: AuthUser): Promise<User> {
     role: data.role,
     anonymity_default: data.anonymity_default,
     region: data.region ?? undefined,
+    district: data.district ?? undefined,
     language_pref: data.language_pref,
     avatar_url: data.avatar_url ?? undefined,
     created_at: data.created_at,

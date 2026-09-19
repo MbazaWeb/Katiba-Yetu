@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, TextInput, ActivityIndicator } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Radius, Spacing, Typography } from '../constants/tokens';
@@ -7,7 +7,6 @@ import { useAppContext } from '../hooks/useAppContext';
 import { getRegion, getDistrict, localizedRegionName, localizedDistrictName } from '../constants/regions';
 import { t } from '../utils';
 import { isSupabaseConfigured } from '../lib/supabase';
-import { signIn, signOut, signUp } from '../services/supabaseAuth';
 
 const FONT_SIZES = ['sm', 'md', 'lg', 'xl'] as const;
 const FONT_LABELS = ['A', 'A', 'A+', 'A++'] as const;
@@ -89,6 +88,11 @@ export function ProfileScreen({ onAuthPress }: { onAuthPress?: () => void }) {
         </View>
 
         <Text style={styles.version}>Katiba Yetu · v0.3.1</Text>
+        <Text style={styles.backendStatus}>
+          {isSupabaseConfigured
+            ? t('Seva ya Supabase imeunganishwa', 'Supabase backend connected', language)
+            : t('Inatumia hifadhi ya ndani (mock). Seva ya Supabase haijaunganishwa.', 'Using local mock storage. Supabase backend not configured.', language)}
+        </Text>
       </ScrollView>
     </View>
   );
@@ -255,6 +259,13 @@ const styles = StyleSheet.create({
     color: Colors.text.muted,
     fontSize: Typography.size.xs,
     marginTop: Spacing[8],
+  },
+  backendStatus: {
+    textAlign: 'center',
+    color: Colors.text.muted,
+    fontSize: Typography.size.xs,
+    marginTop: Spacing[1],
+    fontStyle: 'italic',
   },
 });
 

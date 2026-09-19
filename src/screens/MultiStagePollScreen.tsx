@@ -213,7 +213,7 @@ export function MultiStagePollScreen({ onBack }: Props) {
                     <Text style={styles.sheetTitle} numberOfLines={2}>{selected.title}</Text>
                     <Text style={styles.sheetSub}>{language === 'sw' ? POLL_STAGE_LABELS[selected.stage].sw : POLL_STAGE_LABELS[selected.stage].en} · {selected.status}</Text>
                   </View>
-                  <Pressable onPress={() => setSelected(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+                  <Pressable onPress={() => setSelected(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
                 </View>
                 <ScrollView contentContainerStyle={{ gap: Spacing[3], paddingBottom: Spacing[5] }} keyboardShouldPersistTaps="handled">
                   <Text style={styles.detailBody}>{selected.description}</Text>

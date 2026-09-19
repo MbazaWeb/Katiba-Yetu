@@ -212,7 +212,7 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Wasilisha Pendekezo', 'Submit Proposal')}</Text>
-              <Pressable onPress={() => setShowForm(false)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setShowForm(false)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <ScrollView contentContainerStyle={{ gap: Spacing[3], paddingBottom: Spacing[5] }} keyboardShouldPersistTaps="handled">
               <Notice>{SUBMISSION_DISCLAIMER}</Notice>
@@ -377,7 +377,7 @@ export function CitizenSubmissionScreen({ onBack }: Props) {
               <>
                 <View style={styles.sheetHeader}>
                   <Text style={styles.sheetTitle} numberOfLines={2}>{selected.title}</Text>
-                  <Pressable onPress={() => setSelected(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+                  <Pressable onPress={() => setSelected(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
                 </View>
                 <ScrollView contentContainerStyle={{ gap: Spacing[3], paddingBottom: Spacing[5] }}>
                   <View style={styles.detailMetaRow}>

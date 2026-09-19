@@ -73,8 +73,16 @@ export function HomeScreen({
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    // TODO: replace with real data refetch once the API is integrated
-    setTimeout(() => setRefreshing(false), 1200);
+    // TODO: replace with real data refetch once the API is integrated.
+    // The timer is tracked on a ref so it can be cleared on unmount below.
+    refreshTimerRef.current = setTimeout(() => setRefreshing(false), 1200);
+  }, []);
+
+  const refreshTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  React.useEffect(() => {
+    return () => {
+      if (refreshTimerRef.current) clearTimeout(refreshTimerRef.current);
+    };
   }, []);
 
   const heroSubtitle = t(

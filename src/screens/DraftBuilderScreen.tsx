@@ -208,19 +208,19 @@ export function DraftBuilderScreen({ onBack }: Props) {
                     <Text style={styles.articleTitle}>{copy('Ibara', 'Article')} {article.proposedArticleNumber}: {language === 'sw' ? article.proposedTitle.sw : article.proposedTitle.en ?? article.proposedTitle.sw}</Text>
                     <Text style={styles.articleMeta}>{copy('Sura', 'Chapter')} {chapter?.number} · {copy('Hadhi', 'Status')}: {article.status}</Text>
                   </View>
-                  <Pressable style={styles.iconBtn} onPress={() => { setSelectedArticle(article); setEditBefore((language === 'sw' ? article.proposedText.sw : article.proposedText.en) ?? ''); setEditAfter((language === 'sw' ? article.proposedText.sw : article.proposedText.en) ?? ''); setModalKind('edit_wording'); }}>
+                  <Pressable style={styles.iconBtn} accessibilityRole="button" accessibilityLabel={copy('Hariri lugha', 'Edit wording')} onPress={() => { setSelectedArticle(article); setEditBefore((language === 'sw' ? article.proposedText.sw : article.proposedText.en) ?? ''); setEditAfter((language === 'sw' ? article.proposedText.sw : article.proposedText.en) ?? ''); setModalKind('edit_wording'); }}>
                     <Ionicons name="create-outline" size={18} color={canEditWording ? Colors.green[300] : Colors.text.muted} />
                   </Pressable>
-                  <Pressable style={styles.iconBtn} onPress={() => { setSelectedArticle(article); setNewArticleNumber(article.proposedArticleNumber); setModalKind('assign_number'); }}>
+                  <Pressable style={styles.iconBtn} accessibilityRole="button" accessibilityLabel={copy('Panga nambari ya ibara', 'Assign article number')} onPress={() => { setSelectedArticle(article); setNewArticleNumber(article.proposedArticleNumber); setModalKind('assign_number'); }}>
                     <Ionicons name="pricetag-outline" size={18} color={canCreateVersion ? Colors.green[300] : Colors.text.muted} />
                   </Pressable>
-                  <Pressable style={styles.iconBtn} onPress={() => { setSelectedArticle(article); setPollStage('problem_confirmation'); setModalKind('request_poll'); }}>
+                  <Pressable style={styles.iconBtn} accessibilityRole="button" accessibilityLabel={copy('Omba kura', 'Request poll')} onPress={() => { setSelectedArticle(article); setPollStage('problem_confirmation'); setModalKind('request_poll'); }}>
                     <Ionicons name="stats-chart-outline" size={18} color={canRequestPoll ? Colors.green[300] : Colors.text.muted} />
                   </Pressable>
-                  <Pressable style={styles.iconBtn} onPress={() => { setSelectedArticle(article); setLegalStatus('approved'); setLegalNotes(''); setModalKind('legal_review'); }}>
+                  <Pressable style={styles.iconBtn} accessibilityRole="button" accessibilityLabel={copy('Mapitio ya kisheria', 'Legal review')} onPress={() => { setSelectedArticle(article); setLegalStatus('approved'); setLegalNotes(''); setModalKind('legal_review'); }}>
                     <Ionicons name="shield-checkmark-outline" size={18} color={canLegalReview ? Colors.green[300] : Colors.text.muted} />
                   </Pressable>
-                  <Pressable style={styles.iconBtn} onPress={() => { setSelectedArticle(article); setSendBackReason(''); setModalKind('send_back'); }}>
+                  <Pressable style={styles.iconBtn} accessibilityRole="button" accessibilityLabel={copy('Rudisha kwa majadiliano', 'Send back for discussion')} onPress={() => { setSelectedArticle(article); setSendBackReason(''); setModalKind('send_back'); }}>
                     <Ionicons name="return-down-back-outline" size={18} color={canSendBack ? Colors.red[300] : Colors.text.muted} />
                   </Pressable>
                 </View>
@@ -272,7 +272,7 @@ export function DraftBuilderScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Unda Toleo Jipya', 'Create New Version')}</Text>
-              <Pressable onPress={() => setModalKind(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setModalKind(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <View style={{ gap: Spacing[3] }}>
               <Text style={styles.label}>{copy('Jina la toleo', 'Version name')}</Text>
@@ -294,7 +294,7 @@ export function DraftBuilderScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Hariri Lugha', 'Edit Wording')}</Text>
-              <Pressable onPress={() => setModalKind(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setModalKind(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <ScrollView contentContainerStyle={{ gap: Spacing[3] }}>
               {selectedArticle && <Text style={styles.contextText}>{copy('Ibara', 'Article')} {selectedArticle.proposedArticleNumber}</Text>}
@@ -332,7 +332,7 @@ export function DraftBuilderScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Panga Nambari ya Ibara', 'Assign Article Number')}</Text>
-              <Pressable onPress={() => setModalKind(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setModalKind(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <View style={{ gap: Spacing[3] }}>
               {selectedArticle && <Text style={styles.contextText}>{copy('Ibara', 'Article')} {selectedArticle.proposedArticleNumber}</Text>}
@@ -354,7 +354,7 @@ export function DraftBuilderScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Omba Kura', 'Request Poll')}</Text>
-              <Pressable onPress={() => setModalKind(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setModalKind(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <View style={{ gap: Spacing[3] }}>
               {selectedArticle && <Text style={styles.contextText}>{copy('Ibara', 'Article')} {selectedArticle.proposedArticleNumber}</Text>}
@@ -380,7 +380,7 @@ export function DraftBuilderScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Mapitio ya Kisheria', 'Legal Review')}</Text>
-              <Pressable onPress={() => setModalKind(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setModalKind(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <ScrollView contentContainerStyle={{ gap: Spacing[3] }}>
               {selectedArticle && <Text style={styles.contextText}>{copy('Ibara', 'Article')} {selectedArticle.proposedArticleNumber}</Text>}
@@ -409,7 +409,7 @@ export function DraftBuilderScreen({ onBack }: Props) {
           <View style={styles.sheet}>
             <View style={styles.sheetHeader}>
               <Text style={styles.sheetTitle}>{copy('Rudisha kwa Majadiliano', 'Send Back for Discussion')}</Text>
-              <Pressable onPress={() => setModalKind(null)}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setModalKind(null)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
             </View>
             <View style={{ gap: Spacing[3] }}>
               {selectedArticle && <Text style={styles.contextText}>{copy('Ibara', 'Article')} {selectedArticle.proposedArticleNumber}</Text>}

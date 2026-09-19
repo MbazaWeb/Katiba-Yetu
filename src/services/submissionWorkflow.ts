@@ -47,6 +47,29 @@ const POLLS_KEY = '@katibayetu/multi_stage_polls';
 const AUDIT_KEY = '@katibayetu/audit_events';
 const VOTES_KEY = '@katibayetu/multi_stage_votes';
 
+// ─── Mutex for atomic vote-casting ───────────────────────────────────────────
+//
+// AsyncStorage has no transaction support. Without a mutex, a double-tap on
+// the "Vote" button could pass the `hasVoted` check twice before either
+// write landed, allowing a single user to cast two votes.
+//
+// This mutex serialises the read-check-write sequence in castVote() and
+// abstain() so the check + writes are atomic from the application's
+// perspective. (AsyncStorage itself is still eventually-consistent across
+// separate keys, but since both writes happen while the mutex is held, no
+// other voter can interleave.)
+class Mutex {
+  private chain: Promise<unknown> = Promise.resolve();
+  run<T>(task: () => Promise<T>): Promise<T> {
+    const run = this.chain.then(task, task);
+    // Swallow rejections on the chain so a failed task doesn't poison
+    // subsequent voters. The caller still sees the rejection.
+    this.chain = run.then(() => undefined, () => undefined);
+    return run;
+  }
+}
+const voteMutex = new Mutex();
+
 // ─── Sanitization & validation ────────────────────────────────────────────────
 
 const MAX_TITLE = 200;
@@ -182,7 +205,9 @@ export async function loadSubmissions(): Promise<CitizenSubmission[]> {
 }
 
 export async function saveSubmissions(list: CitizenSubmission[]): Promise<void> {
-  try { await AsyncStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(list)); } catch (e) { console.warn('[submissions] save failed', e); }
+  // Surface failures to the caller. A silent console.warn here would let the
+  // UI show "submission created" while the data was never persisted.
+  await AsyncStorage.setItem(SUBMISSIONS_KEY, JSON.stringify(list));
 }
 
 export async function createSubmission(input: SubmissionInput): Promise<{ submission: CitizenSubmission; events: ModerationEvent[]; duplicate?: { isDuplicate: boolean; similarity: number; similarIds: string[] } }> {
@@ -333,7 +358,9 @@ export async function loadPolls(): Promise<MultiStagePoll[]> {
 }
 
 export async function savePolls(list: MultiStagePoll[]): Promise<void> {
-  try { await AsyncStorage.setItem(POLLS_KEY, JSON.stringify(list)); } catch (e) { console.warn('[polls] save failed', e); }
+  // Surface failures to the caller. A silent console.warn here would let
+  // the UI show "vote recorded" while the data was never persisted.
+  await AsyncStorage.setItem(POLLS_KEY, JSON.stringify(list));
 }
 
 export function nextPollStage(current: PollStageLike | null): PollStageLike | null {
@@ -371,76 +398,82 @@ export function createPoll(input: {
 }
 
 export async function castVote(pollId: string, optionId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
-  const polls = await loadPolls();
-  const idx = polls.findIndex(p => p.id === pollId);
-  if (idx === -1) throw new Error('Poll not found');
-  const poll = polls[idx];
-  if (poll.status !== 'open') throw new Error('Poll is not open');
-  const now = Date.now();
-  if (now < Date.parse(poll.opensAt) || now > Date.parse(poll.closesAt)) throw new Error('Poll is outside its voting window');
+  return voteMutex.run(async () => {
+    const polls = await loadPolls();
+    const idx = polls.findIndex(p => p.id === pollId);
+    if (idx === -1) throw new Error('Poll not found');
+    const poll = polls[idx];
+    if (poll.status !== 'open') throw new Error('Poll is not open');
+    const now = Date.now();
+    if (now < Date.parse(poll.opensAt) || now > Date.parse(poll.closesAt)) throw new Error('Poll is outside its voting window');
 
-  // Bot detection (mock): reject if voter account is too new (< 60 seconds)
-  // In real backend this would use account age, IP reputation, behavioral signals.
-  // We can't enforce this without the user creation date; pass through for the mock.
+    // Bot detection (mock): reject if voter account is too new (< 60 seconds)
+    // In real backend this would use account age, IP reputation, behavioral signals.
+    // We can't enforce this without the user creation date; pass through for the mock.
 
-  // Check one-vote-per-poll
-  const votes = await loadVotes();
-  if (votes[pollId]?.[voter.id]) throw new Error('Mtumiaji ameshapiga kura. / Voter has already cast a vote.');
+    // Check one-vote-per-poll — this check + the writes below are now atomic
+    // under voteMutex, so a double-tap cannot pass the check twice.
+    const votes = await loadVotes();
+    if (votes[pollId]?.[voter.id]) throw new Error('Mtumiaji ameshapiga kura. / Voter has already cast a vote.');
 
-  const opt = poll.options.find(o => o.id === optionId);
-  if (!opt) throw new Error('Option not found');
+    const opt = poll.options.find(o => o.id === optionId);
+    if (!opt) throw new Error('Option not found');
 
-  const updatedPoll: MultiStagePoll = {
-    ...poll,
-    totalVotes: poll.totalVotes + 1,
-    verifiedVotes: poll.verifiedVotes + (voter.verified ? 1 : 0),
-    regionDistribution: voter.region ? { ...poll.regionDistribution, [voter.region]: (poll.regionDistribution[voter.region] ?? 0) + 1 } : poll.regionDistribution,
-    verificationTierDistribution: { ...poll.verificationTierDistribution, [voter.tier]: (poll.verificationTierDistribution[voter.tier] ?? 0) + 1 },
-    options: poll.options.map(o => o.id === optionId
-      ? { ...o, votes: o.votes + 1, verifiedVotes: o.verifiedVotes + (voter.verified ? 1 : 0), percentage: 0 }
-      : o,
-    ),
-  };
-  // Recompute percentages
-  const total = updatedPoll.totalVotes || 1;
-  updatedPoll.options = updatedPoll.options.map(o => ({ ...o, percentage: Math.round((o.votes / total) * 100) }));
-  updatedPoll.isRepresentative = updatedPoll.verifiedVotes >= updatedPoll.minimumParticipation;
-  if (updatedPoll.isRepresentative) {
-    updatedPoll.representativenessWarning = 'Ushiriki umefikia kiwango cha chini, lakini bado si uwakilishi wa kitaifa. / Participation has met the minimum threshold, but is still not national representation.';
-  }
-  polls[idx] = updatedPoll;
-  await savePolls(polls);
+    const updatedPoll: MultiStagePoll = {
+      ...poll,
+      totalVotes: poll.totalVotes + 1,
+      verifiedVotes: poll.verifiedVotes + (voter.verified ? 1 : 0),
+      regionDistribution: voter.region ? { ...poll.regionDistribution, [voter.region]: (poll.regionDistribution[voter.region] ?? 0) + 1 } : poll.regionDistribution,
+      verificationTierDistribution: { ...poll.verificationTierDistribution, [voter.tier]: (poll.verificationTierDistribution[voter.tier] ?? 0) + 1 },
+      options: poll.options.map(o => o.id === optionId
+        ? { ...o, votes: o.votes + 1, verifiedVotes: o.verifiedVotes + (voter.verified ? 1 : 0), percentage: 0 }
+        : o,
+      ),
+    };
+    // Recompute percentages
+    const total = updatedPoll.totalVotes || 1;
+    updatedPoll.options = updatedPoll.options.map(o => ({ ...o, percentage: Math.round((o.votes / total) * 100) }));
+    updatedPoll.isRepresentative = updatedPoll.verifiedVotes >= updatedPoll.minimumParticipation;
+    if (updatedPoll.isRepresentative) {
+      updatedPoll.representativenessWarning = 'Ushiriki umefikia kiwango cha chini, lakini bado si uwakilishi wa kitaifa. / Participation has met the minimum threshold, but is still not national representation.';
+    }
+    polls[idx] = updatedPoll;
+    // Save polls first; if this throws, no vote record is created either.
+    await savePolls(polls);
 
-  // Record vote
-  const allVotes = votes;
-  if (!allVotes[pollId]) allVotes[pollId] = {};
-  allVotes[pollId][voter.id] = optionId;
-  await saveVotes(allVotes);
+    // Record vote — atomic with the poll update above (mutex held throughout).
+    const allVotes = votes;
+    if (!allVotes[pollId]) allVotes[pollId] = {};
+    allVotes[pollId][voter.id] = optionId;
+    await saveVotes(allVotes);
 
-  return updatedPoll;
+    return updatedPoll;
+  });
 }
 
 export async function abstain(pollId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
-  const polls = await loadPolls();
-  const idx = polls.findIndex(p => p.id === pollId);
-  if (idx === -1) throw new Error('Poll not found');
-  const poll = polls[idx];
-  const votes = await loadVotes();
-  if (votes[pollId]?.[voter.id]) throw new Error('Mtumiaji ameshapiga kura. / Voter has already cast a vote.');
-  const updated: MultiStagePoll = {
-    ...poll,
-    abstentions: poll.abstentions + 1,
-    totalVotes: poll.totalVotes + 1,
-    verifiedVotes: poll.verifiedVotes + (voter.verified ? 1 : 0),
-    regionDistribution: voter.region ? { ...poll.regionDistribution, [voter.region]: (poll.regionDistribution[voter.region] ?? 0) + 1 } : poll.regionDistribution,
-    verificationTierDistribution: { ...poll.verificationTierDistribution, [voter.tier]: (poll.verificationTierDistribution[voter.tier] ?? 0) + 1 },
-  };
-  polls[idx] = updated;
-  await savePolls(polls);
-  if (!votes[pollId]) votes[pollId] = {};
-  votes[pollId][voter.id] = '__abstain__';
-  await saveVotes(votes);
-  return updated;
+  return voteMutex.run(async () => {
+    const polls = await loadPolls();
+    const idx = polls.findIndex(p => p.id === pollId);
+    if (idx === -1) throw new Error('Poll not found');
+    const poll = polls[idx];
+    const votes = await loadVotes();
+    if (votes[pollId]?.[voter.id]) throw new Error('Mtumiaji ameshapiga kura. / Voter has already cast a vote.');
+    const updated: MultiStagePoll = {
+      ...poll,
+      abstentions: poll.abstentions + 1,
+      totalVotes: poll.totalVotes + 1,
+      verifiedVotes: poll.verifiedVotes + (voter.verified ? 1 : 0),
+      regionDistribution: voter.region ? { ...poll.regionDistribution, [voter.region]: (poll.regionDistribution[voter.region] ?? 0) + 1 } : poll.regionDistribution,
+      verificationTierDistribution: { ...poll.verificationTierDistribution, [voter.tier]: (poll.verificationTierDistribution[voter.tier] ?? 0) + 1 },
+    };
+    polls[idx] = updated;
+    await savePolls(polls);
+    if (!votes[pollId]) votes[pollId] = {};
+    votes[pollId][voter.id] = '__abstain__';
+    await saveVotes(votes);
+    return updated;
+  });
 }
 
 export async function closePoll(pollId: string, closer: { id: string; name: string; role: DraftBuilderRole }): Promise<MultiStagePoll> {
@@ -474,7 +507,8 @@ async function loadVotes(): Promise<Record<string, Record<string, string>>> {
 }
 
 async function saveVotes(votes: Record<string, Record<string, string>>): Promise<void> {
-  try { await AsyncStorage.setItem(VOTES_KEY, JSON.stringify(votes)); } catch (e) { console.warn('[votes] save failed', e); }
+  // Surface failures to the caller. Vote integrity depends on this write.
+  await AsyncStorage.setItem(VOTES_KEY, JSON.stringify(votes));
 }
 
 // ─── Audit log ────────────────────────────────────────────────────────────────
