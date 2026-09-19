@@ -18,7 +18,6 @@ import type {
   ApprovalDecision,
 } from '../types';
 import { PROPOSAL_DISCLAIMER } from '../types';
-import { draftGenerationService } from './draftGeneration';
 import type { DraftGenerationInput } from './draftGeneration';
 
 // ─── Repository API (empty until Supabase is configured) ──────────────────────
@@ -74,16 +73,12 @@ export function getParticipationSummary() {
 /**
  * Generate a new proposed article from citizen input.
  *
- * Routes through getAIGenerationBackend() so the active adapter (mock or
- * HTTP) is used. The mock adapter wraps draftGenerationService; the HTTP
- * adapter calls a real LLM endpoint when aiBaseUrl is configured.
+ * Routes through the configured AI backend. No local generation fallback is
+ * allowed because generated constitutional language must be auditable.
  */
-export async function generateProposedArticle(input: DraftGenerationInput) {
+export async function generateProposedArticle(_input: DraftGenerationInput) {
   const { getAIGenerationBackend } = await import('./backend');
   const backend = getAIGenerationBackend();
-  if (backend.kind === 'mock_deterministic') {
-    return draftGenerationService.generate(input);
-  }
   const aiInput = {
     moderatedProposals: [],
     discussionSummaries: [],

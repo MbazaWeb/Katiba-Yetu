@@ -14,6 +14,7 @@ import { PollsScreen } from './screens/PollsScreen';
 import { SearchScreen } from './screens/SearchScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { AuthScreen } from './screens/AuthScreen';
+import { LandingScreen } from './screens/LandingScreen';
 import { HistoryScreen } from './screens/HistoryScreen';
 import { ResourcesScreen } from './screens/ResourcesScreen';
 import { DiscussionScreen } from './screens/DiscussionScreen';
@@ -52,6 +53,8 @@ export default function App() {
   const [fontSize, setFontSize] = useState<FontSize>('md');
   const [user, setUser] = useState<User | null>(null);
   const [authReady, setAuthReady] = useState(false);
+  const [landingComplete, setLandingComplete] = useState(false);
+  const [authMode, setAuthMode] = useState<'signin' | 'register'>('signin');
   const [activeTab, setActiveTab] = useState<TabKey>('home');
   const [nav, setNav] = useState<NavState>({ screen: 'home' });
   const [libraryDocumentId, setLibraryDocumentId] = useState('doc-union-1977');
@@ -220,11 +223,27 @@ export default function App() {
     );
   }
 
+  if (!landingComplete) {
+    return (
+      <AppErrorBoundary>
+        <LandingScreen
+          language={language}
+          hasSession={Boolean(user)}
+          onContinue={() => setLandingComplete(true)}
+          onSignIn={() => { setAuthMode('signin'); setLandingComplete(true); }}
+          onRegister={() => { setAuthMode('register'); setLandingComplete(true); }}
+        />
+      </AppErrorBoundary>
+    );
+  }
+
   if (!user) {
     return (
       <AppErrorBoundary>
         <AppContext.Provider value={{ language, setLanguage: changeLanguage, fontSize, setFontSize: changeFontSize, user, setUser, isOffline: false }}>
           <AuthScreen
+            initialMode={authMode}
+            onBack={() => setLandingComplete(false)}
             onAuthenticated={() => {
               // user state is already set inside AuthScreen via setUser from context
               // nothing else needed — re-render will show the app
@@ -365,4 +384,3 @@ const styles = StyleSheet.create({
   splashTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size['3xl'], fontWeight: Typography.weight.bold, color: Colors.green[300] },
   splashSub: { fontSize: Typography.size.base, color: Colors.text.muted },
 });
-

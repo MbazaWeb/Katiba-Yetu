@@ -354,7 +354,7 @@ export interface AuditEvent {
  * Do NOT call this directly from UI components — use the typed service wrappers.
  */
 export interface BackendRepository {
-  readonly kind: 'mock' | 'http' | 'supabase';
+  readonly kind: 'unavailable' | 'http' | 'supabase';
   /** Returns true if a real backend URL has been configured. */
   isConfigured(): boolean;
   listSubmissions(): Promise<CitizenSubmission[]>;
@@ -380,7 +380,7 @@ export interface BackendRepository {
  * earlier versions.
  */
 export interface AIGenerationBackend {
-  readonly kind: 'mock_deterministic' | 'ai_backend';
+  readonly kind: 'unavailable' | 'ai_backend';
   isConfigured(): boolean;
   generateDraft(input: AIGenerationInput): Promise<AIGenerationResult>;
   regenerate(articleId: string, priorVersion?: number): Promise<AIGenerationResult>;
@@ -419,7 +419,7 @@ export interface AIGenerationResult {
  * the real implementation will integrate with NIDA / OTP providers.
  */
 export interface IdentityVerificationBackend {
-  readonly kind: 'mock' | 'nida' | 'otp';
+  readonly kind: 'unavailable' | 'nida' | 'otp';
   isConfigured(): boolean;
   initiateNIDAVerification(nin: string): Promise<{ requestId: string; status: 'initiated' | 'rejected' }>;
   confirmNIDAVerification(requestId: string, otp: string): Promise<{ verified: boolean; tier: VerificationTier }>;
@@ -433,7 +433,7 @@ export interface IdentityVerificationBackend {
  * detector backed by embeddings.
  */
 export interface ModerationBackend {
-  readonly kind: 'mock' | 'classifier';
+  readonly kind: 'unavailable' | 'classifier';
   isConfigured(): boolean;
   screenForHarmfulContent(text: string): Promise<{ flagged: boolean; reasons: string[]; confidence: number }>;
   detectDuplicates(submission: { title: string; body: string }, existing: CitizenSubmission[]): Promise<{ isDuplicate: boolean; similarIds: string[]; similarity: number }>;
@@ -446,7 +446,7 @@ export interface ModerationBackend {
  * the real implementation will render a server-side PDF.
  */
 export interface PDFExportBackend {
-  readonly kind: 'mock' | 'server';
+  readonly kind: 'unavailable' | 'server';
   isConfigured(): boolean;
   exportDraft(versionId: string, options: { language: LibraryLanguage; includeMethodology: boolean }): Promise<{ blobUri: string; sizeBytes: number; generatedAt: string }>;
 }

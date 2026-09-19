@@ -1,12 +1,9 @@
 /**
- * Unified AuthService — single seam for authentication across demo and
- * Supabase backends.
+ * Production authentication service backed exclusively by Supabase Auth.
  *
  * The AuthScreen and ProfileScreen call `getAuthService()` and never need to
- * know whether the underlying implementation is AsyncStorage-backed demo
- * auth or Supabase auth. When Supabase is configured
- * (`EXPO_PUBLIC_SUPABASE_URL` + `EXPO_PUBLIC_SUPABASE_ANON_KEY` are set),
- * the swappable adapter is returned; otherwise the demo adapter is used.
+ * Supabase must be configured with EXPO_PUBLIC_SUPABASE_URL and
+ * EXPO_PUBLIC_SUPABASE_ANON_KEY. There is deliberately no local/demo fallback.
  *
  * App.tsx still owns the `user` state. The service:
  *  - returns the current user (or null) via getCurrentUser()
@@ -15,12 +12,11 @@
  *  - exposes `kind` so the UI can show which backend is active
  */
 
-import { authService as demoAuthService } from './auth';
 import { isSupabaseConfigured, supabase } from '../lib/supabase';
 import { loadProfile, signIn as supabaseSignIn, signUp as supabaseSignUp, signOut as supabaseSignOut } from './supabaseAuth';
-import type { User, AuthCredentials, RegistrationInput, Language, AuthSession } from '../types';
+import type { User, AuthCredentials, RegistrationInput, Language } from '../types';
 
-export type AuthServiceKind = 'demo' | 'supabase';
+export type AuthServiceKind = 'supabase' | 'unavailable';
 
 export interface AuthService {
   readonly kind: AuthServiceKind;
@@ -37,33 +33,6 @@ export interface AuthService {
   /** Sign out the current user. */
   signOut(): Promise<void>;
 }
-
-// ─── Demo adapter ─────────────────────────────────────────────────────────────
-
-const demoAdapter: AuthService = {
-  kind: 'demo',
-  isConfigured() { return false; },
-  async getCurrentUser() {
-    const session = await demoAuthService.getCurrentSession();
-    if (!session) return null;
-    return sessionToUser(session);
-  },
-  onAuthStateChange(_handler) {
-    // Demo auth has no external state-change events. No-op.
-    return () => {};
-  },
-  async signInWithCredentials(credentials) {
-    const session = await demoAuthService.signInWithCredentials(credentials);
-    return sessionToUser(session);
-  },
-  async register(input) {
-    const session = await demoAuthService.register(input);
-    return sessionToUser(session);
-  },
-  async signOut() {
-    await demoAuthService.signOut();
-  },
-};
 
 // ─── Supabase adapter ────────────────────────────────────────────────────────
 
@@ -101,27 +70,9 @@ const supabaseAdapter: AuthService = {
   async register(input) {
     if (!input.email) throw new Error('Tafadhali andika barua pepe. / Supabase registration requires an email address.');
     await supabaseSignUp(input.email, input.password, input.displayName, input.languagePref as Language);
-    // After signUp, Supabase may require email confirmation before the
-    // session is active. We attempt to load the profile; if no session,
-    // we return a minimal User object derived from the registration input.
     const { data: { user: authUser } } = await supabase.auth.getUser();
     if (authUser) return loadProfile(authUser);
-    // No active session yet (likely awaiting email confirmation).
-    // Return a placeholder user so the UI can show a "check your email" state.
-    return {
-      id: `pending-${Date.now()}`,
-      display_name: input.displayName,
-      email: input.email,
-      phone: input.phone,
-      nida_verified: false,
-      verification_tier: 'none',
-      role: 'registered',
-      anonymity_default: input.anonymous,
-      region: input.region,
-      district: input.district,
-      language_pref: input.languagePref,
-      created_at: new Date().toISOString(),
-    };
+    throw new Error('Akaunti imeundwa. Thibitisha barua pepe yako, kisha ingia. / Account created. Confirm your email, then sign in.');
   },
   async signOut() {
     await supabaseSignOut();
@@ -130,7 +81,17 @@ const supabaseAdapter: AuthService = {
 
 // ─── Resolver ────────────────────────────────────────────────────────────────
 
-let currentAdapter: AuthService = isSupabaseConfigured ? supabaseAdapter : demoAdapter;
+const unavailableAdapter: AuthService = {
+  kind: 'unavailable',
+  isConfigured() { return false; },
+  async getCurrentUser() { return null; },
+  onAuthStateChange() { return () => {}; },
+  async signInWithCredentials() { throw new Error('Supabase Auth haijawekwa. / Supabase Auth is not configured.'); },
+  async register() { throw new Error('Supabase Auth haijawekwa. / Supabase Auth is not configured.'); },
+  async signOut() {},
+};
+
+let currentAdapter: AuthService = isSupabaseConfigured ? supabaseAdapter : unavailableAdapter;
 
 export function getAuthService(): AuthService {
   return currentAdapter;
@@ -139,23 +100,4 @@ export function getAuthService(): AuthService {
 /** Force a specific adapter — primarily for testing. */
 export function setAuthService(adapter: AuthService): void {
   currentAdapter = adapter;
-}
-
-// ─── Helper ──────────────────────────────────────────────────────────────────
-
-function sessionToUser(session: AuthSession): User {
-  return {
-    id: session.userId,
-    display_name: session.displayName,
-    email: session.email,
-    phone: session.phone,
-    nida_verified: false,
-    verification_tier: session.verificationTier,
-    role: 'registered',
-    anonymity_default: false,
-    region: session.region,
-    district: session.district,
-    language_pref: session.languagePref,
-    created_at: session.signedInAt,
-  };
 }

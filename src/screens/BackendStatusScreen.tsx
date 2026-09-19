@@ -36,8 +36,8 @@ export function BackendStatusScreen({ onBack }: Props) {
           <Text style={styles.heroTitle}>{copy('Hadhi ya Nyuma', 'Backend Status')}</Text>
           <Text style={styles.heroSub}>
             {copy(
-              'Sehemu ya mfumo wa kisasa. Inaonyesha ni huduma zipi zimeunganishwa na ni zipi zinatumia mfano wa ndani (mock).',
-              'Subsystem status panel. Shows which services are connected and which use mock implementations.'
+              'Inaonyesha huduma zilizounganishwa na huduma ambazo zimezimwa kwa sababu hazijasanidiwa.',
+              'Shows connected services and services disabled because they are not configured.'
             )}
           </Text>
         </View>
@@ -56,7 +56,7 @@ export function BackendStatusScreen({ onBack }: Props) {
                   <Text style={styles.statusValue}>
                     {s.configured
                       ? (copy('Imeunganishwa', 'Connected') + ` · ${s.kind} · ${s.baseUrl}`)
-                      : (copy('Inatumia mfano (mock)', 'Using mock') + ` · ${s.kind}`)}
+                      : (copy('Haijasanidiwa — imezimwa', 'Not configured — disabled') + ` · ${s.kind}`)}
                   </Text>
                 </View>
                 <View style={[styles.dot, s.configured ? styles.dotGreen : styles.dotGray]} />
@@ -69,8 +69,8 @@ export function BackendStatusScreen({ onBack }: Props) {
           <Text style={styles.cardTitle}>{copy('Maelezo ya Awali', 'Initial Notes')}</Text>
           <Text style={styles.bodyText}>
             {copy(
-              'Kwa sasa, seva yote huria ni mfano. Seva halisi ya API, AI, NIDA, Udhibiti, na PDF itaunganishwa katika awamu ya tatu. Mfumo huu unaeleza kwa wazi ni sehemu gani inatumia mfano na ni zipi zimeunganishwa.',
-              'Currently, all backend services are mock. The real API, AI, NIDA, moderation, and PDF servers will be integrated in Phase 3. This panel clearly shows which subsystems use mock implementations and which are connected.'
+              'Supabase ndiyo hifadhi kuu. AI, NIDA, Udhibiti na PDF hazitatumia data ya mfano; kila huduma hubaki imezimwa hadi seva yake halisi isanidiwe.',
+              'Supabase is the primary data service. AI, NIDA, moderation, and PDF never use mock data; each remains disabled until its real server is configured.'
             )}
           </Text>
         </View>
@@ -79,8 +79,8 @@ export function BackendStatusScreen({ onBack }: Props) {
           <Text style={styles.cardTitle}>{copy('Hatua za Uundaji wa PDF', 'PDF Generation Steps')}</Text>
           <Text style={styles.bodyText}>
             {copy(
-              'Ili kuhamasisha rasimu iliyochapishwa kama PDF: fungua Rasimu, chagua toleo lililochapishwa, na ubonyeze "Pakua PDF". Kwa sasa, kipengele hiki kinajenga HTML inayoweza kuchapishwa; seva halisi ya PDF itaunganishwa baadaye.',
-              'To export a published draft as PDF: open the Proposed Constitution, select a published version, and tap "Download PDF". Currently this builds a printable HTML view; a real server-side PDF generator will be integrated later.'
+              'Uhamishaji wa PDF unapatikana tu baada ya seva halisi ya PDF kusanidiwa.',
+              'PDF export is available only after a real PDF server is configured.'
             )}
           </Text>
           <Pressable style={styles.openBtn} onPress={() => setExportModal(true)}>
@@ -101,8 +101,8 @@ export function BackendStatusScreen({ onBack }: Props) {
             <ScrollView contentContainerStyle={{ gap: Spacing[3] }}>
               <Text style={styles.bodyText}>
                 {copy(
-                  'Rasimu iliyochapishwa inaweza kuhamishiwa kama PDF. Kwa sasa mfumo huu unaunda HTML inayoweza kuchapishwa; seva ya kisheria ya PDF itaunganishwa katika awamu ya tatu.',
-                  'A published draft can be exported as a PDF. Currently the system builds a printable HTML view; a server-side PDF generator will be integrated in Phase 3.'
+                  'Hakuna PDF ya mfano. Seva ya PDF lazima isanidiwe kabla ya kipengele hiki kutumika.',
+                  'There is no mock PDF export. A PDF server must be configured before this feature can be used.'
                 )}
               </Text>
               <Text style={styles.label}>{copy('Maudhui yanayoingizwa', 'Exported content includes')}:</Text>

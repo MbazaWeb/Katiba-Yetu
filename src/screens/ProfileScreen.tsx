@@ -124,7 +124,7 @@ export function ProfileScreen({ onAuthPress, onSignOut }: { onAuthPress?: () => 
         <Text style={styles.backendStatus}>
           {isSupabaseConfigured
             ? t('Seva ya Supabase imeunganishwa', 'Supabase backend connected', language)
-            : t('Inatumia hifadhi ya ndani (mock). Seva ya Supabase haijaunganishwa.', 'Using local mock storage. Supabase backend not configured.', language)}
+            : t('Supabase haijaunganishwa; huduma za mtumiaji zimezimwa.', 'Supabase is not configured; user services are disabled.', language)}
         </Text>
       </ScrollView>
     </View>
@@ -321,4 +321,3 @@ const styles = StyleSheet.create({
     fontStyle: 'italic',
   },
 });
-

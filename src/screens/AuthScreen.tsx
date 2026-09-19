@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
 import { getAuthService } from '../services/authService';
-import { AUTH_DISCLAIMER } from '../services/auth';
 import { useAppContext } from '../hooks/useAppContext';
 import { RegionDistrictPicker, type RegionDistrictValue } from '../components/RegionDistrictPicker';
 import type { RegistrationInput, LibraryLanguage, User } from '../types';
@@ -14,11 +13,12 @@ type Mode = 'signin' | 'register';
 interface AuthScreenProps {
   onAuthenticated?: (user: User) => void;
   onBack?: () => void;
+  initialMode?: Mode;
 }
 
-export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
+export function AuthScreen({ onAuthenticated, onBack, initialMode = 'signin' }: AuthScreenProps) {
   const { language, setLanguage, setUser } = useAppContext();
-  const [mode, setMode] = useState<Mode>('signin');
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
@@ -112,7 +112,7 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
 
           {mode === 'register' ? (
             <>
-              <Field label={copy('Barua pepe (hiari)', 'Email (optional)')}>
+              <Field label={copy('Barua pepe', 'Email')}>
                 <TextInput
                   style={styles.input}
                   value={email}
@@ -199,8 +199,10 @@ export function AuthScreen({ onAuthenticated, onBack }: AuthScreenProps) {
           </Pressable>
 
           <View style={styles.disclaimerBox}>
-            <Ionicons name="information-circle-outline" size={16} color={Colors.gold[400]} />
-            <Text style={styles.disclaimerText}>{AUTH_DISCLAIMER}</Text>
+            <Ionicons name="shield-checkmark-outline" size={16} color={Colors.gold[400]} />
+            <Text style={styles.disclaimerText}>
+              {copy('Akaunti na session zinasimamiwa na Supabase Auth.', 'Accounts and sessions are managed by Supabase Auth.')}
+            </Text>
           </View>
         </View>
       </ScrollView>
