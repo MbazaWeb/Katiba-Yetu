@@ -367,6 +367,8 @@ export async function updateSubmission(id: string, patch: Partial<CitizenSubmiss
 }
 
 export async function moderateSubmission(id: string, moderatorId: string, moderatorName: string, decision: 'approve' | 'reject' | 'merge' | 'flag', reason: string): Promise<CitizenSubmission> {
+  const repo = await resolveRepository();
+  if (repo) return repo.moderateSubmission(id, moderatorId, decision, reason);
   const list = await loadSubmissions();
   const idx = list.findIndex(s => s.id === id);
   if (idx === -1) throw new Error('Submission not found');
@@ -504,6 +506,8 @@ export async function castVote(pollId: string, optionId: string, voter: { id: st
 }
 
 export async function abstain(pollId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
+  const repo = await resolveRepository();
+  if (repo) return repo.abstain(pollId, voter);
   return voteMutex.run(async () => {
     const polls = await loadPolls();
     const idx = polls.findIndex(p => p.id === pollId);
@@ -529,6 +533,8 @@ export async function abstain(pollId: string, voter: { id: string; verified: boo
 }
 
 export async function closePoll(pollId: string, closer: { id: string; name: string; role: DraftBuilderRole }): Promise<MultiStagePoll> {
+  const repo = await resolveRepository();
+  if (repo) return repo.closePoll(pollId, closer);
   const polls = await loadPolls();
   const idx = polls.findIndex(p => p.id === pollId);
   if (idx === -1) throw new Error('Poll not found');
@@ -547,6 +553,8 @@ export async function closePoll(pollId: string, closer: { id: string; name: stri
 }
 
 export async function hasVoted(pollId: string, voterId: string): Promise<boolean> {
+  const repo = await resolveRepository();
+  if (repo) return repo.hasVoted(pollId, voterId);
   const votes = await loadVotes();
   return Boolean(votes[pollId]?.[voterId]);
 }
@@ -605,111 +613,21 @@ export async function logAuditEvent(input: Partial<AuditEvent> & { kind: AuditEv
   await appendAuditEvent(event);
 }
 
-// ─── Seeds ────────────────────────────────────────────────────────────────────
+// ─── No seed data ────────────────────────────────────────────────────────────
+// All mock/sample data has been removed. When no Supabase backend is
+// configured and AsyncStorage is empty, these return empty arrays — the UI
+// shows proper empty states. Real data comes from Supabase when configured.
 
 function seedSubmissions(): CitizenSubmission[] {
-  return [
-    {
-      id: 'sub-seed-1',
-      title: 'Ongeza uwajibikaji katika utangulizi wa Jamhuri',
-      topic: 'state',
-      problem: 'Utangulizi wa sasa hauelezei wazi uwajibikaji wa Serikali kwa wananchi. Tatizo hili linahitaji kurekebishwa kwa lugha iliyo wazi zaidi.',
-      proposedWordingSw: 'Jamhuri ya Muungano wa Tanzania ni dola inayojitegemea inayojengwa juu ya misingi ya utu, haki na uwajibikaji.',
-      rationale: 'Washiriki 18 walipendekeza kuimarisha utu na uwajibikaji katika utangulizi wa Jamhuri.',
-      region: 'dar_es_salaam',
-      district: 'ilala',
-      anonymous: false,
-      authorId: 'demo-1', authorDisplayName: 'Mwananchi (mfano)', authorVerified: true, authorVerificationTier: 'phone',
-      createdAt: '2026-09-08T10:00:00Z', updatedAt: '2026-09-08T10:00:00Z',
-      status: 'clustered', clusterId: 'cluster-1',
-      moderationEvents: [{
-        id: 'mod-seed-1', submissionId: 'sub-seed-1', kind: 'validation', outcome: 'passed',
-        reason: 'Submission passed structural validation.', at: '2026-09-08T10:00:00Z',
-      }],
-      classification: { label: 'state', confidence: 0.85, alternatives: [{ label: 'governance', confidence: 0.1 }] },
-    },
-    {
-      id: 'sub-seed-2',
-      title: 'Fafanua mipaka ya uhuru wa maoni',
-      topic: 'expression',
-      problem: 'Ibara ya sasa haifafanui wazi mipaka ya uhuru wa kutoa maoni. Tatizo linahitaji kufafanua masharti ya haki za wengine na usalama wa taifa.',
-      proposedWordingSw: 'Kila mtu ana haki ya kutoa na kupokea maoni bila ya woga, isipokuwa kama inavyoelezwa kisheria kwa ajili ya haki za wengine na usalama wa taifa.',
-      rationale: 'Washiriki 26 walipendekeza kufafanua mipaka ya uhuru wa maoni kwa uwazi zaidi.',
-      region: 'mbeya',
-      district: 'rungwe',
-      anonymous: true,
-      authorId: 'demo-2', authorDisplayName: 'Mwananchi', authorVerified: false, authorVerificationTier: 'none',
-      createdAt: '2026-09-10T10:00:00Z', updatedAt: '2026-09-10T10:00:00Z',
-      status: 'clustered', clusterId: 'cluster-2',
-      moderationEvents: [{
-        id: 'mod-seed-2', submissionId: 'sub-seed-2', kind: 'validation', outcome: 'passed',
-        reason: 'Submission passed structural validation.', at: '2026-09-10T10:00:00Z',
-      }],
-      classification: { label: 'expression', confidence: 0.92, alternatives: [] },
-    },
-    {
-      id: 'sub-seed-3',
-      title: 'Ongeza usawa wa kijinsia kwa uwazi',
-      topic: 'equality',
-      problem: 'Ibara ya sasa haionyeshi kwa uwazi usawa kamili wa kijinsia katika siasa, uchumi na maisha ya kijamii.',
-      proposedWordingSw: 'Wanaume na wanawake wana haki sawa mbele ya sheria, na wanapaswa kupewa fursa sawa katika siasa, uchumi na maisha ya kijamii.',
-      rationale: 'Washiriki 31 walipendekeza kuongeza uwazi kuhusu usawa wa kijinsia.',
-      region: 'mwanza',
-      district: 'nyamagana',
-      anonymous: false,
-      authorId: 'demo-3', authorDisplayName: 'Mwananchi (mfano)', authorVerified: true, authorVerificationTier: 'nida',
-      createdAt: '2026-09-11T10:00:00Z', updatedAt: '2026-09-11T10:00:00Z',
-      status: 'clustered', clusterId: 'cluster-3',
-      moderationEvents: [{
-        id: 'mod-seed-3', submissionId: 'sub-seed-3', kind: 'validation', outcome: 'passed',
-        reason: 'Submission passed structural validation.', at: '2026-09-11T10:00:00Z',
-      }],
-      classification: { label: 'equality', confidence: 0.88, alternatives: [{ label: 'governance', confidence: 0.05 }] },
-    },
-  ];
+  return [];
 }
 
 function seedPolls(): MultiStagePoll[] {
-  return [
-    {
-      id: 'poll-seed-1',
-      articleId: 'pa-1',
-      clusterId: 'cluster-1',
-      stage: 'problem_confirmation',
-      title: 'Je, utangulizi wa sasa una tatizo la uwajibikaji?',
-      description: 'Kura ya kwanza ya kuthibitisha tatizo kabla ya kupendekeza mwelekeo wa sera.',
-      options: [
-        { id: 'poll-seed-1-opt-1', pollId: 'poll-seed-1', label: 'Ndio, kuna tatizo', orderIndex: 0, votes: 14, verifiedVotes: 9, percentage: 78 },
-        { id: 'poll-seed-1-opt-2', pollId: 'poll-seed-1', label: 'Hapana, hakuna tatizo', orderIndex: 1, votes: 4, verifiedVotes: 2, percentage: 22 },
-      ],
-      opensAt: '2026-09-08T00:00:00Z', closesAt: '2026-09-30T23:59:59Z', status: 'closed',
-      minimumParticipation: 10, isRepresentative: false,
-      representativenessWarning: 'Washiriki 18 tu; si uwakilishi wa kitaifa.',
-      totalVotes: 18, verifiedVotes: 11, abstentions: 1,
-      regionDistribution: { dar_es_salaam: 8, dodoma: 4, mwanza: 3, arusha: 3 },
-      verificationTierDistribution: { phone: 7, email: 3, nida: 1 },
-      autoApproved: false, humanReviewed: true,
-    },
-  ];
+  return [];
 }
 
 function seedAuditEvents(): AuditEvent[] {
-  return [
-    {
-      id: 'audit-seed-1', kind: 'submission_created', submissionId: 'sub-seed-1',
-      actorId: 'demo-1', actorName: 'Mwananchi (mfano)', actorRole: 'verified_citizen',
-      description: 'Submission "Ongeza uwajibikaji katika utangulizi wa Jamhuri" created on topic State.',
-      publicMetadata: { topic: 'state', region: 'dar_es_salaam', anonymous: false, duplicate: false, clusterId: 'cluster-1' },
-      at: '2026-09-08T10:00:00Z',
-    },
-    {
-      id: 'audit-seed-2', kind: 'poll_closed', pollId: 'poll-seed-1',
-      actorId: 'committee-1', actorName: 'Kamati ya Rasimu', actorRole: 'drafting_committee',
-      description: 'Poll "Je, utangulizi wa sasa una tatizo la uwajibikaji?" closed. Total votes: 18.',
-      publicMetadata: { totalVotes: 18, verifiedVotes: 11, isRepresentative: false, autoApproved: false },
-      at: '2026-09-30T23:59:59Z',
-    },
-  ];
+  return [];
 }
 
 export async function resetAllWorkflowData(): Promise<void> {

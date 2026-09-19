@@ -2,14 +2,10 @@ import React, { useMemo } from 'react';
 import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
-import { FeaturedPollCard } from '../components/sections/FeaturedPollCard';
-import { POLL_ART13, POLL_ART19 } from '../constants/mockData';
 import { Colors, Radius, Spacing, Typography } from '../constants/tokens';
 import { useAppContext } from '../hooks/useAppContext';
 import { t, formatCount } from '../utils';
 import type { Poll } from '../types';
-
-const ALL_POLLS = [POLL_ART13, POLL_ART19];
 
 interface PollsScreenProps {
   onPollPress: (poll: Poll) => void;
@@ -19,15 +15,15 @@ interface PollsScreenProps {
 export function PollsScreen({ onPollPress, initialPoll }: PollsScreenProps) {
   const { language } = useAppContext();
 
+  // No mock polls — real polls come from the multi-stage poll service
+  // (Supabase when configured, AsyncStorage mock otherwise).
   const orderedPolls = useMemo(() => {
-    if (!initialPoll) return ALL_POLLS;
-    const rest = ALL_POLLS.filter(p => p.id !== initialPoll.id);
-    return [initialPoll, ...rest];
+    return initialPoll ? [initialPoll] : [];
   }, [initialPoll]);
 
-  const activeCount = ALL_POLLS.length;
-  const totalVotes = ALL_POLLS.reduce((sum, p) => sum + p.total_votes, 0);
-  const sectionCount = new Set(ALL_POLLS.map(p => p.section_id)).size;
+  const activeCount = orderedPolls.length;
+  const totalVotes = orderedPolls.reduce((sum, p) => sum + p.total_votes, 0);
+  const sectionCount = new Set(orderedPolls.map(p => p.section_id)).size;
 
   return (
     <View style={styles.root}>
@@ -63,11 +59,24 @@ export function PollsScreen({ onPollPress, initialPoll }: PollsScreenProps) {
           {t('KURA ZINAZOENDELEA', 'ACTIVE POLLS', language)}
         </Text>
 
-        {orderedPolls.map(poll => (
-          <View key={poll.id} style={styles.cardGap}>
-            <FeaturedPollCard poll={poll} onVotePress={onPollPress} />
+        {orderedPolls.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Ionicons name="stats-chart-outline" size={48} color={Colors.text.muted} />
+            <Text style={styles.emptyText}>
+              {t(
+                'Hakuna kura wazi kwa sasa. Kura za hatua nyingi zinapatikana kwenye menyu ya Kura za Hatua Nyingi.',
+                'No active polls at the moment. Multi-stage polls are available in the Multi-stage Polls menu.',
+                language
+              )}
+            </Text>
           </View>
-        ))}
+        ) : (
+          orderedPolls.map(poll => (
+            <View key={poll.id} style={styles.cardGap}>
+              <Text style={styles.pollTitle}>{language === 'sw' ? poll.title_sw : poll.title_en}</Text>
+            </View>
+          ))
+        )}
 
         <View style={styles.notice}>
           <Ionicons name="shield-checkmark-outline" size={20} color={Colors.green[300]} />
@@ -94,94 +103,23 @@ function Stat({ value, label }: { value: string; label: string }) {
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: Colors.surface.base,
-  },
-  content: {
-    padding: Spacing[4],
-    paddingBottom: Spacing[20],
-  },
-  hero: {
-    flexDirection: 'row',
-    gap: Spacing[3],
-    alignItems: 'center',
-    padding: Spacing[4],
-    borderRadius: Radius.xl,
-    backgroundColor: Colors.green[900],
-    borderWidth: 1,
-    borderColor: Colors.green[700],
-  },
-  heroIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: Radius.full,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'rgba(212,168,10,.12)',
-  },
-  heroTextBlock: {
-    flex: 1,
-  },
-  heroTitle: {
-    fontFamily: Typography.family.serif,
-    fontSize: Typography.size.lg,
-    fontWeight: Typography.weight.bold,
-    color: Colors.text.primary,
-  },
-  heroBody: {
-    fontSize: Typography.size.sm,
-    color: Colors.green[100],
-    lineHeight: 19,
-    marginTop: 4,
-  },
-  stats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Spacing[5],
-  },
-  stat: {
-    flex: 1,
-    alignItems: 'center',
-  },
-  statValue: {
-    fontSize: Typography.size.xl,
-    fontWeight: Typography.weight.bold,
-    color: Colors.text.primary,
-  },
-  statLabel: {
-    fontSize: Typography.size.xs,
-    color: Colors.text.muted,
-    marginTop: 3,
-  },
-  divider: {
-    width: 1,
-    height: 28,
-    backgroundColor: Colors.surface.border,
-  },
-  label: {
-    fontSize: Typography.size.xs,
-    fontWeight: Typography.weight.bold,
-    letterSpacing: 1,
-    color: Colors.text.muted,
-    marginBottom: Spacing[3],
-  },
-  cardGap: {
-    marginBottom: Spacing[4],
-  },
-  notice: {
-    flexDirection: 'row',
-    gap: Spacing[3],
-    padding: Spacing[4],
-    borderRadius: Radius.lg,
-    backgroundColor: Colors.surface.raised,
-    borderWidth: 1,
-    borderColor: Colors.surface.border,
-  },
-  noticeText: {
-    flex: 1,
-    color: Colors.text.secondary,
-    fontSize: Typography.size.xs,
-    lineHeight: 18,
-  },
+  root: { flex: 1, backgroundColor: Colors.surface.base },
+  content: { padding: Spacing[4], paddingBottom: Spacing[20] },
+  hero: { flexDirection: 'row', gap: Spacing[3], alignItems: 'center', padding: Spacing[4], borderRadius: Radius.xl, backgroundColor: Colors.green[900], borderWidth: 1, borderColor: Colors.green[700] },
+  heroIcon: { width: 48, height: 48, borderRadius: Radius.full, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(212,168,10,.12)' },
+  heroTextBlock: { flex: 1 },
+  heroTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size.lg, fontWeight: Typography.weight.bold, color: Colors.text.primary },
+  heroBody: { fontSize: Typography.size.sm, color: Colors.green[100], lineHeight: 19, marginTop: 4 },
+  stats: { flexDirection: 'row', alignItems: 'center', paddingVertical: Spacing[5] },
+  stat: { flex: 1, alignItems: 'center' },
+  statValue: { fontSize: Typography.size.xl, fontWeight: Typography.weight.bold, color: Colors.text.primary },
+  statLabel: { fontSize: Typography.size.xs, color: Colors.text.muted, marginTop: 3 },
+  divider: { width: 1, height: 28, backgroundColor: Colors.surface.border },
+  label: { fontSize: Typography.size.xs, fontWeight: Typography.weight.bold, letterSpacing: 1, color: Colors.text.muted, marginBottom: Spacing[3] },
+  cardGap: { marginBottom: Spacing[4] },
+  pollTitle: { color: Colors.text.primary, fontSize: Typography.size.md, fontWeight: Typography.weight.semibold },
+  emptyState: { alignItems: 'center', gap: Spacing[3], paddingVertical: Spacing[8] },
+  emptyText: { color: Colors.text.muted, fontSize: Typography.size.sm, textAlign: 'center', maxWidth: 320, lineHeight: 20 },
+  notice: { flexDirection: 'row', gap: Spacing[3], padding: Spacing[4], borderRadius: Radius.lg, backgroundColor: Colors.surface.raised, borderWidth: 1, borderColor: Colors.surface.border },
+  noticeText: { flex: 1, color: Colors.text.secondary, fontSize: Typography.size.xs, lineHeight: 18 },
 });

@@ -30,11 +30,13 @@ import type {
   TanzaniaRegion,
   VerificationTier,
   LibraryLanguage,
+  DraftBuilderRole,
 } from '../types';
 import {
   loadSubmissions, createSubmission, updateSubmission,
   loadPolls, castVote, loadAuditEvents,
   screenForHarmfulContent, detectDuplicates, classifyTopic,
+  moderateSubmission, abstain, closePoll, hasVoted,
 } from './submissionWorkflow';
 import { draftGenerationService } from './draftGeneration';
 import type { DraftGenerationInput } from './draftGeneration';
@@ -164,9 +166,21 @@ class MockBackendRepository implements BackendRepository {
   async updateSubmission(id: string, patch: Partial<CitizenSubmission>): Promise<CitizenSubmission> {
     return updateSubmission(id, patch);
   }
+  async moderateSubmission(id: string, moderatorId: string, decision: 'approve' | 'reject' | 'merge' | 'flag', reason: string): Promise<CitizenSubmission> {
+    return moderateSubmission(id, moderatorId, 'Moderator', decision, reason);
+  }
   async listPolls(articleId?: string): Promise<MultiStagePoll[]> { return loadPolls().then(ps => articleId ? ps.filter(p => p.articleId === articleId) : ps); }
   async castVote(pollId: string, optionId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
     return castVote(pollId, optionId, voter);
+  }
+  async abstain(pollId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
+    return abstain(pollId, voter);
+  }
+  async closePoll(pollId: string, closer: { id: string; name: string; role: DraftBuilderRole }): Promise<MultiStagePoll> {
+    return closePoll(pollId, closer);
+  }
+  async hasVoted(pollId: string, voterId: string): Promise<boolean> {
+    return hasVoted(pollId, voterId);
   }
   async listAuditEvents(articleId?: string): Promise<AuditEvent[]> { return loadAuditEvents(articleId); }
 }
@@ -188,6 +202,10 @@ class HttpBackendRepository implements BackendRepository {
     const resp = await this.client.request<CitizenSubmission, typeof patch>({ method: 'PATCH', path: `/api/submissions/${id}`, body: patch });
     return resp.body;
   }
+  async moderateSubmission(id: string, moderatorId: string, decision: 'approve' | 'reject' | 'merge' | 'flag', reason: string): Promise<CitizenSubmission> {
+    const resp = await this.client.request<CitizenSubmission, { moderatorId: string; decision: string; reason: string }>({ method: 'POST', path: `/api/submissions/${id}/moderate`, body: { moderatorId, decision, reason } });
+    return resp.body;
+  }
   async listPolls(articleId?: string): Promise<MultiStagePoll[]> {
     const resp = await this.client.request<MultiStagePoll[]>({ method: 'GET', path: '/api/polls', query: { articleId } });
     return resp.body;
@@ -195,6 +213,18 @@ class HttpBackendRepository implements BackendRepository {
   async castVote(pollId: string, optionId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
     const resp = await this.client.request<MultiStagePoll, { optionId: string; voter: typeof voter }>({ method: 'POST', path: `/api/polls/${pollId}/vote`, body: { optionId, voter } });
     return resp.body;
+  }
+  async abstain(pollId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll> {
+    const resp = await this.client.request<MultiStagePoll, { voter: typeof voter }>({ method: 'POST', path: `/api/polls/${pollId}/abstain`, body: { voter } });
+    return resp.body;
+  }
+  async closePoll(pollId: string, closer: { id: string; name: string; role: DraftBuilderRole }): Promise<MultiStagePoll> {
+    const resp = await this.client.request<MultiStagePoll, typeof closer>({ method: 'POST', path: `/api/polls/${pollId}/close`, body: closer });
+    return resp.body;
+  }
+  async hasVoted(pollId: string, voterId: string): Promise<boolean> {
+    const resp = await this.client.request<{ hasVoted: boolean }>({ method: 'GET', path: `/api/polls/${pollId}/has-voted`, query: { voterId } });
+    return resp.body.hasVoted;
   }
   async listAuditEvents(articleId?: string): Promise<AuditEvent[]> {
     const resp = await this.client.request<AuditEvent[]>({ method: 'GET', path: '/api/audit', query: { articleId } });
@@ -438,6 +468,7 @@ class MockPDFExportBackend implements PDFExportBackend {
     const version = getDraftVersion(versionId);
     if (!version) throw new Error('Draft version not found');
     const constitution = getProposedConstitution();
+    const constitutionName = constitution?.name ?? { sw: 'Rasimu ya Katiba', en: 'Draft Constitution' };
     const chapters = getProposedChapters();
     const articles = getProposedArticles().filter(a => a.draftId === versionId);
     const lang: LibraryLanguage = options.language;
@@ -448,7 +479,7 @@ class MockPDFExportBackend implements PDFExportBackend {
 <html lang="${e(lang)}">
 <head>
 <meta charset="utf-8">
-<title>${e(constitution.name[lang] ?? constitution.name.sw)} — ${e(version.name)}</title>
+<title>${e(constitutionName[lang] ?? constitutionName.sw)} — ${e(version.name)}</title>
 <style>
   body { font-family: Georgia, serif; max-width: 800px; margin: 2em auto; padding: 1em; color: #0b0f0e; }
   h1 { font-size: 2em; margin-bottom: 0.2em; }
@@ -463,7 +494,7 @@ class MockPDFExportBackend implements PDFExportBackend {
 </style>
 </head>
 <body>
-<h1>${e(constitution.name[lang] ?? constitution.name.sw)}</h1>
+<h1>${e(constitutionName[lang] ?? constitutionName.sw)}</h1>
 <div class="meta">
   <strong>${e(lang === 'sw' ? 'Toleo' : 'Version')}:</strong> ${e(version.name)} (${e(version.versionNumber)})<br>
   <strong>${e(lang === 'sw' ? 'Tarehe' : 'Date')}:</strong> ${e(version.publishedAt ? new Date(version.publishedAt).toLocaleDateString() : (lang === 'sw' ? 'Haijachapishwa' : 'Unpublished'))}<br>

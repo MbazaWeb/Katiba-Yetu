@@ -26,7 +26,6 @@ import type {
   ProposedArticle, ProposedChapter, ApprovalWorkflowState, ApprovalRules, ApprovalStage,
 } from '../types';
 import { DEFAULT_APPROVAL_RULES, canPerform } from '../types';
-import { mockVersions } from './proposedConstitution';
 import { logAuditEvent } from './submissionWorkflow';
 
 const DRAFTS_KEY = '@katibayetu/draft_versions';
@@ -55,9 +54,9 @@ function requirePermission(role: DraftBuilderRole, permission: Parameters<typeof
 export async function loadDraftVersions(): Promise<DraftVersion[]> {
   try {
     const raw = await AsyncStorage.getItem(DRAFTS_KEY);
-    if (!raw) return mockVersions;
+    if (!raw) return [];
     return JSON.parse(raw) as DraftVersion[];
-  } catch { return mockVersions; }
+  } catch { return []; }
 }
 
 export async function saveDraftVersions(list: DraftVersion[]): Promise<void> {

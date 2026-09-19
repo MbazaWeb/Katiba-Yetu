@@ -23,109 +23,6 @@ const SUBSCRIPTIONS_KEY = '@katibayetu/forum_subscriptions';
 const REPORTS_KEY = '@katibayetu/forum_reports';
 
 /** Seed threads for demonstration. Clearly marked as local demo content. */
-const seedThreads: ForumThread[] = [
-  {
-    id: 'thread-seed-1',
-    category: 'historia',
-    title: 'Je, muundo wa Muungano wa 1964 unahitaji kufanyiwa kazi upya?',
-    body: 'Mjadala kuhusu kama muundo wa sasa wa Muungano unakidhi mahitaji ya kizamani. Mchango huu umehifadhiwa kwa madhumuni ya mfano pekee.',
-    authorId: 'demo-1',
-    authorName: 'Mwananchi (mfano)',
-    authorVerified: false,
-    isAnonymous: true,
-    articleId: 'union-1',
-    createdAt: '2026-09-10T10:00:00Z',
-    lastActivityAt: '2026-09-15T14:00:00Z',
-    replyCount: 4,
-    upvotes: 12,
-    hasAcceptedAnswer: false,
-    isAnswered: true,
-    isPinned: true,
-    moderationStatus: 'active',
-    subscriberIds: [],
-    tagIds: ['muungano', 'muundo'],
-  },
-  {
-    id: 'thread-seed-2',
-    category: 'haki_na_wajibu',
-    title: 'Uhuru wa kutoa maoni una mipaka ipi chini ya Ibara 18?',
-    body: 'Tukiangalia uhuru wa kutoa maoni, je, kuna masharti au mipaka inayoelezwa kisheria? Mchango huu umehifadhiwa kwa madhumuni ya mfano pekee.',
-    authorId: 'demo-2',
-    authorName: 'Mwananchi (mfano)',
-    authorVerified: false,
-    isAnonymous: true,
-    articleId: 'union-18',
-    createdAt: '2026-09-12T08:00:00Z',
-    lastActivityAt: '2026-09-16T09:00:00Z',
-    replyCount: 2,
-    upvotes: 7,
-    hasAcceptedAnswer: false,
-    isAnswered: false,
-    isPinned: false,
-    moderationStatus: 'active',
-    subscriberIds: [],
-    tagIds: ['uhuru', 'maoni'],
-  },
-  {
-    id: 'thread-seed-3',
-    category: 'maboresho_ya_katiba',
-    title: 'Mapendekezo ya kuboresha uwakilishi wa wanawake katika bunge',
-    body: 'Mjadala kuhusu namna ya kuongeza uwakilishi wa wanawake katika taasisi za uamuzi. Mchango huu umehifadhiwa kwa madhumuni ya mfano pekee.',
-    authorId: 'demo-3',
-    authorName: 'Mwananchi (mfano)',
-    authorVerified: false,
-    isAnonymous: false,
-    createdAt: '2026-09-14T12:00:00Z',
-    lastActivityAt: '2026-09-17T11:00:00Z',
-    replyCount: 6,
-    upvotes: 21,
-    hasAcceptedAnswer: false,
-    isAnswered: true,
-    isPinned: false,
-    moderationStatus: 'active',
-    subscriberIds: [],
-    tagIds: ['uwakilishi', 'wanawake'],
-  },
-  {
-    id: 'thread-seed-4',
-    category: 'tafsiri_ya_kisheria',
-    title: 'Tafsiri ya kisheria ya "haki za msingi"',
-    body: 'Je, "haki za msingi" zina maana gani tofauti na "haki za binadamu"? Mchango huu umehifadhiwa kwa madhumuni ya mfano pekee.',
-    authorId: 'demo-4',
-    authorName: 'Mwananchi (mfano)',
-    authorVerified: false,
-    isAnonymous: true,
-    createdAt: '2026-09-15T15:00:00Z',
-    lastActivityAt: '2026-09-15T15:00:00Z',
-    replyCount: 0,
-    upvotes: 3,
-    hasAcceptedAnswer: false,
-    isAnswered: false,
-    isPinned: false,
-    moderationStatus: 'active',
-    subscriberIds: [],
-    tagIds: ['tafsiri', 'haki'],
-  },
-];
-
-const seedReplies: Record<string, ForumReply[]> = {
-  'thread-seed-1': [
-    {
-      id: 'reply-1',
-      threadId: 'thread-seed-1',
-      body: 'Mchango wa kufuata. Muundo wa sasa unahitaji ufuatiliaji wa kisera zaidi. Mfano wa ndani pekee.',
-      authorId: 'demo-5',
-      authorName: 'Mwananchi (mfano)',
-      authorVerified: false,
-      isAnonymous: false,
-      stance: 'alternative',
-      isExpertContribution: false,
-      createdAt: '2026-09-15T14:00:00Z',
-      upvotes: 2,
-      moderationStatus: 'active',
-    },
-  ],
-};
 
 export interface ForumFilters {
   category: DiscussionCategory | 'all';
@@ -147,11 +44,11 @@ function sanitizeText(value: string, max = 3000): string {
 export async function loadForumState(): Promise<{ threads: ForumThread[]; replies: Record<string, ForumReply[]> }> {
   try {
     const raw = await AsyncStorage.getItem(STORAGE_KEY);
-    if (!raw) return { threads: seedThreads, replies: seedReplies };
+    if (!raw) return { threads: [], replies: {} };
     const parsed = JSON.parse(raw) as { threads: ForumThread[]; replies: Record<string, ForumReply[]> };
-    return { threads: parsed.threads ?? seedThreads, replies: parsed.replies ?? seedReplies };
+    return { threads: parsed.threads ?? [], replies: parsed.replies ?? {} };
   } catch {
-    return { threads: seedThreads, replies: seedReplies };
+    return { threads: [], replies: {} };
   }
 }
 

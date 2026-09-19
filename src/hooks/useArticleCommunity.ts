@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { POLL_ART13 } from '../constants/mockData';
-import type { ConstitutionArticle } from '../types';
+import type { ConstitutionArticle, Poll } from '../types';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { addContribution, fetchCommunity, type CommunityContribution, type CommunityData } from '../services/community';
 
@@ -38,7 +37,7 @@ export function useArticleCommunity(article: ConstitutionArticle) {
     catch { setError(true); return false; }
     finally { setSaving(false); }
   }
-  // Only the Article 13 demo poll has a matching subject. Other legacy fixtures are not legal-library data.
-  const polls = article.id === 'union-13' ? [POLL_ART13] : [];
+  // No mock polls — real polls come from the multi-stage poll service.
+  const polls: Poll[] = [];
   return { data, ready, saving, error, add, polls };
 }

@@ -360,8 +360,12 @@ export interface BackendRepository {
   listSubmissions(): Promise<CitizenSubmission[]>;
   createSubmission(input: Omit<CitizenSubmission, 'id' | 'createdAt' | 'updatedAt' | 'status' | 'moderationEvents'>): Promise<CitizenSubmission>;
   updateSubmission(id: string, patch: Partial<CitizenSubmission>): Promise<CitizenSubmission>;
+  moderateSubmission(id: string, moderatorId: string, decision: 'approve' | 'reject' | 'merge' | 'flag', reason: string): Promise<CitizenSubmission>;
   listPolls(articleId?: string): Promise<MultiStagePoll[]>;
   castVote(pollId: string, optionId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll>;
+  abstain(pollId: string, voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier }): Promise<MultiStagePoll>;
+  closePoll(pollId: string, closer: { id: string; name: string; role: import('./proposedWorkflow').DraftBuilderRole }): Promise<MultiStagePoll>;
+  hasVoted(pollId: string, voterId: string): Promise<boolean>;
   listAuditEvents(articleId?: string): Promise<AuditEvent[]>;
 }
 

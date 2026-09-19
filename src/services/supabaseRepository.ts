@@ -21,7 +21,7 @@ import type {
   VerificationTier,
   ModerationEvent,
 } from '../types';
-import type { ConstitutionalTopic, SubmissionStatus, PollStageLike } from '../types/proposedWorkflow';
+import type { ConstitutionalTopic, SubmissionStatus, PollStageLike, DraftBuilderRole } from '../types/proposedWorkflow';
 
 // ─── Row → Domain mappers ─────────────────────────────────────────────────────
 
@@ -265,6 +265,81 @@ export class SupabaseBackendRepository implements BackendRepository {
     if (error) throw error;
 
     return (data ?? []).map(row => mapAuditRow(row as unknown as Record<string, unknown>));
+  }
+
+  // ── Moderate submission ─────────────────────────────────────────────────────
+
+  async moderateSubmission(
+    id: string,
+    moderatorId: string,
+    decision: 'approve' | 'reject' | 'merge' | 'flag',
+    reason: string,
+  ): Promise<CitizenSubmission> {
+    const { error } = await supabase.rpc('moderate_submission', {
+      p_submission_id: id,
+      p_moderator_id: moderatorId,
+      p_decision: decision,
+      p_reason: reason,
+    });
+    if (error) throw error;
+    // Fetch updated submission
+    const { data: row, error: fetchError } = await supabase
+      .from('citizen_submissions')
+      .select('*')
+      .eq('id', id)
+      .single();
+    if (fetchError) throw fetchError;
+    return mapSubmissionRow(row as unknown as Record<string, unknown>);
+  }
+
+  // ── Abstain ──────────────────────────────────────────────────────────────────
+
+  async abstain(
+    pollId: string,
+    voter: { id: string; verified: boolean; region?: TanzaniaRegion; tier: VerificationTier },
+  ): Promise<MultiStagePoll> {
+    const { error } = await supabase.rpc('abstain_workflow_vote', {
+      p_poll_id: pollId,
+      p_voter_id: voter.id,
+      p_verified: voter.verified,
+      p_region: voter.region ?? null,
+      p_tier: voter.tier,
+    });
+    if (error) throw error;
+    // Return fresh poll data
+    const polls = await this.listPolls();
+    const updated = polls.find(p => p.id === pollId);
+    if (!updated) throw new Error('Poll not found after abstention');
+    return updated;
+  }
+
+  // ── Close poll ───────────────────────────────────────────────────────────────
+
+  async closePoll(
+    pollId: string,
+    closer: { id: string; name: string; role: DraftBuilderRole },
+  ): Promise<MultiStagePoll> {
+    const { error } = await supabase.rpc('close_workflow_poll', {
+      p_poll_id: pollId,
+      p_closer_id: closer.id,
+    });
+    if (error) throw error;
+    // Return fresh poll data
+    const polls = await this.listPolls();
+    const updated = polls.find(p => p.id === pollId);
+    if (!updated) throw new Error('Poll not found after close');
+    return updated;
+  }
+
+  // ── Has voted ────────────────────────────────────────────────────────────────
+
+  async hasVoted(pollId: string, voterId: string): Promise<boolean> {
+    const { data, error } = await supabase.rpc('has_voted', {
+      p_poll_id: pollId,
+      p_voter_id: voterId,
+    });
+    if (error) throw error;
+    return Boolean(data);
   }
 }
 

@@ -39,6 +39,30 @@ export function ProposedConstitutionScreen({ onOpenArticle, onOpenDraftReader, o
     setExpandedChapters(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   }
 
+  // Empty state when no proposed constitution exists yet
+  if (!constitution || !currentDraft) {
+    return (
+      <View style={styles.root}>
+        <AppHeader showBack={!!onBack} onBack={onBack} title={copy('Katiba Inayopendekezwa', 'Proposed Constitution')} />
+        <ScrollView contentContainerStyle={[styles.content, !isDesktop && { paddingHorizontal: Spacing[4] }]}>
+          <View style={styles.hero}>
+            <View style={styles.heroIcon}>
+              <Ionicons name="create-outline" size={34} color={Colors.gold[400]} />
+            </View>
+            <Text style={styles.heroTitle}>{copy('Katiba Inayopendekezwa', 'Proposed Constitution')}</Text>
+            <Text style={styles.heroSub}>
+              {copy(
+                'Hakuna rasimu iliyoundwa bado. Wasilisha mapendekezo na yataonekana hapa baada ya kuidhinishwa.',
+                'No drafts have been created yet. Submit proposals and they will appear here after approval.'
+              )}
+            </Text>
+          </View>
+          <Notice>{PROPOSAL_DISCLAIMER}</Notice>
+        </ScrollView>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.root}>
       <AppHeader showBack={!!onBack} onBack={onBack} title={copy('Katiba Inayopendekezwa', 'Proposed Constitution')} />
