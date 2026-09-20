@@ -185,7 +185,7 @@ function ArticleReader({ article, onBack, onSelect }: { article: ConstitutionArt
           {tab === 'explain' && <View style={{ gap: 16 }}><Text accessibilityRole="header" style={s.heading}>{copy('Maelezo kwa lugha rahisi', 'Plain-language explanations')}</Text>
             {bundle.explanations.filter(e => e.articleId === article.id && e.language === language && e.documentVersion === source.documentVersion && e.kind === 'reviewed').map(e => <View key={e.id} style={s.card}><Text selectable style={s.body}>{e.text}</Text><Text style={s.small}>{copy('Mkaguzi', 'Reviewer')}: {e.reviewedBy}</Text></View>)}
             {!bundle.explanations.some(e => e.articleId === article.id && e.language === language && e.kind === 'reviewed') && <Notice>{copy('Ufafanuzi uliohakikiwa bado haujapatikana kwa ibara na lugha hii.', 'A reviewed explanation is not yet available for this article and language.')}</Notice>}
-            <Action label={copy('Uliza ufafanuzi · mfano wa ndani', 'Ask for clarification · local demo')} onPress={() => setClarify(true)} /><Text style={s.small}>{DISCLAIMER}</Text>
+            <Action label={copy('Uliza ufafanuzi', 'Ask for clarification')} onPress={() => setClarify(true)} /><Text style={s.small}>{DISCLAIMER}</Text>
           </View>}
           {(tab === 'discussions' || tab === 'suggestions' || tab === 'polls') && <CommunityPanel key={tab} kind={tab} community={community} />}
           {tab === 'references' && <View style={s.card}>

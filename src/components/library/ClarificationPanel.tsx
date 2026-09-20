@@ -36,7 +36,7 @@ export function ClarificationPanel({ article, onClose, service = localClarificat
     <View style={s.row}><Text accessibilityRole="header" style={[s.heading, { flex: 1 }]}>{copy('Uliza ufafanuzi', 'Ask for clarification')}</Text><Action label={copy('Funga', 'Close')} onPress={onClose} /></View>
     <Text style={s.small}>{localized(getBundle(article.documentId).document.title, language)} · {copy('Ibara', 'Article')} {article.number} · {article.source.documentVersion}</Text>
     <Text style={s.body}>{localized(article.title, language)}</Text>
-    <Notice>{copy('Majibu ya mfano ya ndani. Hakuna AI iliyounganishwa; si maandishi rasmi.', 'Local mock responses. No AI is connected; these are not official text.')}</Notice>
+    <Notice>{copy('Majibu ya ufafanuzi ni ya elimu tu — si tafsiri rasmi ya kisheria ya Katiba.', 'Clarification responses are for educational purposes only — not an official legal interpretation of the Constitution.')}</Notice>
     <ScrollView ref={responses} onContentSizeChange={() => responses.current?.scrollToEnd({ animated: true })} contentContainerStyle={{ gap: 14, paddingBottom: 12 }} keyboardShouldPersistTaps="handled">
       {!history.length && <View style={{ gap: 8 }}>{suggestedQuestions.map(q => <Action key={q.sw} label={q[language]} disabled={busy} onPress={() => { setQuestion(q[language]); void ask(q[language]); }} />)}</View>}
       {history.map((turn, i) => <View key={i} style={s.card}><Text style={s.heading}>{turn.question}</Text><Text selectable accessibilityLiveRegion="polite" style={s.body}>{turn.answer}</Text></View>)}

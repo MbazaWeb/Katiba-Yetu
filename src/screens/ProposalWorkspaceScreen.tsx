@@ -50,7 +50,7 @@ export function ProposalWorkspaceScreen({ article, onBack }: Props) {
             <Text style={styles.statusPillText}>{PROPOSAL_STATUS_LABELS[article.status][language]}</Text>
           </View>
           <Text style={styles.generatedText}>
-            {copy('Imetengenezwa', 'Generated')}: {new Date(article.generatedAt).toLocaleDateString()} · {article.generatedBy === 'mock_deterministic' ? copy('Mfano wa mfumo', 'System mock') : article.generatedBy}
+            {copy('Imetengenezwa', 'Generated')}: {new Date(article.generatedAt).toLocaleDateString()} · {article.generatedBy === 'mock_deterministic' ? copy('Rasimu ya awali ya mfumo', 'System draft') : article.generatedBy}
           </Text>
         </View>
 

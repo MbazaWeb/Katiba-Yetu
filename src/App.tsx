@@ -300,7 +300,6 @@ export default function App() {
               onDraftBuilderPress={handleDraftBuilderPress}
               onApprovalWorkflowPress={handleApprovalWorkflowPress}
               onBackendStatusPress={handleBackendStatusPress}
-              notificationCount={{ polls: 2 }}
             />
           )}
 
@@ -313,7 +312,6 @@ export default function App() {
               <BottomTabBar
                 activeTab={activeTab}
                 onTabPress={handleTabPress}
-                notificationCount={{ polls: 2 }}
               />
             )}
           </View>
