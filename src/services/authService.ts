@@ -69,7 +69,15 @@ const supabaseAdapter: AuthService = {
   },
   async register(input) {
     if (!input.email) throw new Error('Tafadhali andika barua pepe. / Supabase registration requires an email address.');
-    const signUpData = await supabaseSignUp(input.email, input.password, input.displayName, input.languagePref as Language);
+    const signUpData = await supabaseSignUp(
+      input.email,
+      input.password,
+      input.displayName,
+      input.languagePref as Language,
+      input.region,
+      input.district,
+      input.anonymous,
+    );
     // When email confirmation is disabled in Supabase, signUp returns a session immediately.
     // Use that user directly instead of calling getUser() (which returns null pre-confirmation).
     const authUser = signUpData?.user ?? null;
