@@ -36,13 +36,37 @@ export interface Section {
 // ─── User & Auth Types ────────────────────────────────────────────────────────
 
 export type VerificationTier = 'none' | 'email' | 'phone' | 'nida';
+
+/**
+ * Stakeholder type selected during registration. Determines which navigation
+ * items and contribution features the user sees. The `admin` stakeholder is
+ * assigned server-side — users cannot self-select it.
+ */
+export type StakeholderType =
+  | 'citizen'
+  | 'institution'
+  | 'court'
+  | 'lawyer'
+  | 'ngo'
+  | 'ministry'
+  | 'media'
+  | 'other';
+
+export const STAKEHOLDER_LABELS: Record<StakeholderType, { sw: string; en: string }> = {
+  citizen:       { sw: 'Mwananchi',              en: 'Citizen' },
+  institution:   { sw: 'Taasisi',                 en: 'Institution' },
+  court:         { sw: 'Mahakama',                en: 'Court' },
+  lawyer:        { sw: 'Mwanasheria',            en: 'Lawyer' },
+  ngo:           { sw: 'Shirika la Kiraia',      en: 'NGO' },
+  ministry:      { sw: 'Wizara ya Sheria',       en: 'Ministry of Law' },
+  media:         { sw: 'Vyombo vya Habari',      en: 'Media' },
+  other:         { sw: 'Wadau Wengine',           en: 'Other Stakeholders' },
+};
+
 export type UserRole =
   | 'guest'
   | 'registered'
   | 'verified_citizen'
-  | 'institution'
-  | 'law_society'
-  | 'academic'
   | 'moderator'
   | 'admin';
 
@@ -55,6 +79,7 @@ export interface User {
   nida_verified: boolean;
   verification_tier: VerificationTier;
   role: UserRole;
+  stakeholder_type?: StakeholderType;
   anonymity_default: boolean;
   region?: TanzaniaRegion;
   district?: string;

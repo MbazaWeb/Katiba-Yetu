@@ -26,7 +26,7 @@ import type {
   ProposedArticle, ProposedChapter, ApprovalWorkflowState, ApprovalRules, ApprovalStage,
 } from '../types';
 import { DEFAULT_APPROVAL_RULES, canPerform } from '../types';
-import { logAuditEvent } from './submissionWorkflow';
+// Audit events are now logged server-side by Supabase RPC functions.
 
 const DRAFTS_KEY = '@katibayetu/draft_versions';
 const ACTIONS_KEY = '@katibayetu/draft_actions';
@@ -83,12 +83,7 @@ export async function createDraftVersion(input: { constitutionId: string; name: 
     at: now,
   };
   await logDraftAction(action);
-  await logAuditEvent({
-    id: makeId('audit'), kind: 'draft_version_created', versionId: id,
-    actorId: input.actor.id, actorName: input.actor.name, actorRole: input.actor.role,
-    description: `Draft version "${input.name}" (${input.versionNumber}) created.`,
-    publicMetadata: { versionNumber: input.versionNumber }, at: now,
-  });
+  // Audit event logged server-side by Supabase RPC.
   return { version, action };
 }
 
@@ -116,12 +111,7 @@ export async function publishDraftVersion(versionId: string, actor: { id: string
     id: makeId('action'), versionId, actorId: actor.id, actorName: actor.name, actorRole: actor.role,
     kind: 'publish_version', description: `Published draft version "${v.name}".`, at: now,
   });
-  await logAuditEvent({
-    id: makeId('audit'), kind: 'draft_version_published', versionId,
-    actorId: actor.id, actorName: actor.name, actorRole: actor.role,
-    description: `Draft version "${v.name}" published and is now immutable.`,
-    publicMetadata: { versionNumber: v.versionNumber, articles: v.totalArticles }, at: now,
-  });
+  // Audit event logged server-side by Supabase RPC.
   return updatedWithChange;
 }
 
@@ -167,12 +157,7 @@ export async function restoreFromVersion(versionId: string, actor: { id: string;
     kind: 'restore_from_version', description: `Restored from version ${source.versionNumber} as new version ${newVersion.versionNumber}.`,
     at: now,
   });
-  await logAuditEvent({
-    id: makeId('audit'), kind: 'draft_version_restored', versionId: newVersion.id,
-    actorId: actor.id, actorName: actor.name, actorRole: actor.role,
-    description: `Restored draft from version ${source.versionNumber} into new version ${newVersion.versionNumber}.`,
-    publicMetadata: { restoredFrom: source.versionNumber, newVersion: newVersion.versionNumber }, at: now,
-  });
+  // Audit event logged server-side by Supabase RPC.
   return newVersion;
 }
 
@@ -204,12 +189,7 @@ export async function editArticleWording(input: ArticleEditInput): Promise<{ act
     before: input.before, after: input.after, at: now,
   };
   await logDraftAction(action);
-  await logAuditEvent({
-    id: makeId('audit'), kind: 'wording_edited', versionId: input.versionId, articleId: input.articleId,
-    actorId: input.actor.id, actorName: input.actor.name, actorRole: input.actor.role,
-    description: `${input.field} (${input.language}) edited for article ${input.articleId}.`,
-    publicMetadata: { field: input.field, language: input.language, beforeLength: input.before.length, afterLength: input.after.length }, at: now,
-  });
+  // Audit event logged server-side by Supabase RPC.
   return { action, change };
 }
 
@@ -309,12 +289,7 @@ export async function markLegallyReviewed(versionId: string, articleId: string, 
     kind: 'mark_legally_reviewed', articleId, description: `Article ${articleId} marked as legally ${status}.`, after: notes, at: now,
   };
   await logDraftAction(action);
-  await logAuditEvent({
-    id: makeId('audit'), kind: 'legal_review_recorded', versionId, articleId,
-    actorId: actor.id, actorName: actor.name, actorRole: actor.role,
-    description: `Legal review for ${articleId}: ${status}.`,
-    publicMetadata: { status, notesLength: notes.length }, at: now,
-  });
+  // Audit event logged server-side by Supabase RPC.
   return action;
 }
 

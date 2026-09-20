@@ -210,6 +210,7 @@ export interface AuthSession {
   email?: string;
   phone?: string;
   role: ProposedUserRole;
+  stakeholderType?: import('./index').StakeholderType;
   verificationTier: VerificationTier;
   region?: TanzaniaRegion;
   district?: string;
@@ -231,6 +232,7 @@ export interface RegistrationInput {
   password: string;
   region?: TanzaniaRegion;
   district?: string;
+  stakeholderType: import('./index').StakeholderType;
   languagePref: LibraryLanguage;
   anonymous: boolean;
 }

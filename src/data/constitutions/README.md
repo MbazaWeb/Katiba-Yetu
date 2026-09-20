@@ -20,8 +20,4 @@ Sources inspected for metadata and selected contents entries:
 
 `ConstitutionPart.parentPartId` supports nested subsections. Articles reference a chapter and optional part; clauses recursively contain children and retain their source numbering. `order` is explicit, so 46, 46A and 46B can be navigated correctly. The reader's previous/next controls traverse imported records and disclose gaps while the inventory is incomplete.
 
-`constitutionRepository` in `src/services/constitution.ts` is the local data boundary for a future API/database. `ClarificationService` accepts an article, edition, language and conversation history, and returns a response with the same article/edition context. The current implementation gives clearly labelled local mock study prompts, never invented interpretations of missing text.
-
-`legacy-demo-sections.json` is quarantined homepage fixture data, not an official legal source. `mockData.ts` adapts its flat records to the existing homepage cards. The library, official reader, search, citations and clarification service do not use its bodies or chapter placement. In particular, the old demo's expression label for Article 19 must not enter official data: the source index places expression at Article 18 and religion at Article 19.
-
-Citizen comments/proposals use per-article, per-edition device storage. Only the subject-matching Article 13 demo poll is reused; no existing demo comment, proposal, history or explanation is represented as verified library content.
+`constitutionRepository` in `src/services/constitution.ts` is the local data boundary for a future API/database. `ClarificationService` accepts an article, edition, language and conversation history, and returns a response with the same article/edition context.

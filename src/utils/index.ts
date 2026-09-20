@@ -96,14 +96,11 @@ export function getVerificationLabel(tier: VerificationTier, lang: Language): st
 
 export function getRoleLabel(role: UserRole, lang: Language): string {
   const labels: Record<UserRole, { sw: string; en: string }> = {
-    guest:           { sw: 'Mgeni', en: 'Guest' },
-    registered:      { sw: 'Mtumiaji', en: 'Registered' },
-    verified_citizen:{ sw: 'Raia Aliyethibitishwa', en: 'Verified citizen' },
-    institution:     { sw: 'Taasisi', en: 'Institution' },
-    law_society:     { sw: 'Jumuiya ya Mawakili', en: 'Law society' },
-    academic:        { sw: 'Mtaalamu', en: 'Academic' },
-    moderator:       { sw: 'Msimamizi', en: 'Moderator' },
-    admin:           { sw: 'Msimamizi Mkuu', en: 'Admin' },
+    guest:            { sw: 'Mgeni',                    en: 'Guest' },
+    registered:       { sw: 'Mtumiaji',                 en: 'Registered' },
+    verified_citizen: { sw: 'Raia Aliyethibitishwa',   en: 'Verified citizen' },
+    moderator:        { sw: 'Msimamizi',               en: 'Moderator' },
+    admin:            { sw: 'Msimamizi Mkuu',          en: 'Admin' },
   };
   return labels[role]?.[lang] ?? role;
 }

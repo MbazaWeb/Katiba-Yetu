@@ -1,12 +1,11 @@
 import React from 'react';
-import {
-  View, Text, Pressable, StyleSheet, SafeAreaView,
-} from 'react-native';
+import { View, Text, Pressable, StyleSheet, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Spacing, Shadow } from '../../constants/tokens';
 import { useAppContext } from '../../hooks/useAppContext';
+import type { User } from '../../types';
 
-export type TabKey = 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'more';
+export type TabKey = 'home' | 'browser' | 'search' | 'more' | 'profile';
 
 interface TabItem {
   key: TabKey;
@@ -16,85 +15,61 @@ interface TabItem {
   label_en: string;
 }
 
-// Exactly 5 primary tabs — the 5th is always "···" (more)
-const PRIMARY_TABS: TabItem[] = [
-  { key: 'home',    icon: 'home-outline',        iconActive: 'home',        label_sw: 'Nyumbani', label_en: 'Home'   },
-  { key: 'browser', icon: 'book-outline',        iconActive: 'book',        label_sw: 'Katiba',   label_en: 'Browse' },
-  { key: 'search',  icon: 'search-outline',      iconActive: 'search',      label_sw: 'Tafuta',   label_en: 'Search' },
-  { key: 'profile', icon: 'person-outline',      iconActive: 'person',      label_sw: 'Akaunti',  label_en: 'Account'},
-  { key: 'more',    icon: 'ellipsis-horizontal', iconActive: 'ellipsis-horizontal', label_sw: 'Zaidi', label_en: 'More' },
+const CITIZEN_TABS: TabItem[] = [
+  { key: 'home',    icon: 'home-outline',   iconActive: 'home',   label_sw: 'Nyumbani', label_en: 'Home' },
+  { key: 'browser', icon: 'book-outline',   iconActive: 'book',   label_sw: 'Katiba',   label_en: 'Constitution' },
+  { key: 'search',  icon: 'search-outline', iconActive: 'search', label_sw: 'Tafuta',   label_en: 'Search' },
+  { key: 'more',    icon: 'menu-outline',   iconActive: 'menu',   label_sw: 'Zaidi',    label_en: 'More' },
+  { key: 'profile', icon: 'person-outline', iconActive: 'person', label_sw: 'Akaunti',  label_en: 'Account' },
+];
+
+const ADMIN_TABS: TabItem[] = [
+  { key: 'home',    icon: 'home-outline',   iconActive: 'home',   label_sw: 'Nyumbani',  label_en: 'Home' },
+  { key: 'browser', icon: 'book-outline',   iconActive: 'book',   label_sw: 'Katiba',    label_en: 'Constitution' },
+  { key: 'search',  icon: 'search-outline', iconActive: 'search', label_sw: 'Tafuta',    label_en: 'Search' },
+  { key: 'more',    icon: 'menu-outline',   iconActive: 'menu',   label_sw: 'Zaidi',     label_en: 'More' },
+  { key: 'profile', icon: 'person-outline', iconActive: 'person', label_sw: 'Akaunti',   label_en: 'Account' },
 ];
 
 interface BottomTabBarProps {
   activeTab: TabKey;
   onTabPress: (tab: TabKey) => void;
+  user: User | null;
   notificationCount?: Partial<Record<TabKey, number>>;
 }
 
-export function BottomTabBar({
-  activeTab,
-  onTabPress,
-  notificationCount = {},
-}: BottomTabBarProps) {
+export function BottomTabBar({ activeTab, onTabPress, user, notificationCount = {} }: BottomTabBarProps) {
   const { language } = useAppContext();
+  const isAdmin = user?.role === 'admin' || user?.role === 'moderator';
+  const tabs = isAdmin ? ADMIN_TABS : CITIZEN_TABS;
 
   return (
     <View style={styles.wrapper}>
       <SafeAreaView>
         <View style={styles.bar}>
-          {PRIMARY_TABS.map(tab => {
+          {tabs.map(tab => {
             const isActive = tab.key === activeTab;
             const count = notificationCount[tab.key] ?? 0;
             const label = language === 'sw' ? tab.label_sw : tab.label_en;
-            const isMore = tab.key === 'more';
-
             return (
               <Pressable
                 key={tab.key}
                 onPress={() => onTabPress(tab.key)}
-                style={({ pressed }) => [
-                  styles.tabItem,
-                  pressed && styles.tabPressed,
-                ]}
+                style={({ pressed }) => [styles.tabItem, pressed && styles.tabPressed]}
                 accessibilityRole="tab"
                 accessibilityLabel={label}
                 accessibilityState={{ selected: isActive }}
               >
-                {/* Active pill */}
-                {isActive && !isMore && <View style={styles.activePill} />}
-
-                {/* Icon */}
+                {isActive && <View style={styles.activeIndicator} />}
                 <View style={styles.iconWrap}>
-                  {isMore ? (
-                    // Three-dot icon — always rendered the same, no fill variant
-                    <View style={[styles.dotsWrap, isActive && styles.dotsWrapActive]}>
-                      {[0, 1, 2].map(i => (
-                        <View
-                          key={i}
-                          style={[
-                            styles.dot,
-                            isActive && styles.dotActive,
-                          ]}
-                        />
-                      ))}
-                    </View>
-                  ) : (
-                    <Ionicons
-                      name={isActive ? tab.iconActive : tab.icon}
-                      size={22}
-                      color={isActive ? Colors.green[700] : Colors.text.muted}
-                    />
-                  )}
+                  <Ionicons name={isActive ? tab.iconActive : tab.icon} size={21} color={isActive ? Colors.green[700] : Colors.text.muted} />
                   {count > 0 && (
                     <View style={styles.badge}>
                       <Text style={styles.badgeText}>{count > 99 ? '99+' : count}</Text>
                     </View>
                   )}
                 </View>
-
-                <Text style={[styles.label, isActive && styles.labelActive]}>
-                  {label}
-                </Text>
+                <Text style={[styles.label, isActive && styles.labelActive]}>{label}</Text>
               </Pressable>
             );
           })}
@@ -116,7 +91,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing[1],
     paddingBottom: Spacing[1],
     width: '100%',
-    maxWidth: 600,
+    maxWidth: 720,
     alignSelf: 'center',
   },
   tabItem: {
@@ -128,39 +103,18 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   tabPressed: { opacity: 0.7 },
-  activePill: {
+  activeIndicator: {
     position: 'absolute',
-    top: 6,
-    width: 48,
-    height: 30,
+    top: 4,
+    width: 44,
+    height: 32,
     backgroundColor: Colors.green[50],
-    borderRadius: 15,
+    borderRadius: 16,
   },
   iconWrap: {
     position: 'relative',
     marginBottom: Spacing[1],
     zIndex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 24,
-  },
-  // Three-dot "more" button
-  dotsWrap: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    height: 22,
-    paddingHorizontal: 4,
-  },
-  dotsWrapActive: {},
-  dot: {
-    width: 5,
-    height: 5,
-    borderRadius: 2.5,
-    backgroundColor: Colors.text.muted,
-  },
-  dotActive: {
-    backgroundColor: Colors.green[700],
   },
   badge: {
     position: 'absolute',

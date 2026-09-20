@@ -74,15 +74,13 @@ const supabaseAdapter: AuthService = {
       input.password,
       input.displayName,
       input.languagePref as Language,
+      input.stakeholderType,
       input.region,
       input.district,
       input.anonymous,
     );
-    // When email confirmation is disabled in Supabase, signUp returns a session immediately.
-    // Use that user directly instead of calling getUser() (which returns null pre-confirmation).
     const authUser = signUpData?.user ?? null;
     if (authUser) return loadProfile(authUser);
-    // Fallback: if somehow session isn't available, try getUser (shouldn't happen with auto-confirm on)
     const { data: { user: currentUser } } = await supabase.auth.getUser();
     if (currentUser) return loadProfile(currentUser);
     throw new Error('Hitilafu ya usajili. Tafadhali jaribu tena. / Registration error. Please try again.');
