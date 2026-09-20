@@ -69,10 +69,15 @@ const supabaseAdapter: AuthService = {
   },
   async register(input) {
     if (!input.email) throw new Error('Tafadhali andika barua pepe. / Supabase registration requires an email address.');
-    await supabaseSignUp(input.email, input.password, input.displayName, input.languagePref as Language);
-    const { data: { user: authUser } } = await supabase.auth.getUser();
+    const signUpData = await supabaseSignUp(input.email, input.password, input.displayName, input.languagePref as Language);
+    // When email confirmation is disabled in Supabase, signUp returns a session immediately.
+    // Use that user directly instead of calling getUser() (which returns null pre-confirmation).
+    const authUser = signUpData?.user ?? null;
     if (authUser) return loadProfile(authUser);
-    throw new Error('Akaunti imeundwa. Thibitisha barua pepe yako, kisha ingia. / Account created. Confirm your email, then sign in.');
+    // Fallback: if somehow session isn't available, try getUser (shouldn't happen with auto-confirm on)
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    if (currentUser) return loadProfile(currentUser);
+    throw new Error('Hitilafu ya usajili. Tafadhali jaribu tena. / Registration error. Please try again.');
   },
   async signOut() {
     await supabaseSignOut();

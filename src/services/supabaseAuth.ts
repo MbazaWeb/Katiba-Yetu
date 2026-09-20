@@ -27,11 +27,12 @@ export async function signIn(email: string, password: string) {
 }
 
 export async function signUp(email: string, password: string, displayName: string, language: 'sw' | 'en') {
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email: email.trim(), password,
     options: { data: { display_name: displayName.trim() || 'Mwananchi', language_pref: language } },
   });
   if (error) throw error;
+  return data;
 }
 
 export async function signOut() {
