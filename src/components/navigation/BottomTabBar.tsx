@@ -16,13 +16,13 @@ interface TabItem {
   label_en: string;
 }
 
-const TABS: TabItem[] = [
-  { key: 'home',    icon: 'home-outline',   iconActive: 'home',   label_sw: 'Nyumbani', label_en: 'Home'    },
-  { key: 'browser', icon: 'book-outline',   iconActive: 'book',   label_sw: 'Katiba',   label_en: 'Browse'  },
-  { key: 'polls',   icon: 'stats-chart-outline', iconActive: 'stats-chart', label_sw: 'Kura', label_en: 'Polls' },
-  { key: 'search',  icon: 'search-outline', iconActive: 'search', label_sw: 'Tafuta',   label_en: 'Search'  },
-  { key: 'more',    icon: 'menu-outline',   iconActive: 'menu',   label_sw: 'Zaidi',    label_en: 'More'    },
-  { key: 'profile', icon: 'person-outline', iconActive: 'person', label_sw: 'Akaunti',  label_en: 'Profile' },
+// Exactly 5 primary tabs — the 5th is always "···" (more)
+const PRIMARY_TABS: TabItem[] = [
+  { key: 'home',    icon: 'home-outline',        iconActive: 'home',        label_sw: 'Nyumbani', label_en: 'Home'   },
+  { key: 'browser', icon: 'book-outline',        iconActive: 'book',        label_sw: 'Katiba',   label_en: 'Browse' },
+  { key: 'search',  icon: 'search-outline',      iconActive: 'search',      label_sw: 'Tafuta',   label_en: 'Search' },
+  { key: 'profile', icon: 'person-outline',      iconActive: 'person',      label_sw: 'Akaunti',  label_en: 'Account'},
+  { key: 'more',    icon: 'ellipsis-horizontal', iconActive: 'ellipsis-horizontal', label_sw: 'Zaidi', label_en: 'More' },
 ];
 
 interface BottomTabBarProps {
@@ -42,10 +42,11 @@ export function BottomTabBar({
     <View style={styles.wrapper}>
       <SafeAreaView>
         <View style={styles.bar}>
-          {TABS.map(tab => {
+          {PRIMARY_TABS.map(tab => {
             const isActive = tab.key === activeTab;
             const count = notificationCount[tab.key] ?? 0;
             const label = language === 'sw' ? tab.label_sw : tab.label_en;
+            const isMore = tab.key === 'more';
 
             return (
               <Pressable
@@ -59,16 +60,31 @@ export function BottomTabBar({
                 accessibilityLabel={label}
                 accessibilityState={{ selected: isActive }}
               >
-                {/* Active indicator bar */}
-                {isActive && <View style={styles.activeIndicator} />}
+                {/* Active pill */}
+                {isActive && !isMore && <View style={styles.activePill} />}
 
-                {/* Icon area */}
+                {/* Icon */}
                 <View style={styles.iconWrap}>
-                  <Ionicons
-                    name={isActive ? tab.iconActive : tab.icon}
-                    size={21}
-                    color={isActive ? Colors.green[700] : Colors.text.muted}
-                  />
+                  {isMore ? (
+                    // Three-dot icon — always rendered the same, no fill variant
+                    <View style={[styles.dotsWrap, isActive && styles.dotsWrapActive]}>
+                      {[0, 1, 2].map(i => (
+                        <View
+                          key={i}
+                          style={[
+                            styles.dot,
+                            isActive && styles.dotActive,
+                          ]}
+                        />
+                      ))}
+                    </View>
+                  ) : (
+                    <Ionicons
+                      name={isActive ? tab.iconActive : tab.icon}
+                      size={22}
+                      color={isActive ? Colors.green[700] : Colors.text.muted}
+                    />
+                  )}
                   {count > 0 && (
                     <View style={styles.badge}>
                       <Text style={styles.badgeText}>{count > 99 ? '99+' : count}</Text>
@@ -100,7 +116,7 @@ const styles = StyleSheet.create({
     paddingTop: Spacing[1],
     paddingBottom: Spacing[1],
     width: '100%',
-    maxWidth: 720,
+    maxWidth: 600,
     alignSelf: 'center',
   },
   tabItem: {
@@ -111,21 +127,40 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing[1.5],
     position: 'relative',
   },
-  tabPressed: {
-    opacity: 0.7,
-  },
-  activeIndicator: {
+  tabPressed: { opacity: 0.7 },
+  activePill: {
     position: 'absolute',
-    top: 4,
-    width: 44,
-    height: 32,
+    top: 6,
+    width: 48,
+    height: 30,
     backgroundColor: Colors.green[50],
-    borderRadius: 16,
+    borderRadius: 15,
   },
   iconWrap: {
     position: 'relative',
     marginBottom: Spacing[1],
     zIndex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 24,
+  },
+  // Three-dot "more" button
+  dotsWrap: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    height: 22,
+    paddingHorizontal: 4,
+  },
+  dotsWrapActive: {},
+  dot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+    backgroundColor: Colors.text.muted,
+  },
+  dotActive: {
+    backgroundColor: Colors.green[700],
   },
   badge: {
     position: 'absolute',

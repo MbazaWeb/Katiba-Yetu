@@ -327,6 +327,7 @@ export default function App() {
               </Pressable>
             </View>
             <View style={styles.moreList}>
+              <MoreItem icon="stats-chart" label={language === 'sw' ? 'Kura' : 'Polls'} onPress={() => { setMoreOpen(false); setActiveTab('polls'); setNav({ screen: 'polls' }); }} />
               <MoreItem icon="create-outline" label={language === 'sw' ? 'Katiba Inayopendekezwa' : 'Proposed Constitution'} onPress={() => { setMoreOpen(false); handleProposedConstitutionPress(); }} />
               <MoreItem icon="megaphone-outline" label={language === 'sw' ? 'Wasilisha Pendekezo' : 'Submit Proposal'} onPress={() => { setMoreOpen(false); handleCitizenSubmissionPress(); }} />
               <MoreItem icon="stats-chart-outline" label={language === 'sw' ? 'Kura za Hatua Nyingi' : 'Multi-stage Polls'} onPress={() => { setMoreOpen(false); handleMultiStagePollsPress(); }} />
