@@ -11,10 +11,13 @@ export const localized = (text: LocalizedText, language: LibraryLanguage) => tex
 export const getBundle = (documentId: string) => bundles.find(b => b.document.id === documentId)!;
 export const getArticle = (id: string) => articles.find(a => a.id === id || a.legacySectionId === id);
 export const officialText = (article: ConstitutionArticle, language: LibraryLanguage) => {
-  const text = article.texts[language];
-  // Show text if it's verified or pending (extracted but not yet reviewed).
-  // Only 'unavailable' hides the text.
-  return text && text.source.verificationStatus !== 'unavailable' ? text : undefined;
+  // Try the requested language first, fall back to Swahili (source language).
+  // Both constitution PDFs are in Kiswahili, so the Swahili text is always
+  // available even when the UI language is English.
+  const text = article.texts[language] ?? article.texts.sw;
+  if (!text) return undefined;
+  // Show text if it's verified or pending. Only 'unavailable' hides it.
+  return text.source.verificationStatus !== 'unavailable' ? text : undefined;
 };
 export const clauseText = (clauses: ConstitutionClause[]): string => clauses.map(c => `${c.number} ${c.text}\n${clauseText(c.children)}`).join('\n');
 export function citationFor(article: ConstitutionArticle, language: LibraryLanguage): ArticleCitation {
