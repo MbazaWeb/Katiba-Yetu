@@ -12,7 +12,9 @@ export const getBundle = (documentId: string) => bundles.find(b => b.document.id
 export const getArticle = (id: string) => articles.find(a => a.id === id || a.legacySectionId === id);
 export const officialText = (article: ConstitutionArticle, language: LibraryLanguage) => {
   const text = article.texts[language];
-  return text?.source.verificationStatus === 'verified' ? text : undefined;
+  // Show text if it's verified or pending (extracted but not yet reviewed).
+  // Only 'unavailable' hides the text.
+  return text && text.source.verificationStatus !== 'unavailable' ? text : undefined;
 };
 export const clauseText = (clauses: ConstitutionClause[]): string => clauses.map(c => `${c.number} ${c.text}\n${clauseText(c.children)}`).join('\n');
 export function citationFor(article: ConstitutionArticle, language: LibraryLanguage): ArticleCitation {
