@@ -36,31 +36,348 @@
       "documentId": "doc-zanzibar-1984",
       "number": "1",
       "title": {
-        "sw": "Zanzibar na Watu"
+        "sw": "ZANZIBAR NA WATU",
+        "en": "ZANZIBAR AND THE PEOPLE"
       },
       "order": 1
+    },
+    {
+      "id": "doc-zanzibar-1984-ch2",
+      "documentId": "doc-zanzibar-1984",
+      "number": "2",
+      "title": {
+        "sw": "MALENGO NA MAAMURU MUHIMU YA SERA YA SERIKALI YA MAPINDUZI YA ZANZIBAR",
+        "en": "FUNDAMENTAL OBJECTIVES AND DIRECTIVE PRINCIPLES OF STATE POLICY"
+      },
+      "order": 2
     },
     {
       "id": "doc-zanzibar-1984-ch3",
       "documentId": "doc-zanzibar-1984",
       "number": "3",
       "title": {
-        "sw": "Kinga ya Haki za Lazima, Wajibu na Uhuru wa Mtu Binafsi"
+        "sw": "KINGA YA HAKI ZA LAZIMA, WAJIBU NA UHURU WA MTU BINAFSI",
+        "en": "PROTECTION OF FUNDAMENTAL RIGHTS, DUTIES AND INDIVIDUAL FREEDOMS"
       },
       "order": 3
+    },
+    {
+      "id": "doc-zanzibar-1984-ch4",
+      "documentId": "doc-zanzibar-1984",
+      "number": "4",
+      "title": {
+        "sw": "SERIKALI",
+        "en": "THE GOVERNMENT"
+      },
+      "order": 4
+    },
+    {
+      "id": "doc-zanzibar-1984-ch5",
+      "documentId": "doc-zanzibar-1984",
+      "number": "5",
+      "title": {
+        "sw": "BARAZA LA WAWAKILISHI",
+        "en": "HOUSE OF REPRESENTATIVES"
+      },
+      "order": 5
+    },
+    {
+      "id": "doc-zanzibar-1984-ch6",
+      "documentId": "doc-zanzibar-1984",
+      "number": "6",
+      "title": {
+        "sw": "SHERIA",
+        "en": "LAW AND JUDICIARY"
+      },
+      "order": 6
+    },
+    {
+      "id": "doc-zanzibar-1984-ch7",
+      "documentId": "doc-zanzibar-1984",
+      "number": "7",
+      "title": {
+        "sw": "FEDHA",
+        "en": "FINANCE"
+      },
+      "order": 7
+    },
+    {
+      "id": "doc-zanzibar-1984-ch8",
+      "documentId": "doc-zanzibar-1984",
+      "number": "8",
+      "title": {
+        "sw": "KAMISHENI YA UTUMISHI WA UMMA",
+        "en": "PUBLIC SERVICE COMMISSION"
+      },
+      "order": 8
+    },
+    {
+      "id": "doc-zanzibar-1984-ch9",
+      "documentId": "doc-zanzibar-1984",
+      "number": "9",
+      "title": {
+        "sw": "TUME YA UCHAGUZI",
+        "en": "ELECTORAL COMMISSION"
+      },
+      "order": 9
+    },
+    {
+      "id": "doc-zanzibar-1984-ch10",
+      "documentId": "doc-zanzibar-1984",
+      "number": "10",
+      "title": {
+        "sw": "IDARA MAALUM",
+        "en": "SPECIAL DEPARTMENTS"
+      },
+      "order": 10
+    },
+    {
+      "id": "doc-zanzibar-1984-ch11",
+      "documentId": "doc-zanzibar-1984",
+      "number": "11",
+      "title": {
+        "sw": "MAMLAKA YA BAADHI YA VYOMBO VYA MUUNGANO",
+        "en": "POWERS OF CERTAIN UNION ORGANS"
+      },
+      "order": 11
+    },
+    {
+      "id": "doc-zanzibar-1984-ch12",
+      "documentId": "doc-zanzibar-1984",
+      "number": "12",
+      "title": {
+        "sw": "VYOMBO VYENGINE VYA SERIKALI YA MAPINDUZI YA ZANZIBAR",
+        "en": "OTHER ORGANS OF THE REVOLUTIONARY GOVERNMENT OF ZANZIBAR"
+      },
+      "order": 12
+    },
+    {
+      "id": "doc-zanzibar-1984-ch13",
+      "documentId": "doc-zanzibar-1984",
+      "number": "13",
+      "title": {
+        "sw": "MAMBO YA JUMLA",
+        "en": "GENERAL PROVISIONS"
+      },
+      "order": 13
     }
   ],
   "parts": [
     {
-      "id": "doc-zanzibar-1984-part1",
+      "id": "doc-zanzibar-1984-ch1-part1",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
       "parentPartId": null,
       "number": "1",
       "title": {
-        "sw": "Zanzibar"
+        "sw": "Zanzibar",
+        "en": "Zanzibar"
       },
       "order": 1
+    },
+    {
+      "id": "doc-zanzibar-1984-ch1-part2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch1",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "Watu",
+        "en": "The People"
+      },
+      "order": 2
+    },
+    {
+      "id": "doc-zanzibar-1984-ch4-part1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "Rais",
+        "en": "The President"
+      },
+      "order": 3
+    },
+    {
+      "id": "doc-zanzibar-1984-ch4-part2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "Makamo wa Kwanza wa Rais na Makamo wa Pili wa Rais",
+        "en": "First Vice President and Second Vice President"
+      },
+      "order": 4
+    },
+    {
+      "id": "doc-zanzibar-1984-ch4-part3",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "Mawaziri, Naibu Mawaziri na Baraza la Mapinduzi",
+        "en": "Ministers, Deputy Ministers and Revolutionary Council"
+      },
+      "order": 5
+    },
+    {
+      "id": "doc-zanzibar-1984-ch4-part4",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "parentPartId": null,
+      "number": "4",
+      "title": {
+        "sw": "Madaraka ya Serikali",
+        "en": "Powers of Government"
+      },
+      "order": 6
+    },
+    {
+      "id": "doc-zanzibar-1984-ch5-part1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "Muundo wa Baraza la Kutunga Sheria",
+        "en": "Composition of the Legislature"
+      },
+      "order": 7
+    },
+    {
+      "id": "doc-zanzibar-1984-ch5-part2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "Sheria na Taratibu katika Baraza la Wawakilishi",
+        "en": "Laws and Procedures of the House of Representatives"
+      },
+      "order": 8
+    },
+    {
+      "id": "doc-zanzibar-1984-ch5-part3",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "Kuitisha na Kuvunja Baraza la Wawakilishi",
+        "en": "Convening and Dissolving the House"
+      },
+      "order": 9
+    },
+    {
+      "id": "doc-zanzibar-1984-ch6-part1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "Mahkama Kuu",
+        "en": "High Court"
+      },
+      "order": 10
+    },
+    {
+      "id": "doc-zanzibar-1984-ch6-part2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "Mahkama ya Rufaa",
+        "en": "Court of Appeal"
+      },
+      "order": 11
+    },
+    {
+      "id": "doc-zanzibar-1984-ch6-part3",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "Mahkama Nyenginezo",
+        "en": "Other Courts"
+      },
+      "order": 12
+    },
+    {
+      "id": "doc-zanzibar-1984-ch6-part4",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "parentPartId": null,
+      "number": "4",
+      "title": {
+        "sw": "Utekelezaji wa Maagizo ya Mahkama",
+        "en": "Enforcement of Court Orders"
+      },
+      "order": 13
+    },
+    {
+      "id": "doc-zanzibar-1984-ch6-part5",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "parentPartId": null,
+      "number": "5",
+      "title": {
+        "sw": "Tume ya Utumishi ya Mahkama",
+        "en": "Judicial Service Commission"
+      },
+      "order": 14
+    },
+    {
+      "id": "doc-zanzibar-1984-ch7-part1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "Masharti ya Fedha Yahusuyo Serikali ya Mapinduzi ya Zanzibar",
+        "en": "Finance Provisions for Revolutionary Government"
+      },
+      "order": 15
+    },
+    {
+      "id": "doc-zanzibar-1984-ch7-part2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "Masharti ya Fedha Yahusuyo Mambo ya Muungano",
+        "en": "Finance Provisions for Union Matters"
+      },
+      "order": 16
+    },
+    {
+      "id": "doc-zanzibar-1984-ch12-part1",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch12",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "Tume ya Mipango",
+        "en": "Planning Commission"
+      },
+      "order": 17
+    },
+    {
+      "id": "doc-zanzibar-1984-ch12-part2",
+      "documentId": "doc-zanzibar-1984",
+      "chapterId": "doc-zanzibar-1984-ch12",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "Serikali za Mitaa",
+        "en": "Local Governments"
+      },
+      "order": 18
     }
   ],
   "articles": [
@@ -68,7 +385,7 @@
       "id": "zanzibar-2A",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "2A",
       "order": 1,
       "title": {
@@ -120,7 +437,7 @@
       "id": "zanzibar-3",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "3",
       "order": 2,
       "title": {
@@ -172,7 +489,7 @@
       "id": "zanzibar-5A",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "5A",
       "order": 3,
       "title": {
@@ -224,7 +541,7 @@
       "id": "zanzibar-6",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part2",
       "number": "6",
       "order": 4,
       "title": {
@@ -276,7 +593,7 @@
       "id": "zanzibar-7",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part2",
       "number": "7",
       "order": 5,
       "title": {
@@ -327,7 +644,7 @@
     {
       "id": "zanzibar-9",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch2",
       "partId": null,
       "number": "9",
       "order": 6,
@@ -379,7 +696,7 @@
     {
       "id": "zanzibar-10",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch2",
       "partId": null,
       "number": "10",
       "order": 7,
@@ -431,7 +748,7 @@
     {
       "id": "zanzibar-10A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch2",
       "partId": null,
       "number": "10A",
       "order": 8,
@@ -483,7 +800,7 @@
     {
       "id": "zanzibar-11",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "11",
       "order": 9,
@@ -535,7 +852,7 @@
     {
       "id": "zanzibar-12",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "12",
       "order": 10,
@@ -587,7 +904,7 @@
     {
       "id": "zanzibar-13",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "13",
       "order": 11,
@@ -639,7 +956,7 @@
     {
       "id": "zanzibar-14",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "14",
       "order": 12,
@@ -691,7 +1008,7 @@
     {
       "id": "zanzibar-15",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "15",
       "order": 13,
@@ -743,7 +1060,7 @@
     {
       "id": "zanzibar-16",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "16",
       "order": 14,
@@ -795,7 +1112,7 @@
     {
       "id": "zanzibar-18",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "18",
       "order": 15,
@@ -847,7 +1164,7 @@
     {
       "id": "zanzibar-19",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "19",
       "order": 16,
@@ -899,7 +1216,7 @@
     {
       "id": "zanzibar-20",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "20",
       "order": 17,
@@ -951,7 +1268,7 @@
     {
       "id": "zanzibar-21",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "21",
       "order": 18,
@@ -1003,7 +1320,7 @@
     {
       "id": "zanzibar-22",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "22",
       "order": 19,
@@ -1055,7 +1372,7 @@
     {
       "id": "zanzibar-23",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "23",
       "order": 20,
@@ -1107,7 +1424,7 @@
     {
       "id": "zanzibar-24",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "24",
       "order": 21,
@@ -1159,7 +1476,7 @@
     {
       "id": "zanzibar-25",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "25",
       "order": 22,
@@ -1211,7 +1528,7 @@
     {
       "id": "zanzibar-25A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "25A",
       "order": 23,
@@ -1263,8 +1580,8 @@
     {
       "id": "zanzibar-26",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "26",
       "order": 24,
       "title": {
@@ -1315,8 +1632,8 @@
     {
       "id": "zanzibar-27",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "27",
       "order": 25,
       "title": {
@@ -1367,8 +1684,8 @@
     {
       "id": "zanzibar-28",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "28",
       "order": 26,
       "title": {
@@ -1419,8 +1736,8 @@
     {
       "id": "zanzibar-30",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "30",
       "order": 27,
       "title": {
@@ -1471,8 +1788,8 @@
     {
       "id": "zanzibar-31",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "31",
       "order": 28,
       "title": {
@@ -1523,8 +1840,8 @@
     {
       "id": "zanzibar-32",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "32",
       "order": 29,
       "title": {
@@ -1575,8 +1892,8 @@
     {
       "id": "zanzibar-33",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "33",
       "order": 30,
       "title": {
@@ -1627,8 +1944,8 @@
     {
       "id": "zanzibar-34",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "34",
       "order": 31,
       "title": {
@@ -1679,8 +1996,8 @@
     {
       "id": "zanzibar-35",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "35",
       "order": 32,
       "title": {
@@ -1731,8 +2048,8 @@
     {
       "id": "zanzibar-36",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "36",
       "order": 33,
       "title": {
@@ -1783,8 +2100,8 @@
     {
       "id": "zanzibar-37",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "37",
       "order": 34,
       "title": {
@@ -1835,8 +2152,8 @@
     {
       "id": "zanzibar-39",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part2",
       "number": "39",
       "order": 35,
       "title": {
@@ -1887,8 +2204,8 @@
     {
       "id": "zanzibar-39A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part2",
       "number": "39A",
       "order": 36,
       "title": {
@@ -1939,8 +2256,8 @@
     {
       "id": "zanzibar-40",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part2",
       "number": "40",
       "order": 37,
       "title": {
@@ -1991,8 +2308,8 @@
     {
       "id": "zanzibar-41",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part2",
       "number": "41",
       "order": 38,
       "title": {
@@ -2043,8 +2360,8 @@
     {
       "id": "zanzibar-42",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "42",
       "order": 39,
       "title": {
@@ -2095,8 +2412,8 @@
     {
       "id": "zanzibar-43",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "43",
       "order": 40,
       "title": {
@@ -2147,8 +2464,8 @@
     {
       "id": "zanzibar-44",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "44",
       "order": 41,
       "title": {
@@ -2199,8 +2516,8 @@
     {
       "id": "zanzibar-45",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "45",
       "order": 42,
       "title": {
@@ -2251,8 +2568,8 @@
     {
       "id": "zanzibar-49",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "49",
       "order": 43,
       "title": {
@@ -2303,8 +2620,8 @@
     {
       "id": "zanzibar-50",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "50",
       "order": 44,
       "title": {
@@ -2355,8 +2672,8 @@
     {
       "id": "zanzibar-53",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "53",
       "order": 45,
       "title": {
@@ -2407,8 +2724,8 @@
     {
       "id": "zanzibar-54",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "54",
       "order": 46,
       "title": {
@@ -2459,8 +2776,8 @@
     {
       "id": "zanzibar-55",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "55",
       "order": 47,
       "title": {
@@ -2511,8 +2828,8 @@
     {
       "id": "zanzibar-56A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "56A",
       "order": 48,
       "title": {
@@ -2563,8 +2880,8 @@
     {
       "id": "zanzibar-58",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "58",
       "order": 49,
       "title": {
@@ -2615,8 +2932,8 @@
     {
       "id": "zanzibar-60",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "60",
       "order": 50,
       "title": {
@@ -2667,8 +2984,8 @@
     {
       "id": "zanzibar-61",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "61",
       "order": 51,
       "title": {
@@ -2719,8 +3036,8 @@
     {
       "id": "zanzibar-62",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "62",
       "order": 52,
       "title": {
@@ -2771,8 +3088,8 @@
     {
       "id": "zanzibar-63",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "63",
       "order": 53,
       "title": {
@@ -2823,8 +3140,8 @@
     {
       "id": "zanzibar-65",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "65",
       "order": 54,
       "title": {
@@ -2875,8 +3192,8 @@
     {
       "id": "zanzibar-67",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "67",
       "order": 55,
       "title": {
@@ -2927,8 +3244,8 @@
     {
       "id": "zanzibar-69",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "69",
       "order": 56,
       "title": {
@@ -2979,8 +3296,8 @@
     {
       "id": "zanzibar-71",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "71",
       "order": 57,
       "title": {
@@ -3031,8 +3348,8 @@
     {
       "id": "zanzibar-72",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "72",
       "order": 58,
       "title": {
@@ -3083,8 +3400,8 @@
     {
       "id": "zanzibar-73",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "73",
       "order": 59,
       "title": {
@@ -3135,8 +3452,8 @@
     {
       "id": "zanzibar-74",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "74",
       "order": 60,
       "title": {
@@ -3187,8 +3504,8 @@
     {
       "id": "zanzibar-76",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "76",
       "order": 61,
       "title": {
@@ -3239,8 +3556,8 @@
     {
       "id": "zanzibar-77",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "77",
       "order": 62,
       "title": {
@@ -3291,8 +3608,8 @@
     {
       "id": "zanzibar-78",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "78",
       "order": 63,
       "title": {
@@ -3343,8 +3660,8 @@
     {
       "id": "zanzibar-79",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "79",
       "order": 64,
       "title": {
@@ -3395,8 +3712,8 @@
     {
       "id": "zanzibar-80",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "80",
       "order": 65,
       "title": {
@@ -3447,8 +3764,8 @@
     {
       "id": "zanzibar-80A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "80A",
       "order": 66,
       "title": {
@@ -3499,8 +3816,8 @@
     {
       "id": "zanzibar-82",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "82",
       "order": 67,
       "title": {
@@ -3551,8 +3868,8 @@
     {
       "id": "zanzibar-83",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "83",
       "order": 68,
       "title": {
@@ -3603,8 +3920,8 @@
     {
       "id": "zanzibar-85",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "85",
       "order": 69,
       "title": {
@@ -3655,8 +3972,8 @@
     {
       "id": "zanzibar-86",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "86",
       "order": 70,
       "title": {
@@ -3707,8 +4024,8 @@
     {
       "id": "zanzibar-87",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "87",
       "order": 71,
       "title": {
@@ -3759,8 +4076,8 @@
     {
       "id": "zanzibar-89",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part3",
       "number": "89",
       "order": 72,
       "title": {
@@ -3811,8 +4128,8 @@
     {
       "id": "zanzibar-90",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part3",
       "number": "90",
       "order": 73,
       "title": {
@@ -3863,8 +4180,8 @@
     {
       "id": "zanzibar-91",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part3",
       "number": "91",
       "order": 74,
       "title": {
@@ -3915,8 +4232,8 @@
     {
       "id": "zanzibar-92",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part3",
       "number": "92",
       "order": 75,
       "title": {
@@ -3967,8 +4284,8 @@
     {
       "id": "zanzibar-93",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part1",
       "number": "93",
       "order": 76,
       "title": {
@@ -4019,8 +4336,8 @@
     {
       "id": "zanzibar-94",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part1",
       "number": "94",
       "order": 77,
       "title": {
@@ -4071,8 +4388,8 @@
     {
       "id": "zanzibar-95",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part1",
       "number": "95",
       "order": 78,
       "title": {
@@ -4123,8 +4440,8 @@
     {
       "id": "zanzibar-99A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part2",
       "number": "99A",
       "order": 79,
       "title": {
@@ -4175,8 +4492,8 @@
     {
       "id": "zanzibar-101",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part4",
       "number": "101",
       "order": 80,
       "title": {
@@ -4227,8 +4544,8 @@
     {
       "id": "zanzibar-104",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "104",
       "order": 81,
       "title": {
@@ -4279,8 +4596,8 @@
     {
       "id": "zanzibar-105",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "105",
       "order": 82,
       "title": {
@@ -4331,8 +4648,8 @@
     {
       "id": "zanzibar-106",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "106",
       "order": 83,
       "title": {
@@ -4383,8 +4700,8 @@
     {
       "id": "zanzibar-107",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "107",
       "order": 84,
       "title": {
@@ -4435,8 +4752,8 @@
     {
       "id": "zanzibar-108",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "108",
       "order": 85,
       "title": {
@@ -4487,8 +4804,8 @@
     {
       "id": "zanzibar-109",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "109",
       "order": 86,
       "title": {
@@ -4539,8 +4856,8 @@
     {
       "id": "zanzibar-110",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "110",
       "order": 87,
       "title": {
@@ -4591,8 +4908,8 @@
     {
       "id": "zanzibar-111",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "111",
       "order": 88,
       "title": {
@@ -4643,8 +4960,8 @@
     {
       "id": "zanzibar-112",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "112",
       "order": 89,
       "title": {
@@ -4695,8 +5012,8 @@
     {
       "id": "zanzibar-113",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part1",
       "number": "113",
       "order": 90,
       "title": {
@@ -4747,7 +5064,7 @@
     {
       "id": "zanzibar-116",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch8",
       "partId": null,
       "number": "116",
       "order": 91,
@@ -4799,7 +5116,7 @@
     {
       "id": "zanzibar-117",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch8",
       "partId": null,
       "number": "117",
       "order": 92,
@@ -4851,7 +5168,7 @@
     {
       "id": "zanzibar-119",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch9",
       "partId": null,
       "number": "119",
       "order": 93,
@@ -4903,7 +5220,7 @@
     {
       "id": "zanzibar-120",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch9",
       "partId": null,
       "number": "120",
       "order": 94,
@@ -4955,7 +5272,7 @@
     {
       "id": "zanzibar-121",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch10",
       "partId": null,
       "number": "121",
       "order": 95,
@@ -5007,7 +5324,7 @@
     {
       "id": "zanzibar-123",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch10",
       "partId": null,
       "number": "123",
       "order": 96,
@@ -5059,7 +5376,7 @@
     {
       "id": "zanzibar-124",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch11",
       "partId": null,
       "number": "124",
       "order": 97,
@@ -5111,8 +5428,8 @@
     {
       "id": "zanzibar-125",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch12",
+      "partId": "doc-zanzibar-1984-ch12-part1",
       "number": "125",
       "order": 98,
       "title": {
@@ -5163,7 +5480,7 @@
     {
       "id": "zanzibar-129",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "129",
       "order": 99,
@@ -5215,7 +5532,7 @@
     {
       "id": "zanzibar-130",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "130",
       "order": 100,
@@ -5267,7 +5584,7 @@
     {
       "id": "zanzibar-132",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "132",
       "order": 101,
@@ -5319,7 +5636,7 @@
     {
       "id": "zanzibar-133",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "133",
       "order": 102,
@@ -5371,7 +5688,7 @@
     {
       "id": "zanzibar-134",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "134",
       "order": 103,
@@ -5423,7 +5740,7 @@
     {
       "id": "zanzibar-134A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "134A",
       "order": 104,
@@ -5475,7 +5792,7 @@
     {
       "id": "zanzibar-135",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "135",
       "order": 105,
@@ -5528,7 +5845,7 @@
       "id": "zanzibar-1",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "1",
       "order": 106,
       "title": {
@@ -5580,7 +5897,7 @@
       "id": "zanzibar-2",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "2",
       "order": 107,
       "title": {
@@ -5638,7 +5955,7 @@
       "id": "zanzibar-4",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "4",
       "order": 108,
       "title": {
@@ -5690,7 +6007,7 @@
       "id": "zanzibar-5",
       "documentId": "doc-zanzibar-1984",
       "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "partId": "doc-zanzibar-1984-ch1-part1",
       "number": "5",
       "order": 109,
       "title": {
@@ -5795,7 +6112,7 @@
     {
       "id": "zanzibar-8",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch2",
       "partId": null,
       "number": "8",
       "order": 110,
@@ -5961,7 +6278,7 @@
     {
       "id": "zanzibar-17",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch3",
       "partId": null,
       "number": "17",
       "order": 111,
@@ -6229,8 +6546,8 @@
     {
       "id": "zanzibar-29",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "29",
       "order": 112,
       "title": {
@@ -6515,8 +6832,8 @@
     {
       "id": "zanzibar-38",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part1",
       "number": "38",
       "order": 113,
       "title": {
@@ -6711,8 +7028,8 @@
     {
       "id": "zanzibar-42A",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "42A",
       "order": 114,
       "title": {
@@ -6841,8 +7158,8 @@
     {
       "id": "zanzibar-46",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "46",
       "order": 115,
       "title": {
@@ -6893,8 +7210,8 @@
     {
       "id": "zanzibar-47",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "47",
       "order": 116,
       "title": {
@@ -6945,8 +7262,8 @@
     {
       "id": "zanzibar-48",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part3",
       "number": "48",
       "order": 117,
       "title": {
@@ -7039,8 +7356,8 @@
     {
       "id": "zanzibar-51",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "51",
       "order": 118,
       "title": {
@@ -7091,8 +7408,8 @@
     {
       "id": "zanzibar-52",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "52",
       "order": 119,
       "title": {
@@ -7167,8 +7484,8 @@
     {
       "id": "zanzibar-56",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "56",
       "order": 120,
       "title": {
@@ -7279,8 +7596,8 @@
     {
       "id": "zanzibar-57",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "57",
       "order": 121,
       "title": {
@@ -7337,8 +7654,8 @@
     {
       "id": "zanzibar-59",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch4",
+      "partId": "doc-zanzibar-1984-ch4-part4",
       "number": "59",
       "order": 122,
       "title": {
@@ -7455,8 +7772,8 @@
     {
       "id": "zanzibar-64",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "64",
       "order": 123,
       "title": {
@@ -7525,8 +7842,8 @@
     {
       "id": "zanzibar-66",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "66",
       "order": 124,
       "title": {
@@ -7595,8 +7912,8 @@
     {
       "id": "zanzibar-68",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "68",
       "order": 125,
       "title": {
@@ -7671,8 +7988,8 @@
     {
       "id": "zanzibar-70",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "70",
       "order": 126,
       "title": {
@@ -7807,8 +8124,8 @@
     {
       "id": "zanzibar-75",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part1",
       "number": "75",
       "order": 127,
       "title": {
@@ -8075,8 +8392,8 @@
     {
       "id": "zanzibar-81",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "81",
       "order": 128,
       "title": {
@@ -8151,8 +8468,8 @@
     {
       "id": "zanzibar-84",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "84",
       "order": 129,
       "title": {
@@ -8251,8 +8568,8 @@
     {
       "id": "zanzibar-88",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch5",
+      "partId": "doc-zanzibar-1984-ch5-part2",
       "number": "88",
       "order": 130,
       "title": {
@@ -8519,8 +8836,8 @@
     {
       "id": "zanzibar-96",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part1",
       "number": "96",
       "order": 131,
       "title": {
@@ -8571,8 +8888,8 @@
     {
       "id": "zanzibar-97",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part1",
       "number": "97",
       "order": 132,
       "title": {
@@ -8623,8 +8940,8 @@
     {
       "id": "zanzibar-99",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part2",
       "number": "99",
       "order": 133,
       "title": {
@@ -8681,8 +8998,8 @@
     {
       "id": "zanzibar-100",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part3",
       "number": "100",
       "order": 134,
       "title": {
@@ -8745,8 +9062,8 @@
     {
       "id": "zanzibar-102",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch6",
+      "partId": "doc-zanzibar-1984-ch6-part5",
       "number": "102",
       "order": 135,
       "title": {
@@ -9025,8 +9342,8 @@
     {
       "id": "zanzibar-114",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part2",
       "number": "114",
       "order": 136,
       "title": {
@@ -9077,8 +9394,8 @@
     {
       "id": "zanzibar-115",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch7",
+      "partId": "doc-zanzibar-1984-ch7-part2",
       "number": "115",
       "order": 137,
       "title": {
@@ -9135,7 +9452,7 @@
     {
       "id": "zanzibar-118",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch8",
       "partId": null,
       "number": "118",
       "order": 138,
@@ -9337,7 +9654,7 @@
     {
       "id": "zanzibar-122",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch10",
       "partId": null,
       "number": "122",
       "order": 139,
@@ -9443,8 +9760,8 @@
     {
       "id": "zanzibar-126",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch12",
+      "partId": "doc-zanzibar-1984-ch12-part1",
       "number": "126",
       "order": 140,
       "title": {
@@ -9495,8 +9812,8 @@
     {
       "id": "zanzibar-127",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch12",
+      "partId": "doc-zanzibar-1984-ch12-part1",
       "number": "127",
       "order": 141,
       "title": {
@@ -9547,8 +9864,8 @@
     {
       "id": "zanzibar-128",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
-      "partId": null,
+      "chapterId": "doc-zanzibar-1984-ch12",
+      "partId": "doc-zanzibar-1984-ch12-part2",
       "number": "128",
       "order": 142,
       "title": {
@@ -9647,7 +9964,7 @@
     {
       "id": "zanzibar-131",
       "documentId": "doc-zanzibar-1984",
-      "chapterId": "doc-zanzibar-1984-ch1",
+      "chapterId": "doc-zanzibar-1984-ch13",
       "partId": null,
       "number": "131",
       "order": 143,

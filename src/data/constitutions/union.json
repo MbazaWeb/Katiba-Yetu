@@ -36,33 +36,378 @@
       "documentId": "doc-union-1977",
       "number": "1",
       "title": {
+        "sw": "JAMHURI YA MUUNGANO, VYAMA VYA SIASA, WATU NA SIASA YA UJAMAA NA KUJITEGEMEA",
         "en": "THE UNITED REPUBLIC, POLITICAL PARTIES, THE PEOPLE AND THE POLICY OF SOCIALISM AND SELF RELIANCE"
       },
       "order": 1
+    },
+    {
+      "id": "doc-union-1977-ch2",
+      "documentId": "doc-union-1977",
+      "number": "2",
+      "title": {
+        "sw": "SERIKALI YA JAMHURI YA MUUNGANO",
+        "en": "THE GOVERNMENT OF THE UNITED REPUBLIC"
+      },
+      "order": 2
+    },
+    {
+      "id": "doc-union-1977-ch3",
+      "documentId": "doc-union-1977",
+      "number": "3",
+      "title": {
+        "sw": "BUNGE LA JAMHURI YA MUUNGANO",
+        "en": "THE NATIONAL ASSEMBLY OF THE UNITED REPUBLIC"
+      },
+      "order": 3
+    },
+    {
+      "id": "doc-union-1977-ch4",
+      "documentId": "doc-union-1977",
+      "number": "4",
+      "title": {
+        "sw": "SERIKALI YA MAPINDUZI YA ZANZIBAR, BARAZA LA MAPINDUZI NA BARAZA LA WAWAKILISHI",
+        "en": "REVOLUTIONARY GOVERNMENT OF ZANZIBAR, REVOLUTIONARY COUNCIL AND HOUSE OF REPRESENTATIVES"
+      },
+      "order": 4
+    },
+    {
+      "id": "doc-union-1977-ch5",
+      "documentId": "doc-union-1977",
+      "number": "5",
+      "title": {
+        "sw": "UTOAJI HAKI, MAHAKAMA KUU, MAHAKAMA YA RUFANI NA MAHAKAMA MAALUM YA KATIBA",
+        "en": "ADMINISTRATION OF JUSTICE, HIGH COURT, COURT OF APPEAL AND SPECIAL CONSTITUTIONAL COURT"
+      },
+      "order": 5
+    },
+    {
+      "id": "doc-union-1977-ch6",
+      "documentId": "doc-union-1977",
+      "number": "6",
+      "title": {
+        "sw": "TUME YA HAKI ZA BINADAMU NA UTAWALA BORA NA SEKRETARIETI YA MAADILI",
+        "en": "COMMISSION FOR HUMAN RIGHTS AND GOOD GOVERNANCE AND ETHICS SECRETARIAT"
+      },
+      "order": 6
+    },
+    {
+      "id": "doc-union-1977-ch7",
+      "documentId": "doc-union-1977",
+      "number": "7",
+      "title": {
+        "sw": "MASHARTI KUHUSU FEDHA ZA SERIKALI YA JAMHURI YA MUUNGANO",
+        "en": "PROVISIONS RELATING TO FINANCES OF THE GOVERNMENT OF THE UNITED REPUBLIC"
+      },
+      "order": 7
+    },
+    {
+      "id": "doc-union-1977-ch8",
+      "documentId": "doc-union-1977",
+      "number": "8",
+      "title": {
+        "sw": "MADARAKA YA UMMA",
+        "en": "PUBLIC AUTHORITY"
+      },
+      "order": 8
+    },
+    {
+      "id": "doc-union-1977-ch9",
+      "documentId": "doc-union-1977",
+      "number": "9",
+      "title": {
+        "sw": "MAJESHI YA ULINZI",
+        "en": "DEFENCE FORCES"
+      },
+      "order": 9
+    },
+    {
+      "id": "doc-union-1977-ch10",
+      "documentId": "doc-union-1977",
+      "number": "10",
+      "title": {
+        "sw": "MENGINEYO",
+        "en": "MISCELLANEOUS"
+      },
+      "order": 10
     }
   ],
   "parts": [
     {
-      "id": "doc-union-1977-part1",
+      "id": "doc-union-1977-ch1-part1",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
       "parentPartId": null,
       "number": "1",
       "title": {
+        "sw": "JAMHURI YA MUUNGANO NA WATU",
         "en": "THE UNITED REPUBLIC AND THE PEOPLE"
       },
       "order": 1
     },
     {
-      "id": "doc-union-1977-part3",
+      "id": "doc-union-1977-ch1-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch1",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "MALENGO MUHIMU NA MISINGI YA MWELEKEO WA SHUGHULI ZA SERIKALI",
+        "en": "FUNDAMENTAL OBJECTIVES AND DIRECTIVE PRINCIPLES OF STATE POLICY"
+      },
+      "order": 2
+    },
+    {
+      "id": "doc-union-1977-ch1-part3",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
       "parentPartId": null,
       "number": "3",
       "title": {
+        "sw": "HAKI NA WAJIBU MUHIMU",
         "en": "BASIC RIGHTS AND DUTIES"
       },
       "order": 3
+    },
+    {
+      "id": "doc-union-1977-ch2-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch2",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "RAIS",
+        "en": "THE PRESIDENT"
+      },
+      "order": 4
+    },
+    {
+      "id": "doc-union-1977-ch2-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch2",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "MAKAMU WA RAIS",
+        "en": "THE VICE PRESIDENT"
+      },
+      "order": 5
+    },
+    {
+      "id": "doc-union-1977-ch2-part3",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch2",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "WAZIRI MKUU, BARAZA LA MAWAZIRI NA SERIKALI",
+        "en": "PRIME MINISTER, CABINET AND GOVERNMENT"
+      },
+      "order": 6
+    },
+    {
+      "id": "doc-union-1977-ch3-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch3",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "BUNGE",
+        "en": "THE NATIONAL ASSEMBLY"
+      },
+      "order": 7
+    },
+    {
+      "id": "doc-union-1977-ch3-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch3",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "WABUNGE, WILAYA ZA UCHAGUZI NA UCHAGUZI WA WABUNGE",
+        "en": "MEMBERS OF PARLIAMENT, CONSTITUENCIES AND ELECTIONS"
+      },
+      "order": 8
+    },
+    {
+      "id": "doc-union-1977-ch3-part3",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch3",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "UTARATIBU, MADARAKA NA HAKI ZA BUNGE",
+        "en": "PROCEDURE, POWERS AND PRIVILEGES OF THE NATIONAL ASSEMBLY"
+      },
+      "order": 9
+    },
+    {
+      "id": "doc-union-1977-ch4-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch4",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "SERIKALI YA MAPINDUZI YA ZANZIBAR NA RAIS WA ZANZIBAR",
+        "en": "REVOLUTIONARY GOVERNMENT OF ZANZIBAR AND THE PRESIDENT OF ZANZIBAR"
+      },
+      "order": 10
+    },
+    {
+      "id": "doc-union-1977-ch4-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch4",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "BARAZA LA MAPINDUZI LA ZANZIBAR",
+        "en": "REVOLUTIONARY COUNCIL OF ZANZIBAR"
+      },
+      "order": 11
+    },
+    {
+      "id": "doc-union-1977-ch4-part3",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch4",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "BARAZA LA WAWAKILISHI LA ZANZIBAR",
+        "en": "HOUSE OF REPRESENTATIVES OF ZANZIBAR"
+      },
+      "order": 12
+    },
+    {
+      "id": "doc-union-1977-ch5-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "UTOAJI HAKI KATIKA JAMHURI YA MUUNGANO",
+        "en": "ADMINISTRATION OF JUSTICE"
+      },
+      "order": 13
+    },
+    {
+      "id": "doc-union-1977-ch5-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "MAHAKAMA KUU YA JAMHURI YA MUUNGANO",
+        "en": "HIGH COURT OF THE UNITED REPUBLIC"
+      },
+      "order": 14
+    },
+    {
+      "id": "doc-union-1977-ch5-part3",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "3",
+      "title": {
+        "sw": "TUME YA KUAJIRI YA MAHAKAMA YA TANZANIA BARA",
+        "en": "JUDICIAL SERVICE COMMISSION OF TANZANIA MAINLAND"
+      },
+      "order": 15
+    },
+    {
+      "id": "doc-union-1977-ch5-part4",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "4",
+      "title": {
+        "sw": "MAHAKAMA KUU YA ZANZIBAR",
+        "en": "HIGH COURT OF ZANZIBAR"
+      },
+      "order": 16
+    },
+    {
+      "id": "doc-union-1977-ch5-part5",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "5",
+      "title": {
+        "sw": "MAHAKAMA YA RUFANI YA JAMHURI YA MUUNGANO",
+        "en": "COURT OF APPEAL OF THE UNITED REPUBLIC"
+      },
+      "order": 17
+    },
+    {
+      "id": "doc-union-1977-ch5-part6",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "6",
+      "title": {
+        "sw": "UTEKELEZAJI WA MAAGIZO YA MAHAKAMA",
+        "en": "ENFORCEMENT OF COURT ORDERS"
+      },
+      "order": 18
+    },
+    {
+      "id": "doc-union-1977-ch5-part7",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch5",
+      "parentPartId": null,
+      "number": "7",
+      "title": {
+        "sw": "MAHAKAMA MAALUM YA KATIBA",
+        "en": "SPECIAL CONSTITUTIONAL COURT"
+      },
+      "order": 19
+    },
+    {
+      "id": "doc-union-1977-ch6-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch6",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "TUME YA HAKI ZA BINADAMU NA UTAWALA BORA",
+        "en": "COMMISSION FOR HUMAN RIGHTS AND GOOD GOVERNANCE"
+      },
+      "order": 20
+    },
+    {
+      "id": "doc-union-1977-ch6-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch6",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "SEKRETARIETI YA MAADILI YA VIONGOZI WA UMMA",
+        "en": "ETHICS SECRETARIAT OF PUBLIC LEADERS"
+      },
+      "order": 21
+    },
+    {
+      "id": "doc-union-1977-ch7-part1",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch7",
+      "parentPartId": null,
+      "number": "1",
+      "title": {
+        "sw": "MCHANGO NA MGAWANYO WA MAPATO",
+        "en": "REVENUE SHARING AND JOINT FINANCE COMMISSION"
+      },
+      "order": 22
+    },
+    {
+      "id": "doc-union-1977-ch7-part2",
+      "documentId": "doc-union-1977",
+      "chapterId": "doc-union-1977-ch7",
+      "parentPartId": null,
+      "number": "2",
+      "title": {
+        "sw": "MFUKO MKUU WA HAZINA NA FEDHA",
+        "en": "CONSOLIDATED FUND AND FINANCES"
+      },
+      "order": 23
     }
   ],
   "articles": [
@@ -70,7 +415,7 @@
       "id": "union-23",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "23",
       "order": 1,
       "title": {
@@ -122,7 +467,7 @@
       "id": "union-25",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "25",
       "order": 2,
       "title": {
@@ -174,7 +519,7 @@
       "id": "union-26",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "26",
       "order": 3,
       "title": {
@@ -226,7 +571,7 @@
       "id": "union-27",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "27",
       "order": 4,
       "title": {
@@ -278,7 +623,7 @@
       "id": "union-28",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "28",
       "order": 5,
       "title": {
@@ -330,7 +675,7 @@
       "id": "union-30",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "30",
       "order": 6,
       "title": {
@@ -382,7 +727,7 @@
       "id": "union-31",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "31",
       "order": 7,
       "title": {
@@ -434,7 +779,7 @@
       "id": "union-32",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "32",
       "order": 8,
       "title": {
@@ -485,8 +830,8 @@
     {
       "id": "union-33",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "33",
       "order": 9,
       "title": {
@@ -537,8 +882,8 @@
     {
       "id": "union-34",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "34",
       "order": 10,
       "title": {
@@ -589,8 +934,8 @@
     {
       "id": "union-35",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "35",
       "order": 11,
       "title": {
@@ -641,8 +986,8 @@
     {
       "id": "union-36",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "36",
       "order": 12,
       "title": {
@@ -693,8 +1038,8 @@
     {
       "id": "union-37",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "37",
       "order": 13,
       "title": {
@@ -745,8 +1090,8 @@
     {
       "id": "union-38",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "38",
       "order": 14,
       "title": {
@@ -797,8 +1142,8 @@
     {
       "id": "union-39",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "39",
       "order": 15,
       "title": {
@@ -849,8 +1194,8 @@
     {
       "id": "union-40",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "40",
       "order": 16,
       "title": {
@@ -901,8 +1246,8 @@
     {
       "id": "union-41",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "41",
       "order": 17,
       "title": {
@@ -953,8 +1298,8 @@
     {
       "id": "union-42",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "42",
       "order": 18,
       "title": {
@@ -1005,8 +1350,8 @@
     {
       "id": "union-43",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "43",
       "order": 19,
       "title": {
@@ -1057,8 +1402,8 @@
     {
       "id": "union-44",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "44",
       "order": 20,
       "title": {
@@ -1109,8 +1454,8 @@
     {
       "id": "union-45",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "45",
       "order": 21,
       "title": {
@@ -1161,8 +1506,8 @@
     {
       "id": "union-46",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "46",
       "order": 22,
       "title": {
@@ -1213,8 +1558,8 @@
     {
       "id": "union-46A",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "46A",
       "order": 23,
       "title": {
@@ -1265,8 +1610,8 @@
     {
       "id": "union-46B",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part1",
       "number": "46B",
       "order": 24,
       "title": {
@@ -1317,8 +1662,8 @@
     {
       "id": "union-47",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part2",
       "number": "47",
       "order": 25,
       "title": {
@@ -1369,8 +1714,8 @@
     {
       "id": "union-48",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part2",
       "number": "48",
       "order": 26,
       "title": {
@@ -1421,8 +1766,8 @@
     {
       "id": "union-49",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part2",
       "number": "49",
       "order": 27,
       "title": {
@@ -1473,8 +1818,8 @@
     {
       "id": "union-50",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part2",
       "number": "50",
       "order": 28,
       "title": {
@@ -1525,8 +1870,8 @@
     {
       "id": "union-51",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "51",
       "order": 29,
       "title": {
@@ -1577,8 +1922,8 @@
     {
       "id": "union-52",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "52",
       "order": 30,
       "title": {
@@ -1629,8 +1974,8 @@
     {
       "id": "union-53",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "53",
       "order": 31,
       "title": {
@@ -1681,8 +2026,8 @@
     {
       "id": "union-53A",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "53A",
       "order": 32,
       "title": {
@@ -1733,8 +2078,8 @@
     {
       "id": "union-54",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "54",
       "order": 33,
       "title": {
@@ -1785,8 +2130,8 @@
     {
       "id": "union-55",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "55",
       "order": 34,
       "title": {
@@ -1837,8 +2182,8 @@
     {
       "id": "union-57",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "57",
       "order": 35,
       "title": {
@@ -1889,8 +2234,8 @@
     {
       "id": "union-58",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "58",
       "order": 36,
       "title": {
@@ -1941,8 +2286,8 @@
     {
       "id": "union-59",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "59",
       "order": 37,
       "title": {
@@ -1993,8 +2338,8 @@
     {
       "id": "union-60",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "60",
       "order": 38,
       "title": {
@@ -2045,8 +2390,8 @@
     {
       "id": "union-61",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "61",
       "order": 39,
       "title": {
@@ -2097,8 +2442,8 @@
     {
       "id": "union-62",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part1",
       "number": "62",
       "order": 40,
       "title": {
@@ -2149,8 +2494,8 @@
     {
       "id": "union-63",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part1",
       "number": "63",
       "order": 41,
       "title": {
@@ -2201,8 +2546,8 @@
     {
       "id": "union-64",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part1",
       "number": "64",
       "order": 42,
       "title": {
@@ -2253,8 +2598,8 @@
     {
       "id": "union-65",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part1",
       "number": "65",
       "order": 43,
       "title": {
@@ -2305,8 +2650,8 @@
     {
       "id": "union-66",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "66",
       "order": 44,
       "title": {
@@ -2357,8 +2702,8 @@
     {
       "id": "union-68",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "68",
       "order": 45,
       "title": {
@@ -2409,8 +2754,8 @@
     {
       "id": "union-69",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "69",
       "order": 46,
       "title": {
@@ -2461,8 +2806,8 @@
     {
       "id": "union-70",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "70",
       "order": 47,
       "title": {
@@ -2513,8 +2858,8 @@
     {
       "id": "union-71",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "71",
       "order": 48,
       "title": {
@@ -2565,8 +2910,8 @@
     {
       "id": "union-73",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "73",
       "order": 49,
       "title": {
@@ -2617,8 +2962,8 @@
     {
       "id": "union-74",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "74",
       "order": 50,
       "title": {
@@ -2669,8 +3014,8 @@
     {
       "id": "union-75",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "75",
       "order": 51,
       "title": {
@@ -2721,8 +3066,8 @@
     {
       "id": "union-76",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "76",
       "order": 52,
       "title": {
@@ -2773,8 +3118,8 @@
     {
       "id": "union-77",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "77",
       "order": 53,
       "title": {
@@ -2825,8 +3170,8 @@
     {
       "id": "union-78",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "78",
       "order": 54,
       "title": {
@@ -2877,8 +3222,8 @@
     {
       "id": "union-79",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "79",
       "order": 55,
       "title": {
@@ -2929,8 +3274,8 @@
     {
       "id": "union-81",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "81",
       "order": 56,
       "title": {
@@ -2981,8 +3326,8 @@
     {
       "id": "union-83",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "83",
       "order": 57,
       "title": {
@@ -3033,8 +3378,8 @@
     {
       "id": "union-84",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "84",
       "order": 58,
       "title": {
@@ -3085,8 +3430,8 @@
     {
       "id": "union-85",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "85",
       "order": 59,
       "title": {
@@ -3137,8 +3482,8 @@
     {
       "id": "union-86",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "86",
       "order": 60,
       "title": {
@@ -3189,8 +3534,8 @@
     {
       "id": "union-87",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "87",
       "order": 61,
       "title": {
@@ -3241,8 +3586,8 @@
     {
       "id": "union-88",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "88",
       "order": 62,
       "title": {
@@ -3293,8 +3638,8 @@
     {
       "id": "union-89",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "89",
       "order": 63,
       "title": {
@@ -3345,8 +3690,8 @@
     {
       "id": "union-90",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "90",
       "order": 64,
       "title": {
@@ -3397,8 +3742,8 @@
     {
       "id": "union-91",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "91",
       "order": 65,
       "title": {
@@ -3449,8 +3794,8 @@
     {
       "id": "union-92",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "92",
       "order": 66,
       "title": {
@@ -3501,8 +3846,8 @@
     {
       "id": "union-94",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "94",
       "order": 67,
       "title": {
@@ -3553,8 +3898,8 @@
     {
       "id": "union-96",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "96",
       "order": 68,
       "title": {
@@ -3605,8 +3950,8 @@
     {
       "id": "union-97",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "97",
       "order": 69,
       "title": {
@@ -3657,8 +4002,8 @@
     {
       "id": "union-98",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "98",
       "order": 70,
       "title": {
@@ -3709,8 +4054,8 @@
     {
       "id": "union-99",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "99",
       "order": 71,
       "title": {
@@ -3761,8 +4106,8 @@
     {
       "id": "union-100",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "100",
       "order": 72,
       "title": {
@@ -3813,8 +4158,8 @@
     {
       "id": "union-101",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "101",
       "order": 73,
       "title": {
@@ -3865,8 +4210,8 @@
     {
       "id": "union-102",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch4",
+      "partId": "doc-union-1977-ch4-part1",
       "number": "102",
       "order": 74,
       "title": {
@@ -3917,8 +4262,8 @@
     {
       "id": "union-103",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch4",
+      "partId": "doc-union-1977-ch4-part1",
       "number": "103",
       "order": 75,
       "title": {
@@ -3969,8 +4314,8 @@
     {
       "id": "union-104",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch4",
+      "partId": "doc-union-1977-ch4-part1",
       "number": "104",
       "order": 76,
       "title": {
@@ -4021,8 +4366,8 @@
     {
       "id": "union-105",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch4",
+      "partId": "doc-union-1977-ch4-part2",
       "number": "105",
       "order": 77,
       "title": {
@@ -4073,8 +4418,8 @@
     {
       "id": "union-106",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch4",
+      "partId": "doc-union-1977-ch4-part3",
       "number": "106",
       "order": 78,
       "title": {
@@ -4125,8 +4470,8 @@
     {
       "id": "union-107",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch4",
+      "partId": "doc-union-1977-ch4-part3",
       "number": "107",
       "order": 79,
       "title": {
@@ -4177,8 +4522,8 @@
     {
       "id": "union-107A",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part1",
       "number": "107A",
       "order": 80,
       "title": {
@@ -4229,8 +4574,8 @@
     {
       "id": "union-107B",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part1",
       "number": "107B",
       "order": 81,
       "title": {
@@ -4281,8 +4626,8 @@
     {
       "id": "union-108",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part2",
       "number": "108",
       "order": 82,
       "title": {
@@ -4333,8 +4678,8 @@
     {
       "id": "union-109",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part2",
       "number": "109",
       "order": 83,
       "title": {
@@ -4385,8 +4730,8 @@
     {
       "id": "union-110",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part2",
       "number": "110",
       "order": 84,
       "title": {
@@ -4437,8 +4782,8 @@
     {
       "id": "union-111",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part2",
       "number": "111",
       "order": 85,
       "title": {
@@ -4489,8 +4834,8 @@
     {
       "id": "union-112",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part3",
       "number": "112",
       "order": 86,
       "title": {
@@ -4541,8 +4886,8 @@
     {
       "id": "union-113",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part3",
       "number": "113",
       "order": 87,
       "title": {
@@ -4593,8 +4938,8 @@
     {
       "id": "union-113A",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part3",
       "number": "113A",
       "order": 88,
       "title": {
@@ -4645,8 +4990,8 @@
     {
       "id": "union-114",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part4",
       "number": "114",
       "order": 89,
       "title": {
@@ -4697,8 +5042,8 @@
     {
       "id": "union-115",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part4",
       "number": "115",
       "order": 90,
       "title": {
@@ -4749,8 +5094,8 @@
     {
       "id": "union-116",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "116",
       "order": 91,
       "title": {
@@ -4801,8 +5146,8 @@
     {
       "id": "union-117",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "117",
       "order": 92,
       "title": {
@@ -4853,8 +5198,8 @@
     {
       "id": "union-118",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "118",
       "order": 93,
       "title": {
@@ -4905,8 +5250,8 @@
     {
       "id": "union-120",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "120",
       "order": 94,
       "title": {
@@ -4957,8 +5302,8 @@
     {
       "id": "union-122",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "122",
       "order": 95,
       "title": {
@@ -5009,8 +5354,8 @@
     {
       "id": "union-124",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part6",
       "number": "124",
       "order": 96,
       "title": {
@@ -5061,8 +5406,8 @@
     {
       "id": "union-126",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part7",
       "number": "126",
       "order": 97,
       "title": {
@@ -5113,8 +5458,8 @@
     {
       "id": "union-127",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part7",
       "number": "127",
       "order": 98,
       "title": {
@@ -5165,8 +5510,8 @@
     {
       "id": "union-128",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part7",
       "number": "128",
       "order": 99,
       "title": {
@@ -5217,8 +5562,8 @@
     {
       "id": "union-129",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch6",
+      "partId": "doc-union-1977-ch6-part1",
       "number": "129",
       "order": 100,
       "title": {
@@ -5269,8 +5614,8 @@
     {
       "id": "union-130",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch6",
+      "partId": "doc-union-1977-ch6-part1",
       "number": "130",
       "order": 101,
       "title": {
@@ -5321,8 +5666,8 @@
     {
       "id": "union-131",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch6",
+      "partId": "doc-union-1977-ch6-part1",
       "number": "131",
       "order": 102,
       "title": {
@@ -5373,8 +5718,8 @@
     {
       "id": "union-132",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch6",
+      "partId": "doc-union-1977-ch6-part2",
       "number": "132",
       "order": 103,
       "title": {
@@ -5425,8 +5770,8 @@
     {
       "id": "union-133",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part1",
       "number": "133",
       "order": 104,
       "title": {
@@ -5477,8 +5822,8 @@
     {
       "id": "union-134",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part1",
       "number": "134",
       "order": 105,
       "title": {
@@ -5529,8 +5874,8 @@
     {
       "id": "union-135",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "135",
       "order": 106,
       "title": {
@@ -5581,8 +5926,8 @@
     {
       "id": "union-136",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "136",
       "order": 107,
       "title": {
@@ -5633,8 +5978,8 @@
     {
       "id": "union-137",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "137",
       "order": 108,
       "title": {
@@ -5685,8 +6030,8 @@
     {
       "id": "union-138",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "138",
       "order": 109,
       "title": {
@@ -5737,8 +6082,8 @@
     {
       "id": "union-139",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "139",
       "order": 110,
       "title": {
@@ -5789,8 +6134,8 @@
     {
       "id": "union-141",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "141",
       "order": 111,
       "title": {
@@ -5841,8 +6186,8 @@
     {
       "id": "union-142",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "142",
       "order": 112,
       "title": {
@@ -5893,8 +6238,8 @@
     {
       "id": "union-143",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "143",
       "order": 113,
       "title": {
@@ -5945,8 +6290,8 @@
     {
       "id": "union-144",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch7",
+      "partId": "doc-union-1977-ch7-part2",
       "number": "144",
       "order": 114,
       "title": {
@@ -5997,7 +6342,7 @@
     {
       "id": "union-145",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
+      "chapterId": "doc-union-1977-ch8",
       "partId": null,
       "number": "145",
       "order": 115,
@@ -6049,7 +6394,7 @@
     {
       "id": "union-146",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
+      "chapterId": "doc-union-1977-ch8",
       "partId": null,
       "number": "146",
       "order": 116,
@@ -6101,7 +6446,7 @@
     {
       "id": "union-148",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
+      "chapterId": "doc-union-1977-ch9",
       "partId": null,
       "number": "148",
       "order": 117,
@@ -6153,7 +6498,7 @@
     {
       "id": "union-149",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
+      "chapterId": "doc-union-1977-ch10",
       "partId": null,
       "number": "149",
       "order": 118,
@@ -6205,7 +6550,7 @@
     {
       "id": "union-150",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
+      "chapterId": "doc-union-1977-ch10",
       "partId": null,
       "number": "150",
       "order": 119,
@@ -6257,7 +6602,7 @@
     {
       "id": "union-152",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
+      "chapterId": "doc-union-1977-ch10",
       "partId": null,
       "number": "152",
       "order": 120,
@@ -7575,8 +7920,8 @@
     {
       "id": "union-56",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch2",
+      "partId": "doc-union-1977-ch2-part3",
       "number": "56",
       "order": 121,
       "title": {
@@ -7951,8 +8296,8 @@
     {
       "id": "union-72",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "72",
       "order": 122,
       "title": {
@@ -8208,7 +8553,7 @@
       "id": "union-29",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "29",
       "order": 123,
       "title": {
@@ -8313,8 +8658,8 @@
     {
       "id": "union-67",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part2",
       "number": "67",
       "order": 124,
       "title": {
@@ -8581,8 +8926,8 @@
     {
       "id": "union-93",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "93",
       "order": 125,
       "title": {
@@ -8651,8 +8996,8 @@
     {
       "id": "union-95",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch3",
+      "partId": "doc-union-1977-ch3-part3",
       "number": "95",
       "order": 126,
       "title": {
@@ -9279,8 +9624,8 @@
     {
       "id": "union-119",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "119",
       "order": 127,
       "title": {
@@ -9385,8 +9730,8 @@
     {
       "id": "union-121",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "121",
       "order": 128,
       "title": {
@@ -9443,8 +9788,8 @@
     {
       "id": "union-123",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part5",
       "number": "123",
       "order": 129,
       "title": {
@@ -9507,8 +9852,8 @@
     {
       "id": "union-125",
       "documentId": "doc-union-1977",
-      "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "chapterId": "doc-union-1977-ch5",
+      "partId": "doc-union-1977-ch5-part7",
       "number": "125",
       "order": 130,
       "title": {
@@ -10220,7 +10565,7 @@
       "id": "union-9",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part2",
       "number": "9",
       "order": 131,
       "title": {
@@ -10272,7 +10617,7 @@
       "id": "union-10",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part2",
       "number": "10",
       "order": 132,
       "title": {
@@ -10324,7 +10669,7 @@
       "id": "union-11",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part2",
       "number": "11",
       "order": 133,
       "title": {
@@ -10376,7 +10721,7 @@
       "id": "union-12",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "12",
       "order": 134,
       "title": {
@@ -10428,7 +10773,7 @@
       "id": "union-13",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "13",
       "order": 135,
       "title": {
@@ -10480,7 +10825,7 @@
       "id": "union-14",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "14",
       "order": 136,
       "title": {
@@ -10532,7 +10877,7 @@
       "id": "union-15",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "15",
       "order": 137,
       "title": {
@@ -10584,7 +10929,7 @@
       "id": "union-16",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "16",
       "order": 138,
       "title": {
@@ -10636,7 +10981,7 @@
       "id": "union-17",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "17",
       "order": 139,
       "title": {
@@ -10688,7 +11033,7 @@
       "id": "union-18",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "18",
       "order": 140,
       "title": {
@@ -10740,7 +11085,7 @@
       "id": "union-19",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "19",
       "order": 141,
       "title": {
@@ -10792,7 +11137,7 @@
       "id": "union-20",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "20",
       "order": 142,
       "title": {
@@ -10844,7 +11189,7 @@
       "id": "union-21",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "21",
       "order": 143,
       "title": {
@@ -10896,7 +11241,7 @@
       "id": "union-22",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "22",
       "order": 144,
       "title": {
@@ -10948,7 +11293,7 @@
       "id": "union-24",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part3",
       "number": "24",
       "order": 145,
       "title": {
@@ -11000,7 +11345,7 @@
       "id": "union-1",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part1",
       "number": "1",
       "order": 146,
       "title": {
@@ -11052,7 +11397,7 @@
       "id": "union-2",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part1",
       "number": "2",
       "order": 147,
       "title": {
@@ -11104,7 +11449,7 @@
       "id": "union-3",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part1",
       "number": "3",
       "order": 148,
       "title": {
@@ -11156,7 +11501,7 @@
       "id": "union-4",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part1",
       "number": "4",
       "order": 149,
       "title": {
@@ -11208,7 +11553,7 @@
       "id": "union-5",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part1",
       "number": "5",
       "order": 150,
       "title": {
@@ -11260,7 +11605,7 @@
       "id": "union-6",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part2",
       "number": "6",
       "order": 151,
       "title": {
@@ -11312,7 +11657,7 @@
       "id": "union-7",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part2",
       "number": "7",
       "order": 152,
       "title": {
@@ -11364,7 +11709,7 @@
       "id": "union-8",
       "documentId": "doc-union-1977",
       "chapterId": "doc-union-1977-ch1",
-      "partId": null,
+      "partId": "doc-union-1977-ch1-part2",
       "number": "8",
       "order": 153,
       "title": {
