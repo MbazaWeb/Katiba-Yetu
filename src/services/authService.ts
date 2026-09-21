@@ -78,6 +78,7 @@ const supabaseAdapter: AuthService = {
       input.region,
       input.district,
       input.anonymous,
+      input.stakeholder_type,
     );
     const authUser = signUpData?.user ?? null;
     if (authUser) return loadProfile(authUser);

@@ -5,9 +5,9 @@ import type { User } from '../types';
 // Retry loadProfile up to maxAttempts — the DB trigger that creates the
 // profiles row runs asynchronously after auth.signUp, so there is a small
 // window where the row doesn't exist yet.
-export async function loadProfile(authUser: AuthUser): Promise<User> {
+export async function loadProfile(authUser: AuthUser, maxAttempts = 5): Promise<User> {
   let lastError: unknown;
-  for (let attempt = 1; attempt <= 5; attempt++) {
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     const { data, error } = await supabase.from('profiles').select('*').eq('id', authUser.id).single();
     if (!error && data) {
       return {
@@ -17,8 +17,8 @@ export async function loadProfile(authUser: AuthUser): Promise<User> {
         nida_verified: data.nida_verified,
         verification_tier: data.verification_tier,
         role: data.role,
-        stakeholder_type: data.stakeholder_type ?? 'citizen',
         anonymity_default: data.anonymity_default,
+        stakeholder_type: data.stakeholder_type ?? undefined,
         region: data.region ?? undefined,
         district: data.district ?? undefined,
         language_pref: data.language_pref,
@@ -27,7 +27,8 @@ export async function loadProfile(authUser: AuthUser): Promise<User> {
       } as User;
     }
     lastError = error;
-    if (attempt < 5) await new Promise(r => setTimeout(r, attempt * 300));
+    // Back off: 300 ms, 600 ms, 1 s, 1.5 s
+    if (attempt < maxAttempts) await new Promise(r => setTimeout(r, attempt * 300));
   }
   throw lastError;
 }
@@ -42,10 +43,10 @@ export async function signUp(
   password: string,
   displayName: string,
   language: 'sw' | 'en',
-  stakeholderType: string,
   region?: string,
   district?: string,
   anonymityDefault?: boolean,
+  stakeholderType?: string,
 ) {
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
@@ -54,7 +55,6 @@ export async function signUp(
       data: {
         display_name: displayName.trim() || 'Mwananchi',
         language_pref: language,
-        stakeholder_type: stakeholderType,
       },
     },
   });
@@ -62,11 +62,13 @@ export async function signUp(
 
   // After signUp the trigger creates the profile row. Update it with the
   // extra fields the trigger doesn't receive (region, district, anonymity).
-  if (data.user && (region || district || anonymityDefault)) {
+  if (data.user && (region || district || anonymityDefault || stakeholderType)) {
     const updates: Record<string, unknown> = {};
     if (region) updates.region = region;
     if (district) updates.district = district;
     if (anonymityDefault !== undefined) updates.anonymity_default = anonymityDefault;
+    if (stakeholderType) updates.stakeholder_type = stakeholderType;
+    // Retry the update briefly — the trigger row must exist first.
     for (let i = 0; i < 4; i++) {
       const { error: updateErr } = await supabase
         .from('profiles')

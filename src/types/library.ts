@@ -235,4 +235,5 @@ export interface RegistrationInput {
   stakeholderType: import('./index').StakeholderType;
   languagePref: LibraryLanguage;
   anonymous: boolean;
+  stakeholder_type?: import('./index').StakeholderType;
 }

@@ -1,223 +1,238 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, StyleSheet, useWindowDimensions, ScrollView, Animated } from 'react-native';
+import {
+  View, Text, Pressable, StyleSheet, ScrollView, Animated, useAnimatedValue,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Typography, Spacing, Radius } from '../../constants/tokens';
+import { Colors, Typography, Radius } from '../../constants/tokens';
 import { useAppContext } from '../../hooks/useAppContext';
-import { STAKEHOLDER_LABELS } from '../../types';
-import type { User } from '../../types';
+import type { TabKey } from './BottomTabBar';
+import type { UserRole } from '../../types';
 
 export type SidebarKey =
-  | 'home' | 'browser' | 'search' | 'profile' | 'more'
+  | TabKey
   | 'contributions' | 'history' | 'resources' | 'discussion'
   | 'proposed_constitution' | 'citizen_submission' | 'multi_stage_polls'
-  | 'draft_builder' | 'approval_workflow' | 'system_status'
-  | 'admin';
+  | 'draft_builder' | 'approval_workflow' | 'backend_status' | 'admin';
 
 interface NavItem {
   key: SidebarKey;
   icon: React.ComponentProps<typeof Ionicons>['name'];
   label_sw: string;
   label_en: string;
+  roles?: UserRole[]; // undefined = everyone
 }
 
-// Citizen navigation — maximum 5 items
-const CITIZEN_NAV: NavItem[] = [
-  { key: 'home',    icon: 'home',           label_sw: 'Nyumbani',  label_en: 'Home' },
-  { key: 'browser', icon: 'book-outline',   label_sw: 'Katiba',    label_en: 'Constitution' },
-  { key: 'search',  icon: 'search',         label_sw: 'Tafuta',     label_en: 'Search' },
-  { key: 'more',    icon: 'menu-outline',    label_sw: 'Zaidi',     label_en: 'More' },
-  { key: 'profile', icon: 'person-outline', label_sw: 'Akaunti',   label_en: 'Account' },
+// All nav items — filtered by role below
+const ALL_ITEMS: NavItem[] = [
+  { key: 'home',                  icon: 'home-outline',                    label_sw: 'Nyumbani',               label_en: 'Home' },
+  { key: 'browser',               icon: 'book-outline',                    label_sw: 'Soma Katiba',             label_en: 'Read Constitution' },
+  { key: 'search',                icon: 'search-outline',                  label_sw: 'Tafuta',                  label_en: 'Search' },
+  { key: 'polls',                  icon: 'stats-chart-outline',             label_sw: 'Kura',                   label_en: 'Polls' },
+  { key: 'contributions',         icon: 'chatbox-outline',                 label_sw: 'Michango Yangu',          label_en: 'My Contributions' },
+  { key: 'discussion',            icon: 'people-outline',                  label_sw: 'Majadiliano',             label_en: 'Discussions' },
+  { key: 'citizen_submission',    icon: 'megaphone-outline',               label_sw: 'Wasilisha Pendekezo',     label_en: 'Submit Proposal',   roles: ['registered','verified_citizen','institution','law_society','academic'] },
+  { key: 'proposed_constitution', icon: 'create-outline',                  label_sw: 'Katiba Inayopendekezwa', label_en: 'Proposed Constitution', roles: ['registered','verified_citizen','institution','law_society','academic','moderator','admin'] },
+  { key: 'multi_stage_polls',     icon: 'layers-outline',                  label_sw: 'Kura za Hatua',          label_en: 'Multi-stage Polls', roles: ['registered','verified_citizen','institution','law_society','academic','moderator','admin'] },
+  { key: 'draft_builder',         icon: 'construct-outline',               label_sw: 'Mjenzi wa Rasimu',        label_en: 'Draft Builder',     roles: ['law_society','academic','moderator','admin'] },
+  { key: 'approval_workflow',     icon: 'git-branch-outline',              label_sw: 'Mchakato wa Idhini',     label_en: 'Approval Workflow', roles: ['moderator','admin'] },
+  { key: 'history',               icon: 'time-outline',                    label_sw: 'Historia ya Mabadiliko',  label_en: 'Change History' },
+  { key: 'resources',             icon: 'library-outline',                 label_sw: 'Maktaba ya Kisheria',     label_en: 'Legal Library' },
+  { key: 'profile',               icon: 'person-outline',                  label_sw: 'Akaunti Yangu',           label_en: 'My Account' },
+  { key: 'backend_status',        icon: 'pulse-outline',                   label_sw: 'Hali ya Mfumo',          label_en: 'System Status',     roles: ['moderator','admin'] },
+  { key: 'admin',                 icon: 'shield-outline',                  label_sw: 'Usimamizi',              label_en: 'Admin Panel',       roles: ['admin','moderator'] },
 ];
-
-// Admin navigation — replaces citizen nav when role is admin/moderator
-const ADMIN_NAV: NavItem[] = [
-  { key: 'home',    icon: 'home',            label_sw: 'Nyumbani',   label_en: 'Home' },
-  { key: 'admin',   icon: 'shield-checkmark-outline', label_sw: 'Usimamizi', label_en: 'Admin' },
-  { key: 'browser', icon: 'book-outline',    label_sw: 'Katiba',     label_en: 'Constitution' },
-  { key: 'search',  icon: 'search',          label_sw: 'Tafuta',     label_en: 'Search' },
-  { key: 'profile', icon: 'person-outline',  label_sw: 'Akaunti',    label_en: 'Account' },
-];
-
-// "More" menu items — shown in a dropdown/sheet on mobile, inline on desktop
-const MORE_ITEMS: NavItem[] = [
-  { key: 'citizen_submission',    icon: 'megaphone-outline',   label_sw: 'Wasilisha Pendekezo',     label_en: 'Submit Proposal' },
-  { key: 'multi_stage_polls',     icon: 'stats-chart-outline', label_sw: 'Kura za Hatua',            label_en: 'Polls' },
-  { key: 'proposed_constitution', icon: 'create-outline',      label_sw: 'Katiba Inayopendekezwa',  label_en: 'Proposed' },
-  { key: 'discussion',            icon: 'people-outline',      label_sw: 'Majadiliano',             label_en: 'Discussions' },
-  { key: 'history',               icon: 'time-outline',        label_sw: 'Historia',               label_en: 'History' },
-  { key: 'resources',             icon: 'library-outline',     label_sw: 'Maktaba',                label_en: 'Library' },
-  { key: 'contributions',          icon: 'chatbox-outline',     label_sw: 'Michango',               label_en: 'Contributions' },
-  { key: 'system_status',         icon: 'information-circle-outline', label_sw: 'Hadhi ya Mfumo', label_en: 'System Status' },
-];
-
-// Admin-only items — shown under the Admin section
-const ADMIN_ITEMS: NavItem[] = [
-  { key: 'admin',   icon: 'shield-checkmark-outline', label_sw: 'Dashibodi ya Msimamizi', label_en: 'Admin Dashboard' },
-];
-
-const COLLAPSED_WIDTH = 72;
-const EXPANDED_WIDTH_LG = 280;
-const EXPANDED_WIDTH_SM = 240;
 
 interface SidebarNavProps {
   activeTab: SidebarKey;
-  user: User | null;
-  onNavigate: (key: SidebarKey) => void;
-  notificationCount?: Partial<Record<string, number>>;
+  onTabPress: (tab: TabKey) => void;
+  onContributionsPress?: () => void;
+  onHistoryPress?: () => void;
+  onResourcesPress?: () => void;
+  onDiscussionPress?: () => void;
+  onProposedConstitutionPress?: () => void;
+  onCitizenSubmissionPress?: () => void;
+  onMultiStagePollsPress?: () => void;
+  onDraftBuilderPress?: () => void;
+  onApprovalWorkflowPress?: () => void;
+  onBackendStatusPress?: () => void;
+  onAdminPress?: () => void;
+  notificationCount?: Partial<Record<TabKey, number>>;
 }
 
-export function SidebarNav({ activeTab, user, onNavigate }: SidebarNavProps) {
-  const { language } = useAppContext();
-  const { width } = useWindowDimensions();
-  const [collapsed, setCollapsed] = useState(false);
-  const [showMore, setShowMore] = useState(false);
-  const expandedWidth = width >= 1400 ? EXPANDED_WIDTH_LG : EXPANDED_WIDTH_SM;
-  const [animWidth] = useState(() => new Animated.Value(expandedWidth));
+const COLLAPSED_W = 68;
+const EXPANDED_W  = 260;
 
-  const isAdmin = user?.role === 'admin' || user?.role === 'moderator';
-  const navItems = isAdmin ? ADMIN_NAV : CITIZEN_NAV;
-  const stakeholder = user?.stakeholder_type ?? 'citizen';
-  const stakeholderLabel = STAKEHOLDER_LABELS[stakeholder] ?? STAKEHOLDER_LABELS.citizen;
+export function SidebarNav({
+  activeTab, onTabPress,
+  onContributionsPress, onHistoryPress, onResourcesPress, onDiscussionPress,
+  onProposedConstitutionPress, onCitizenSubmissionPress, onMultiStagePollsPress,
+  onDraftBuilderPress, onApprovalWorkflowPress, onBackendStatusPress, onAdminPress,
+  notificationCount,
+}: SidebarNavProps) {
+  const { language, user } = useAppContext();
+  const [collapsed, setCollapsed] = useState(false);
+  const animW = useAnimatedValue(EXPANDED_W);
 
   const toggle = () => {
-    const toValue = collapsed ? expandedWidth : COLLAPSED_WIDTH;
-    Animated.spring(animWidth, { toValue, useNativeDriver: false, stiffness: 260, damping: 24 }).start();
-    setCollapsed(!collapsed);
+    Animated.spring(animW, {
+      toValue: collapsed ? EXPANDED_W : COLLAPSED_W,
+      useNativeDriver: false, stiffness: 280, damping: 26,
+    }).start();
+    setCollapsed(c => !c);
   };
+
+  const userRole = user?.role ?? 'guest';
+
+  const visibleItems = ALL_ITEMS.filter(item =>
+    !item.roles || item.roles.includes(userRole as UserRole),
+  );
 
   const handlePress = (key: SidebarKey) => {
-    if (key === 'more') { setShowMore(!showMore); return; }
-    setShowMore(false);
-    onNavigate(key);
+    const handlers: Partial<Record<SidebarKey, () => void>> = {
+      contributions:         onContributionsPress,
+      history:               onHistoryPress,
+      resources:             onResourcesPress,
+      discussion:            onDiscussionPress,
+      proposed_constitution: onProposedConstitutionPress,
+      citizen_submission:    onCitizenSubmissionPress,
+      multi_stage_polls:     onMultiStagePollsPress,
+      draft_builder:         onDraftBuilderPress,
+      approval_workflow:     onApprovalWorkflowPress,
+      backend_status:        onBackendStatusPress,
+      admin:                 onAdminPress,
+    };
+    const handler = handlers[key];
+    if (handler) { handler(); return; }
+    onTabPress(key as TabKey);
   };
 
+  // Role badge shown in sidebar header
+  const roleLabel = user ? (language === 'sw' ? {
+    guest: 'Mgeni', registered: 'Mwananchi', verified_citizen: 'Raia Aliyethibitishwa',
+    institution: 'Taasisi', law_society: 'Wakili', academic: 'Mtafiti',
+    moderator: 'Msimamizi', admin: 'Msimamizi Mkuu',
+  }[user.role] : {
+    guest: 'Guest', registered: 'Citizen', verified_citizen: 'Verified Citizen',
+    institution: 'Institution', law_society: 'Legal Expert', academic: 'Academic',
+    moderator: 'Moderator', admin: 'Admin',
+  }[user.role]) : null;
+
+  const isAdmin = userRole === 'admin' || userRole === 'moderator';
+
   return (
-    <View style={[styles.sidebar, { width: animWidth }]}>
+    <Animated.View style={[styles.sidebar, { width: animW }]}>
+      {/* Hamburger */}
+      <Pressable onPress={toggle} style={styles.toggleBtn}
+        accessibilityRole="button" accessibilityLabel={collapsed ? 'Expand menu' : 'Collapse menu'}>
+        <Ionicons name="menu" size={22} color="#b7c1d2" />
+      </Pressable>
+
       {/* Brand */}
-      <View style={styles.brand}>
-        <Pressable onPress={toggle} hitSlop={12} accessibilityRole="button" accessibilityLabel="Toggle sidebar">
-          <Ionicons name={collapsed ? 'chevron-forward' : 'chevron-back'} size={20} color={Colors.text.muted} />
-        </Pressable>
-        {!collapsed && (
-          <View style={styles.brandText}>
-            <Text style={styles.brandTitle} numberOfLines={1}>Katiba Yetu</Text>
-            <Text style={styles.brandSub} numberOfLines={1}>
-              {language === 'sw' ? stakeholderLabel.sw : stakeholderLabel.en}
-              {isAdmin ? (language === 'sw' ? ' · Msimamizi' : ' · Admin') : ''}
-            </Text>
+      {!collapsed ? (
+        <View style={styles.brand}>
+          <View style={styles.brandIcon}>
+            <Ionicons name="book-outline" size={26} color={Colors.gold[400]} />
           </View>
-        )}
-      </View>
+          <View style={{ flex: 1, minWidth: 0 }}>
+            <Text style={styles.brandTitle} numberOfLines={1}>Katiba Yetu</Text>
+            {user && roleLabel && (
+              <View style={[styles.rolePill, isAdmin && styles.rolePillAdmin]}>
+                <Text style={[styles.rolePillText, isAdmin && styles.rolePillTextAdmin]} numberOfLines={1}>
+                  {roleLabel}
+                </Text>
+              </View>
+            )}
+          </View>
+        </View>
+      ) : (
+        <View style={styles.collapsedLogo}>
+          <Ionicons name="book-outline" size={26} color={Colors.gold[400]} />
+        </View>
+      )}
+
+      {/* Admin separator */}
+      {!collapsed && isAdmin && (
+        <View style={styles.adminBadge}>
+          <Ionicons name="shield-outline" size={12} color={Colors.gold[400]} />
+          <Text style={styles.adminBadgeText}>
+            {language === 'sw' ? 'Paneli ya Usimamizi' : 'Admin Panel Active'}
+          </Text>
+        </View>
+      )}
 
       {/* Nav items */}
-      <ScrollView style={styles.navScroll} contentContainerStyle={styles.nav}>
-        {navItems.map(item => {
+      <ScrollView style={styles.scroll}
+        contentContainerStyle={[styles.nav, collapsed && styles.navCollapsed]}
+        showsVerticalScrollIndicator={false}>
+        {visibleItems.map(item => {
           const active = activeTab === item.key;
           const label = language === 'sw' ? item.label_sw : item.label_en;
+          const count = notificationCount?.[item.key as TabKey] ?? 0;
+          const isAdminItem = item.key === 'admin';
+
           return (
-            <Pressable
-              key={item.key}
-              onPress={() => handlePress(item.key)}
-              style={({ pressed }) => [styles.item, active && styles.itemActive, pressed && styles.itemPressed]}
+            <Pressable key={item.key} onPress={() => handlePress(item.key)}
+              style={({ pressed }) => [
+                styles.item,
+                collapsed && styles.itemCollapsed,
+                active && styles.itemActive,
+                active && collapsed && styles.itemActiveCollapsed,
+                isAdminItem && styles.itemAdmin,
+                pressed && { opacity: 0.75 },
+              ]}
               accessibilityRole="button"
               accessibilityState={{ selected: active }}
-              accessibilityLabel={label}
-            >
-              <Ionicons name={item.icon} size={24} color={active ? '#00d477' : '#b7c1d2'} />
-              {!collapsed && <Text style={[styles.itemLabel, active && styles.itemLabelActive]} numberOfLines={2}>{label}</Text>}
+              accessibilityLabel={label}>
+              <View style={styles.iconWrap}>
+                <Ionicons name={item.icon} size={21}
+                  color={active ? Colors.green[400] : isAdminItem ? Colors.gold[400] : '#b7c1d2'} />
+                {count > 0 && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>{count > 99 ? '99+' : count}</Text>
+                  </View>
+                )}
+              </View>
+              {!collapsed && (
+                <Text style={[styles.itemLabel, active && styles.itemLabelActive,
+                  isAdminItem && styles.itemLabelAdmin]} numberOfLines={1}>
+                  {label}
+                </Text>
+              )}
             </Pressable>
           );
         })}
-
-        {/* "More" dropdown — citizen only */}
-        {!isAdmin && showMore && !collapsed && (
-          <View style={styles.moreSection}>
-            {MORE_ITEMS.map(item => {
-              const active = activeTab === item.key;
-              const label = language === 'sw' ? item.label_sw : item.label_en;
-              return (
-                <Pressable
-                  key={item.key}
-                  onPress={() => handlePress(item.key)}
-                  style={({ pressed }) => [styles.moreItem, active && styles.moreItemActive, pressed && { opacity: 0.7 }]}
-                  accessibilityRole="button"
-                  accessibilityLabel={label}
-                >
-                  <Ionicons name={item.icon} size={20} color={active ? '#00d477' : '#b7c1d2'} />
-                  <Text style={[styles.moreItemLabel, active && styles.itemLabelActive]}>{label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
-
-        {/* Admin section */}
-        {isAdmin && !collapsed && (
-          <View style={styles.adminSection}>
-            <Text style={styles.sectionTitle}>{language === 'sw' ? 'USIMAMIZI' : 'ADMINISTRATION'}</Text>
-            {ADMIN_ITEMS.map(item => {
-              const active = activeTab === item.key;
-              const label = language === 'sw' ? item.label_sw : item.label_en;
-              return (
-                <Pressable
-                  key={item.key}
-                  onPress={() => handlePress(item.key)}
-                  style={({ pressed }) => [styles.item, active && styles.itemActive, pressed && styles.itemPressed]}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: active }}
-                >
-                  <Ionicons name={item.icon} size={24} color={active ? '#00d477' : '#b7c1d2'} />
-                  <Text style={[styles.itemLabel, active && styles.itemLabelActive]}>{label}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        )}
       </ScrollView>
-    </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  sidebar: {
-    backgroundColor: '#0c1316',
-    borderRightWidth: StyleSheet.hairlineWidth,
-    borderRightColor: Colors.surface.border,
-    height: '100%',
-  },
-  brand: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: Spacing[2],
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    borderBottomWidth: 0,
-    marginBottom: Spacing[2],
-  },
-  brandText: { flex: 1, minWidth: 0 },
-  brandTitle: { fontFamily: Typography.family.sans, fontSize: 22, fontWeight: Typography.weight.bold, color: Colors.text.primary, letterSpacing: -0.4 },
-  brandSub: { fontFamily: Typography.family.sans, fontSize: 10, color: '#e5e9ef', marginTop: 2 },
-  navScroll: { flex: 1 },
-  nav: { gap: Spacing[1], paddingHorizontal: 8, paddingBottom: Spacing[5] },
-  item: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 20,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: Radius.lg,
-    minHeight: 48,
-  },
-  itemActive: { backgroundColor: '#003c2c', borderLeftWidth: 4, borderLeftColor: '#008b56' },
-  itemPressed: { opacity: 0.7 },
-  itemLabel: { flex: 1, fontFamily: Typography.family.sans, fontSize: 15, fontWeight: Typography.weight.medium, color: '#b7c1d2' },
+  sidebar: { backgroundColor: '#0c1316', borderRightWidth: StyleSheet.hairlineWidth, borderRightColor: Colors.surface.borderStrong, height: '100%', overflow: 'hidden' },
+  toggleBtn: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center', margin: 14, marginBottom: 8, borderRadius: Radius.md },
+  brand: { flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: 16, paddingBottom: 12, marginBottom: 4 },
+  brandIcon: { width: 40, height: 40, borderRadius: Radius.md, backgroundColor: Colors.green[900], alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  brandTitle: { fontFamily: Typography.family.serif, fontSize: 17, fontWeight: Typography.weight.bold, color: Colors.text.primary },
+  rolePill: { marginTop: 3, alignSelf: 'flex-start', paddingHorizontal: 7, paddingVertical: 2, borderRadius: Radius.full, backgroundColor: Colors.green[900] },
+  rolePillAdmin: { backgroundColor: '#3b2500' },
+  rolePillText: { fontSize: 10, fontWeight: Typography.weight.semibold, color: Colors.green[400] },
+  rolePillTextAdmin: { color: Colors.gold[400] },
+  collapsedLogo: { alignItems: 'center', paddingBottom: 12, marginBottom: 4 },
+  adminBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, marginHorizontal: 12, marginBottom: 8, paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#1a1000', borderRadius: Radius.md, borderWidth: 1, borderColor: '#4a3000' },
+  adminBadgeText: { fontSize: 10, color: Colors.gold[500], fontWeight: Typography.weight.semibold, flex: 1 },
+  scroll: { flex: 1 },
+  nav: { gap: 2, paddingHorizontal: 8, paddingBottom: 24 },
+  navCollapsed: { alignItems: 'center', paddingHorizontal: 0 },
+  item: { flexDirection: 'row', alignItems: 'center', gap: 13, paddingHorizontal: 12, paddingVertical: 10, borderRadius: Radius.lg, minHeight: 46 },
+  itemCollapsed: { width: 46, paddingHorizontal: 0, justifyContent: 'center', gap: 0 },
+  itemActive: { backgroundColor: '#003c2c', borderLeftWidth: 3, borderLeftColor: Colors.green[500] },
+  itemActiveCollapsed: { borderLeftWidth: 0, borderBottomWidth: 2, borderBottomColor: Colors.green[500] },
+  itemAdmin: { marginTop: 4, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.surface.borderStrong, paddingTop: 14 },
+  iconWrap: { position: 'relative', flexShrink: 0, width: 24, alignItems: 'center' },
+  badge: { position: 'absolute', top: -4, right: -8, backgroundColor: Colors.gold[400], borderRadius: 8, minWidth: 14, height: 14, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 },
+  badgeText: { color: '#000', fontSize: 9, fontWeight: Typography.weight.bold },
+  itemLabel: { flex: 1, fontSize: 14, fontWeight: Typography.weight.medium, color: '#b7c1d2' },
   itemLabelActive: { color: '#f5f6f7', fontWeight: Typography.weight.semibold },
-  moreSection: { marginLeft: 16, gap: 2, paddingVertical: 4 },
-  moreItem: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingVertical: 10, paddingHorizontal: 12, borderRadius: Radius.md, minHeight: 40 },
-  moreItemActive: { backgroundColor: '#003c2c' },
-  moreItemLabel: { fontSize: 13, color: '#b7c1d2' },
-  adminSection: { marginTop: Spacing[4], paddingTop: Spacing[3], borderTopWidth: 1, borderTopColor: Colors.surface.border },
-  sectionTitle: { fontSize: 10, fontWeight: Typography.weight.bold, color: Colors.text.muted, letterSpacing: 1, paddingHorizontal: 20, marginBottom: Spacing[1] },
+  itemLabelAdmin: { color: Colors.gold[400] },
 });
 
 export default SidebarNav;

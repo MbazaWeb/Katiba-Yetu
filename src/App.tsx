@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { DesktopHomeScreen } from './screens/DesktopHomeScreen';
 import { ContributionsScreen } from './screens/ContributionsScreen';
 import { AppContext } from './hooks/useAppContext';
-import { SidebarNav, type SidebarKey } from './components/navigation/SidebarNav';
-import { BottomTabBar, type TabKey } from './components/navigation/BottomTabBar';
+import { SidebarNav } from './components/navigation/SidebarNav';
+import { BottomTabBar, TabKey } from './components/navigation/BottomTabBar';
 import { AppErrorBoundary } from './components/ErrorBoundary';
 import { HomeScreen } from './screens/HomeScreen';
 import { BrowserScreen } from './screens/BrowserScreen';
@@ -24,27 +24,26 @@ import { CitizenSubmissionScreen } from './screens/CitizenSubmissionScreen';
 import { MultiStagePollScreen } from './screens/MultiStagePollScreen';
 import { DraftBuilderScreen } from './screens/DraftBuilderScreen';
 import { ApprovalWorkflowScreen } from './screens/ApprovalWorkflowScreen';
-import { SystemStatusScreen } from './screens/SystemStatusScreen';
+import { BackendStatusScreen } from './screens/BackendStatusScreen';
 import { AdminScreen } from './screens/AdminScreen';
 import { Colors, Layout, Spacing, Typography, Radius } from './constants/tokens';
 import { StorageKeys, storageGet, storageSet } from './lib/storage';
 import { getAuthService } from './services/authService';
 import type { Language, FontSize, User, Section, Poll, ProposedArticle } from './types';
-
 type ScreenName =
   | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions'
-  | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'proposal_workspace' | 'auth'
-  | 'citizen_submission' | 'multi_stage_polls' | 'draft_builder' | 'approval_workflow' | 'system_status'
-  | 'admin';
+  | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'proposal_workspace' | 'auth' | 'more'
+  | 'citizen_submission' | 'multi_stage_polls' | 'draft_builder' | 'approval_workflow' | 'backend_status' | 'admin';
 
 interface NavState {
   screen: ScreenName;
   params?: { section?: Section; poll?: Poll; proposedArticle?: ProposedArticle };
-  previousTab?: TabKey;
+  previousTab?: TabKey | 'contributions' | 'more';
 }
 
 const TAB_TO_SCREEN: Record<TabKey, ScreenName> = {
-  home: 'home', browser: 'browser', search: 'search', more: 'home', profile: 'profile',
+  home: 'home', browser: 'browser', polls: 'polls',
+  search: 'search', profile: 'profile', more: 'more', admin: 'admin',
 };
 
 export default function App() {
@@ -62,6 +61,8 @@ export default function App() {
   const [libraryDocumentId, setLibraryDocumentId] = useState('doc-union-1977');
   const [moreOpen, setMoreOpen] = useState(false);
 
+  // Single auth bootstrap: language/font + current user via the unified
+  // AuthService (which picks demo or supabase based on env config).
   useEffect(() => {
     let cancelled = false;
     let unsubscribe: (() => void) | undefined;
@@ -72,120 +73,196 @@ export default function App() {
       ]);
       if (cancelled) return;
       if (storedLang === 'sw' || storedLang === 'en') setLanguage(storedLang);
-      if (['sm','md','lg','xl'].includes(storedFont as string)) setFontSize(storedFont as FontSize);
+      if (['sm','md','lg','xl'].includes(storedFont as string)) {
+        setFontSize(storedFont as FontSize);
+      }
+      // Resolve the current user through the unified service.
       const service = getAuthService();
       try {
         const current = await service.getCurrentUser();
         if (cancelled) return;
         if (current) setUser(current);
-      } catch (e) { console.warn('[auth] getCurrentUser failed', e); }
+      } catch (e) {
+        console.warn('[auth] getCurrentUser failed', e);
+      }
+      // Subscribe to subsequent auth-state changes (Supabase only; demo is no-op).
       unsubscribe = service.onAuthStateChange(u => { if (!cancelled) setUser(u); });
       if (!cancelled) setAuthReady(true);
     })();
-    return () => { cancelled = true; if (unsubscribe) unsubscribe(); };
+    return () => {
+      cancelled = true;
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
   const handleSignOut = useCallback(async () => {
     try { await getAuthService().signOut(); }
     catch (e) { console.warn('[auth] signOut failed', e); }
-    finally { setUser(null); setNav({ screen: 'home' }); setActiveTab('home'); setLandingComplete(false); }
+    finally { setUser(null); setNav({ screen: 'home' }); setActiveTab('home'); }
   }, []);
 
-  const changeLanguage = useCallback((l: Language) => { setLanguage(l); storageSet(StorageKeys.language, l); }, []);
-  const changeFontSize = useCallback((f: FontSize) => { setFontSize(f); storageSet(StorageKeys.fontSize, f); }, []);
+  const changeLanguage = useCallback((l: Language) => {
+    setLanguage(l); storageSet(StorageKeys.language, l);
+  }, []);
+  const changeFontSize = useCallback((f: FontSize) => {
+    setFontSize(f); storageSet(StorageKeys.fontSize, f);
+  }, []);
 
   const navigateToSection = useCallback((section: Section) => {
     if (section.document_id === 'doc-union-1977' || section.document_id === 'doc-zanzibar-1984') setLibraryDocumentId(section.document_id);
-    setNav({ screen: 'section_workspace', params: { section }, previousTab: activeTab });
-  }, [activeTab]);
+    setNav({
+      screen: 'section_workspace',
+      params: { section },
+      previousTab: nav.screen === 'section_workspace' ? nav.previousTab : nav.screen === 'contributions' ? 'contributions' : activeTab,
+    });
+  }, [activeTab, nav.screen, nav.previousTab]);
 
   const navigateToPoll = useCallback((poll: Poll) => {
+    setActiveTab('polls');
     setNav({ screen: 'polls', params: { poll } });
   }, []);
 
   const navigateToProposedArticle = useCallback((article: ProposedArticle) => {
-    setNav({ screen: 'proposal_workspace', params: { proposedArticle: article }, previousTab: activeTab });
-  }, [activeTab]);
+    setNav({
+      screen: 'proposal_workspace',
+      params: { proposedArticle: article },
+      previousTab: nav.screen === 'proposal_workspace' ? nav.previousTab : activeTab,
+    });
+  }, [activeTab, nav.screen, nav.previousTab]);
 
   const handleBack = useCallback(() => {
-    const prev = nav.previousTab ?? 'home';
-    setActiveTab(prev);
-    setNav({ screen: TAB_TO_SCREEN[prev] ?? 'home' });
+    const prevTab = nav.previousTab ?? 'home';
+    if (prevTab === 'contributions') { setNav({ screen: 'contributions' }); return; }
+    if (prevTab === 'more') { setMoreOpen(false); setActiveTab('home'); setNav({ screen: 'home' }); return; }
+    setActiveTab(prevTab);
+    setNav({ screen: TAB_TO_SCREEN[prevTab] });
   }, [nav.previousTab]);
 
   const handleTabPress = useCallback((tab: TabKey) => {
     setMoreOpen(false);
     if (tab === 'more') { setMoreOpen(true); return; }
+    if (tab === 'admin') { setNav({ screen: 'admin', previousTab: activeTab }); setActiveTab('admin'); return; }
     setActiveTab(tab);
     setNav({ screen: TAB_TO_SCREEN[tab] });
   }, []);
 
-  // Unified navigation handler for SidebarNav
-  const handleSidebarNavigate = useCallback((key: SidebarKey) => {
-    setMoreOpen(false);
-    // Map sidebar keys to screen names
-    const screenMap: Partial<Record<SidebarKey, ScreenName>> = {
-      home: 'home', browser: 'browser', search: 'search', profile: 'profile',
-      contributions: 'contributions', history: 'history', resources: 'resources',
-      discussion: 'discussion', proposed_constitution: 'proposed_constitution',
-      citizen_submission: 'citizen_submission', multi_stage_polls: 'multi_stage_polls',
-      draft_builder: 'draft_builder', approval_workflow: 'approval_workflow',
-      system_status: 'system_status', admin: 'admin', more: 'home',
-    };
-    const screen = screenMap[key];
-    if (screen) {
-      setActiveTab(key === 'home' || key === 'browser' || key === 'search' || key === 'profile' ? key as TabKey : activeTab);
-      setNav({ screen, previousTab: activeTab });
-    }
-  }, [activeTab]);
-
-  const isAdmin = user?.role === 'admin' || user?.role === 'moderator';
+  const handleHistoryPress = useCallback(() => setNav({ screen: 'history', previousTab: activeTab }), [activeTab]);
+  const handleResourcesPress = useCallback(() => setNav({ screen: 'resources', previousTab: activeTab }), [activeTab]);
+  const handleDiscussionPress = useCallback(() => setNav({ screen: 'discussion', previousTab: activeTab }), [activeTab]);
+  const handleProposedConstitutionPress = useCallback(() => setNav({ screen: 'proposed_constitution', previousTab: activeTab }), [activeTab]);
+  const handleCitizenSubmissionPress = useCallback(() => setNav({ screen: 'citizen_submission', previousTab: activeTab }), [activeTab]);
+  const handleMultiStagePollsPress = useCallback(() => setNav({ screen: 'multi_stage_polls', previousTab: activeTab }), [activeTab]);
+  const handleDraftBuilderPress = useCallback(() => setNav({ screen: 'draft_builder', previousTab: activeTab }), [activeTab]);
+  const handleApprovalWorkflowPress = useCallback(() => setNav({ screen: 'approval_workflow', previousTab: activeTab }), [activeTab]);
+  const handleBackendStatusPress = useCallback(() => setNav({ screen: 'backend_status', previousTab: activeTab }), [activeTab]);
+  const handleAdminPress = useCallback(() => setNav({ screen: 'admin', previousTab: activeTab }), [activeTab]);
+  const handleAuthPress = useCallback(() => setNav({ screen: 'auth', previousTab: 'profile' }), []);
 
   const renderScreen = () => {
     switch (nav.screen) {
-      case 'contributions': return <ContributionsScreen onSectionPress={navigateToSection} />;
-      case 'section_workspace': return nav.params?.section ? <SectionWorkspace section={nav.params.section} onBack={handleBack} onSectionPress={navigateToSection} /> : null;
-      case 'browser': return <BrowserScreen onSectionPress={navigateToSection} onBack={handleBack} initialDocumentId={libraryDocumentId} onDocumentChange={setLibraryDocumentId} />;
-      case 'polls': return <PollsScreen onPollPress={navigateToPoll} initialPoll={nav.params?.poll} />;
-      case 'search': return <SearchScreen onSectionPress={navigateToSection} />;
-      case 'profile': return <ProfileScreen onAuthPress={() => {}} onSignOut={handleSignOut} />;
-      case 'history': return <HistoryScreen onBack={handleBack} />;
-      case 'resources': return <ResourcesScreen onBack={handleBack} />;
-      case 'discussion': return <DiscussionScreen onBack={handleBack} />;
-      case 'proposed_constitution': return <ProposedConstitutionScreen onOpenArticle={navigateToProposedArticle} onBack={handleBack} />;
-      case 'proposal_workspace': return nav.params?.proposedArticle ? <ProposalWorkspaceScreen article={nav.params.proposedArticle} onBack={() => setNav({ screen: 'proposed_constitution' })} /> : null;
-      case 'citizen_submission': return <CitizenSubmissionScreen onBack={handleBack} />;
-      case 'multi_stage_polls': return <MultiStagePollScreen onBack={handleBack} />;
-      case 'draft_builder': return <DraftBuilderScreen onBack={handleBack} />;
-      case 'approval_workflow': return <ApprovalWorkflowScreen onBack={handleBack} />;
-      case 'system_status': return <SystemStatusScreen onBack={handleBack} />;
-      case 'admin': return isAdmin ? <AdminScreen onBack={handleBack} currentUser={user} /> : <SystemStatusScreen onBack={handleBack} />;
+      case 'contributions':
+        return <ContributionsScreen onSectionPress={navigateToSection} />;
+      case 'section_workspace':
+        return nav.params?.section ? (
+          <SectionWorkspace section={nav.params.section} onBack={handleBack} onSectionPress={navigateToSection} />
+        ) : null;
+      case 'browser':
+        return <BrowserScreen onSectionPress={navigateToSection} onBack={handleBack} initialDocumentId={libraryDocumentId} onDocumentChange={setLibraryDocumentId} />;
+      case 'polls':
+        return <PollsScreen onPollPress={navigateToPoll} initialPoll={nav.params?.poll} />;
+      case 'search':
+        return <SearchScreen onSectionPress={navigateToSection} />;
+      case 'profile':
+        return <ProfileScreen onAuthPress={handleAuthPress} onSignOut={handleSignOut} />;
+      case 'auth':
+        // Auth is now a top-level gate — this case is unreachable when user is signed in
+        return null;
+      case 'history':
+        return <HistoryScreen onBack={handleBack} />;
+      case 'resources':
+        return <ResourcesScreen onBack={handleBack} />;
+      case 'discussion':
+        return <DiscussionScreen onBack={handleBack} />;
+      case 'proposed_constitution':
+        return <ProposedConstitutionScreen onOpenArticle={navigateToProposedArticle} onBack={handleBack} />;
+      case 'proposal_workspace':
+        return nav.params?.proposedArticle ? (
+          <ProposalWorkspaceScreen article={nav.params.proposedArticle} onBack={() => setNav({ screen: 'proposed_constitution' })} />
+        ) : null;
+      case 'citizen_submission':
+        return <CitizenSubmissionScreen onBack={handleBack} />;
+      case 'multi_stage_polls':
+        return <MultiStagePollScreen onBack={handleBack} />;
+      case 'draft_builder':
+        return <DraftBuilderScreen onBack={handleBack} />;
+      case 'approval_workflow':
+        return <ApprovalWorkflowScreen onBack={handleBack} />;
+      case 'backend_status':
+        return <BackendStatusScreen onBack={handleBack} />;
+      case 'admin':
+        return <AdminScreen onBack={handleBack} />;
       case 'home':
       default:
         if (isDesktop) return <DesktopHomeScreen onSectionPress={navigateToSection} onPollPress={navigateToPoll} onSearchPress={() => handleTabPress('search')} onBrowsePress={() => handleTabPress('browser')} onProfilePress={() => handleTabPress('profile')} />;
-        return <HomeScreen onSectionPress={navigateToSection} onPollPress={navigateToPoll} onSearchPress={() => handleTabPress('search')} onBrowsePress={() => handleTabPress('browser')} />;
+        return (
+          <HomeScreen
+            onSectionPress={navigateToSection}
+            onPollPress={navigateToPoll}
+            onSearchPress={() => handleTabPress('search')}
+            onBrowsePress={() => handleTabPress('browser')}
+          />
+        );
     }
   };
 
-  // Auth gate
+  // ── Auth gate ────────────────────────────────────────────────────────────────
   if (!authReady) {
-    return <AppErrorBoundary><View style={styles.splash}><Text style={styles.splashTitle}>Katiba Yetu</Text><Text style={styles.splashSub}>{language === 'sw' ? 'Inapakia…' : 'Loading…'}</Text></View></AppErrorBoundary>;
+    // Still resolving session — show a minimal splash
+    return (
+      <AppErrorBoundary>
+        <View style={styles.splash}>
+          <Text style={styles.splashTitle}>Katiba Yetu 🇹🇿</Text>
+          <Text style={styles.splashSub}>{language === 'sw' ? 'Inapakia…' : 'Loading…'}</Text>
+        </View>
+      </AppErrorBoundary>
+    );
   }
 
   if (!landingComplete) {
-    return <AppErrorBoundary><LandingScreen language={language} hasSession={Boolean(user)} onContinue={() => setLandingComplete(true)} onSignIn={() => { setAuthMode('signin'); setLandingComplete(true); }} onRegister={() => { setAuthMode('register'); setLandingComplete(true); }} /></AppErrorBoundary>;
+    return (
+      <AppErrorBoundary>
+        <LandingScreen
+          language={language}
+          hasSession={Boolean(user)}
+          onContinue={() => setLandingComplete(true)}
+          onSignIn={() => { setAuthMode('signin'); setLandingComplete(true); }}
+          onRegister={() => { setAuthMode('register'); setLandingComplete(true); }}
+        />
+      </AppErrorBoundary>
+    );
   }
 
   if (!user) {
-    return <AppErrorBoundary><AppContext.Provider value={{ language, setLanguage: changeLanguage, fontSize, setFontSize: changeFontSize, user, setUser, isOffline: false }}><AuthScreen initialMode={authMode} onBack={() => setLandingComplete(false)} onAuthenticated={() => {}} /></AppContext.Provider></AppErrorBoundary>;
+    return (
+      <AppErrorBoundary>
+        <AppContext.Provider value={{ language, setLanguage: changeLanguage, fontSize, setFontSize: changeFontSize, user, setUser, isOffline: false }}>
+          <AuthScreen
+            initialMode={authMode}
+            onBack={() => setLandingComplete(false)}
+            onAuthenticated={() => {
+              // user state is already set inside AuthScreen via setUser from context
+              // nothing else needed — re-render will show the app
+            }}
+          />
+        </AppContext.Provider>
+      </AppErrorBoundary>
+    );
   }
 
-  const isInWorkspace = ['section_workspace', 'proposal_workspace', 'citizen_submission', 'multi_stage_polls', 'draft_builder', 'approval_workflow', 'admin', 'system_status'].includes(nav.screen);
+  const isInWorkspace = nav.screen === 'section_workspace' || nav.screen === 'proposal_workspace' || nav.screen === 'citizen_submission' || nav.screen === 'multi_stage_polls' || nav.screen === 'draft_builder' || nav.screen === 'approval_workflow' || nav.screen === 'backend_status';
 
-  // Determine active sidebar key
-  const sidebarActive: SidebarKey = (() => {
-    if (nav.screen === 'admin') return 'admin';
-    if (nav.screen === 'system_status') return 'system_status';
+  // Determine which sidebar key is active
+  const sidebarActive: 'contributions' | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'citizen_submission' | 'multi_stage_polls' | 'draft_builder' | 'approval_workflow' | 'backend_status' | TabKey = (() => {
     if (nav.screen === 'contributions') return 'contributions';
     if (nav.screen === 'history') return 'history';
     if (nav.screen === 'resources') return 'resources';
@@ -195,40 +272,78 @@ export default function App() {
     if (nav.screen === 'multi_stage_polls') return 'multi_stage_polls';
     if (nav.screen === 'draft_builder') return 'draft_builder';
     if (nav.screen === 'approval_workflow') return 'approval_workflow';
+    if (nav.screen === 'backend_status') return 'backend_status';
     if (nav.screen === 'section_workspace') return 'browser';
-    if (nav.screen === 'search') return 'search';
-    if (nav.screen === 'profile') return 'profile';
-    if (nav.screen === 'browser') return 'browser';
-    return 'home';
+    return activeTab;
   })();
 
   return (
     <AppErrorBoundary>
-      <AppContext.Provider value={{ language, setLanguage: changeLanguage, fontSize, setFontSize: changeFontSize, user, setUser, isOffline: false }}>
+      <AppContext.Provider
+        value={{
+          language,
+          setLanguage: changeLanguage,
+          fontSize,
+          setFontSize: changeFontSize,
+          user,
+          setUser,
+          isOffline: false,
+        }}
+      >
         <View style={styles.root}>
-          {isDesktop && <SidebarNav activeTab={sidebarActive} user={user} onNavigate={handleSidebarNavigate} />}
+          {isDesktop && (
+            <SidebarNav
+              activeTab={sidebarActive}
+              onTabPress={handleTabPress}
+              onContributionsPress={() => setNav({ screen: 'contributions' })}
+              onHistoryPress={handleHistoryPress}
+              onResourcesPress={handleResourcesPress}
+              onDiscussionPress={handleDiscussionPress}
+              onProposedConstitutionPress={handleProposedConstitutionPress}
+              onCitizenSubmissionPress={handleCitizenSubmissionPress}
+              onMultiStagePollsPress={handleMultiStagePollsPress}
+              onDraftBuilderPress={handleDraftBuilderPress}
+              onApprovalWorkflowPress={handleApprovalWorkflowPress}
+              onBackendStatusPress={handleBackendStatusPress}
+              onAdminPress={handleAdminPress}
+            />
+          )}
+
           <View style={styles.main}>
-            <View style={styles.screenArea}>{renderScreen()}</View>
-            {!isDesktop && !isInWorkspace && <BottomTabBar activeTab={activeTab} onTabPress={handleTabPress} user={user} />}
+            <View style={styles.screenArea}>
+              {renderScreen()}
+            </View>
+
+            {!isDesktop && !isInWorkspace && (
+              <BottomTabBar
+                activeTab={activeTab}
+                onTabPress={handleTabPress}
+              />
+            )}
           </View>
         </View>
 
-        {/* Mobile "More" sheet */}
+        {/* Mobile "More" modal â€” opens access to Historia, Maktaba, Majadiliano, Katiba Inayopendekezwa */}
         <Modal visible={moreOpen} animationType="slide" transparent onRequestClose={() => setMoreOpen(false)}>
           <SafeAreaView style={styles.moreSheet}>
             <View style={styles.moreHeader}>
               <Text style={styles.moreTitle}>{language === 'sw' ? 'Zaidi' : 'More'}</Text>
-              <Pressable onPress={() => setMoreOpen(false)} accessibilityRole="button" accessibilityLabel={language === 'sw' ? 'Funga' : 'Close'}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
+              <Pressable onPress={() => setMoreOpen(false)} accessibilityRole="button" accessibilityLabel={language === 'sw' ? 'Funga' : 'Close'}>
+                <Ionicons name="close" size={24} color={Colors.text.muted} />
+              </Pressable>
             </View>
             <View style={styles.moreList}>
-              <MoreItem icon="megaphone-outline" label={language === 'sw' ? 'Wasilisha Pendekezo' : 'Submit Proposal'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('citizen_submission'); }} />
-              <MoreItem icon="stats-chart-outline" label={language === 'sw' ? 'Kura za Hatua' : 'Polls'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('multi_stage_polls'); }} />
-              <MoreItem icon="create-outline" label={language === 'sw' ? 'Katiba Inayopendekezwa' : 'Proposed Constitution'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('proposed_constitution'); }} />
-              <MoreItem icon="people-outline" label={language === 'sw' ? 'Majadiliano' : 'Discussions'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('discussion'); }} />
-              <MoreItem icon="time-outline" label={language === 'sw' ? 'Historia' : 'History'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('history'); }} />
-              <MoreItem icon="library-outline" label={language === 'sw' ? 'Maktaba' : 'Library'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('resources'); }} />
-              <MoreItem icon="information-circle-outline" label={language === 'sw' ? 'Hadhi ya Mfumo' : 'System Status'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('system_status'); }} />
-              {isAdmin && <MoreItem icon="shield-checkmark-outline" label={language === 'sw' ? 'Usimamizi' : 'Admin'} onPress={() => { setMoreOpen(false); handleSidebarNavigate('admin'); }} />}
+              <MoreItem icon="stats-chart" label={language === 'sw' ? 'Kura' : 'Polls'} onPress={() => { setMoreOpen(false); setActiveTab('polls'); setNav({ screen: 'polls' }); }} />
+              <MoreItem icon="create-outline" label={language === 'sw' ? 'Katiba Inayopendekezwa' : 'Proposed Constitution'} onPress={() => { setMoreOpen(false); handleProposedConstitutionPress(); }} />
+              <MoreItem icon="megaphone-outline" label={language === 'sw' ? 'Wasilisha Pendekezo' : 'Submit Proposal'} onPress={() => { setMoreOpen(false); handleCitizenSubmissionPress(); }} />
+              <MoreItem icon="stats-chart-outline" label={language === 'sw' ? 'Kura za Hatua Nyingi' : 'Multi-stage Polls'} onPress={() => { setMoreOpen(false); handleMultiStagePollsPress(); }} />
+              <MoreItem icon="construct-outline" label={language === 'sw' ? 'Mjenzi wa Rasimu' : 'Draft Builder'} onPress={() => { setMoreOpen(false); handleDraftBuilderPress(); }} />
+              <MoreItem icon="git-branch-outline" label={language === 'sw' ? 'Mchakato wa Idhini' : 'Approval Workflow'} onPress={() => { setMoreOpen(false); handleApprovalWorkflowPress(); }} />
+              <MoreItem icon="people-outline" label={language === 'sw' ? 'Majadiliano' : 'Discussions'} onPress={() => { setMoreOpen(false); handleDiscussionPress(); }} />
+              <MoreItem icon="time-outline" label={language === 'sw' ? 'Historia' : 'History'} onPress={() => { setMoreOpen(false); handleHistoryPress(); }} />
+              <MoreItem icon="library-outline" label={language === 'sw' ? 'Maktaba' : 'Library'} onPress={() => { setMoreOpen(false); handleResourcesPress(); }} />
+              <MoreItem icon="pulse-outline" label={language === 'sw' ? 'Hali ya Mfumo' : 'System Status'} onPress={() => { setMoreOpen(false); handleBackendStatusPress(); }} />
+              <MoreItem icon="chatbox-outline" label={language === 'sw' ? 'Michango' : 'Contributions'} onPress={() => { setMoreOpen(false); setNav({ screen: 'contributions' }); }} />
             </View>
           </SafeAreaView>
         </Modal>
@@ -239,7 +354,12 @@ export default function App() {
 
 function MoreItem({ icon, label, onPress }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string; onPress: () => void }) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [styles.moreItem, pressed && { opacity: 0.7 }]} accessibilityRole="button" accessibilityLabel={label}>
+    <Pressable
+      onPress={onPress}
+      style={({ pressed }) => [styles.moreItem, pressed && { opacity: 0.7 }]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
       <Ionicons name={icon} size={24} color={Colors.green[300]} />
       <Text style={styles.moreItemText}>{label}</Text>
       <Ionicons name="chevron-forward" size={20} color={Colors.text.muted} />
@@ -248,9 +368,17 @@ function MoreItem({ icon, label, onPress }: { icon: React.ComponentProps<typeof 
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, flexDirection: 'row', backgroundColor: Colors.surface.base },
+  root: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: Colors.surface.base,
+  },
   main: { flex: 1 },
-  screenArea: { flex: 1, width: '100%', backgroundColor: Colors.surface.base },
+  screenArea: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: Colors.surface.base,
+  },
   moreSheet: { flex: 1, backgroundColor: Colors.surface.base, paddingTop: Spacing[4] },
   moreHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: Spacing[5], paddingBottom: Spacing[3], borderBottomWidth: 1, borderBottomColor: Colors.surface.border },
   moreTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size['2xl'], fontWeight: Typography.weight.bold, color: Colors.text.primary },
