@@ -25,6 +25,7 @@ import { MultiStagePollScreen } from './screens/MultiStagePollScreen';
 import { DraftBuilderScreen } from './screens/DraftBuilderScreen';
 import { ApprovalWorkflowScreen } from './screens/ApprovalWorkflowScreen';
 import { BackendStatusScreen } from './screens/BackendStatusScreen';
+import { AdminScreen } from './screens/AdminScreen';
 import { Colors, Layout, Spacing, Typography, Radius } from './constants/tokens';
 import { StorageKeys, storageGet, storageSet } from './lib/storage';
 import { getAuthService } from './services/authService';
@@ -32,7 +33,7 @@ import type { Language, FontSize, User, Section, Poll, ProposedArticle } from '.
 type ScreenName =
   | 'home' | 'browser' | 'polls' | 'search' | 'profile' | 'section_workspace' | 'contributions'
   | 'history' | 'resources' | 'discussion' | 'proposed_constitution' | 'proposal_workspace' | 'auth' | 'more'
-  | 'citizen_submission' | 'multi_stage_polls' | 'draft_builder' | 'approval_workflow' | 'backend_status';
+  | 'citizen_submission' | 'multi_stage_polls' | 'draft_builder' | 'approval_workflow' | 'backend_status' | 'admin';
 
 interface NavState {
   screen: ScreenName;
@@ -42,7 +43,7 @@ interface NavState {
 
 const TAB_TO_SCREEN: Record<TabKey, ScreenName> = {
   home: 'home', browser: 'browser', polls: 'polls',
-  search: 'search', profile: 'profile', more: 'more',
+  search: 'search', profile: 'profile', more: 'more', admin: 'admin',
 };
 
 export default function App() {
@@ -140,6 +141,7 @@ export default function App() {
   const handleTabPress = useCallback((tab: TabKey) => {
     setMoreOpen(false);
     if (tab === 'more') { setMoreOpen(true); return; }
+    if (tab === 'admin') { setNav({ screen: 'admin', previousTab: activeTab }); setActiveTab('admin'); return; }
     setActiveTab(tab);
     setNav({ screen: TAB_TO_SCREEN[tab] });
   }, []);
@@ -153,6 +155,7 @@ export default function App() {
   const handleDraftBuilderPress = useCallback(() => setNav({ screen: 'draft_builder', previousTab: activeTab }), [activeTab]);
   const handleApprovalWorkflowPress = useCallback(() => setNav({ screen: 'approval_workflow', previousTab: activeTab }), [activeTab]);
   const handleBackendStatusPress = useCallback(() => setNav({ screen: 'backend_status', previousTab: activeTab }), [activeTab]);
+  const handleAdminPress = useCallback(() => setNav({ screen: 'admin', previousTab: activeTab }), [activeTab]);
   const handleAuthPress = useCallback(() => setNav({ screen: 'auth', previousTab: 'profile' }), []);
 
   const renderScreen = () => {
@@ -196,6 +199,8 @@ export default function App() {
         return <ApprovalWorkflowScreen onBack={handleBack} />;
       case 'backend_status':
         return <BackendStatusScreen onBack={handleBack} />;
+      case 'admin':
+        return <AdminScreen onBack={handleBack} />;
       case 'home':
       default:
         if (isDesktop) return <DesktopHomeScreen onSectionPress={navigateToSection} onPollPress={navigateToPoll} onSearchPress={() => handleTabPress('search')} onBrowsePress={() => handleTabPress('browser')} onProfilePress={() => handleTabPress('profile')} />;
@@ -300,6 +305,7 @@ export default function App() {
               onDraftBuilderPress={handleDraftBuilderPress}
               onApprovalWorkflowPress={handleApprovalWorkflowPress}
               onBackendStatusPress={handleBackendStatusPress}
+              onAdminPress={handleAdminPress}
             />
           )}
 
@@ -336,7 +342,7 @@ export default function App() {
               <MoreItem icon="people-outline" label={language === 'sw' ? 'Majadiliano' : 'Discussions'} onPress={() => { setMoreOpen(false); handleDiscussionPress(); }} />
               <MoreItem icon="time-outline" label={language === 'sw' ? 'Historia' : 'History'} onPress={() => { setMoreOpen(false); handleHistoryPress(); }} />
               <MoreItem icon="library-outline" label={language === 'sw' ? 'Maktaba' : 'Library'} onPress={() => { setMoreOpen(false); handleResourcesPress(); }} />
-              <MoreItem icon="server-outline" label={language === 'sw' ? 'Hadhi ya Nyuma' : 'Backend Status'} onPress={() => { setMoreOpen(false); handleBackendStatusPress(); }} />
+              <MoreItem icon="pulse-outline" label={language === 'sw' ? 'Hali ya Mfumo' : 'System Status'} onPress={() => { setMoreOpen(false); handleBackendStatusPress(); }} />
               <MoreItem icon="chatbox-outline" label={language === 'sw' ? 'Michango' : 'Contributions'} onPress={() => { setMoreOpen(false); setNav({ screen: 'contributions' }); }} />
             </View>
           </SafeAreaView>

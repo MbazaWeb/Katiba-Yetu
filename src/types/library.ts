@@ -233,4 +233,5 @@ export interface RegistrationInput {
   district?: string;
   languagePref: LibraryLanguage;
   anonymous: boolean;
+  stakeholder_type?: import('./index').StakeholderType;
 }

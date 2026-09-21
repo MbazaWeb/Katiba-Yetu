@@ -36,6 +36,29 @@ export interface Section {
 // ─── User & Auth Types ────────────────────────────────────────────────────────
 
 export type VerificationTier = 'none' | 'email' | 'phone' | 'nida';
+
+/** Stakeholder category chosen at registration — drives nav and contribution UI */
+export type StakeholderType =
+  | 'citizen'
+  | 'institution'
+  | 'court'
+  | 'lawyer'
+  | 'ngo'
+  | 'ministry'
+  | 'media'
+  | 'other';
+
+export const STAKEHOLDER_LABELS: Record<StakeholderType, { sw: string; en: string; icon: string; desc_sw: string; desc_en: string }> = {
+  citizen:     { sw: 'Mwananchi',           en: 'Citizen',           icon: 'person-outline',           desc_sw: 'Mtu binafsi anayetaka kushiriki', desc_en: 'Individual participating in deliberation' },
+  institution: { sw: 'Taasisi',             en: 'Institution',       icon: 'business-outline',         desc_sw: 'Taasisi za umma au za kibinafsi',  desc_en: 'Public or private institution' },
+  court:       { sw: 'Mahakama',            en: 'Court / Judiciary', icon: 'scale-outline',            desc_sw: 'Mahakama na mamlaka ya kisheria',  desc_en: 'Court or judicial authority' },
+  lawyer:      { sw: 'Wakili / Mtaalamu',   en: 'Lawyer / Legal Expert', icon: 'briefcase-outline',   desc_sw: 'Wakili au mtaalamu wa sheria',     desc_en: 'Lawyer or legal professional' },
+  ngo:         { sw: 'Shirika la Kiraia',   en: 'NGO / Civil Society', icon: 'people-circle-outline', desc_sw: 'NGO au shirika la kiraia',         desc_en: 'NGO or civil society organisation' },
+  ministry:    { sw: 'Wizara / Serikali',   en: 'Ministry / Government', icon: 'flag-outline',        desc_sw: 'Wizara au idara ya serikali',      desc_en: 'Government ministry or department' },
+  media:       { sw: 'Vyombo vya Habari',   en: 'Media',             icon: 'mic-outline',              desc_sw: 'Waandishi wa habari na vyombo',    desc_en: 'Journalists and media organisations' },
+  other:       { sw: 'Wadau Wengine',       en: 'Other Stakeholder', icon: 'ellipsis-horizontal-circle-outline', desc_sw: 'Wadau wengine wa kisheria', desc_en: 'Other stakeholders' },
+};
+
 export type UserRole =
   | 'guest'
   | 'registered'
@@ -55,6 +78,7 @@ export interface User {
   nida_verified: boolean;
   verification_tier: VerificationTier;
   role: UserRole;
+  stakeholder_type?: StakeholderType;
   anonymity_default: boolean;
   region?: TanzaniaRegion;
   district?: string;

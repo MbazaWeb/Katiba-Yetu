@@ -77,6 +77,7 @@ const supabaseAdapter: AuthService = {
       input.region,
       input.district,
       input.anonymous,
+      input.stakeholder_type,
     );
     // When email confirmation is disabled in Supabase, signUp returns a session immediately.
     // Use that user directly instead of calling getUser() (which returns null pre-confirmation).

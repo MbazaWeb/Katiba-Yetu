@@ -1,161 +1,156 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Pressable, StyleSheet, Modal } from 'react-native';
+import React from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { AppHeader } from '../components/sections/AppHeader';
 import { Colors, Typography, Spacing, Radius } from '../constants/tokens';
 import { useAppContext } from '../hooks/useAppContext';
-import { Notice } from '../components/library/LibraryUI';
-import {
-  getBackendStatus, BACKEND_DISCLAIMER,
-} from '../services/backend';
+import { getBackendStatus } from '../services/backend';
 
-interface Props {
-  onBack?: () => void;
-}
+interface Props { onBack?: () => void; }
 
 export function BackendStatusScreen({ onBack }: Props) {
   const { language } = useAppContext();
   const status = getBackendStatus();
-  const [exportModal, setExportModal] = useState(false);
-  const copy = (sw: string, en?: string) => en === undefined ? sw : (language === 'sw' ? sw : en);
+  const copy = (sw: string, en: string) => language === 'sw' ? sw : en;
 
-  const statusRows: { label: string; key: keyof typeof status; icon: string }[] = [
-    { label: copy('Hifadhi kuu ya API', 'API Repository'), key: 'api', icon: 'server-outline' },
-    { label: copy('Uundaji wa AI', 'AI Generation'), key: 'ai', icon: 'bulb-outline' },
-    { label: copy('Uthibitisho wa NIDA', 'NIDA Identity'), key: 'identity', icon: 'finger-print-outline' },
-    { label: copy('Huduma ya Udhibiti', 'Moderation Service'), key: 'moderation', icon: 'shield-checkmark-outline' },
-    { label: copy('Uundaji wa PDF', 'PDF Generation'), key: 'pdf', icon: 'document-text-outline' },
+  // Translate technical services into citizen-friendly features
+  const features = [
+    {
+      icon: 'cloud-done-outline' as const,
+      label_sw: 'Hifadhi ya Maoni',
+      label_en: 'Saving Contributions',
+      desc_sw: 'Maoni na mapendekezo yako yanahifadhiwa salama.',
+      desc_en: 'Your comments and proposals are saved safely.',
+      ok: status.api.configured,
+    },
+    {
+      icon: 'chatbubble-ellipses-outline' as const,
+      label_sw: 'Msaada wa Kuelewa Katiba',
+      label_en: 'Constitution Helper',
+      desc_sw: 'Msaidizi wa kueleza ibara za Katiba kwa lugha rahisi.',
+      desc_en: 'AI assistant that explains constitutional articles simply.',
+      ok: status.ai.configured,
+    },
+    {
+      icon: 'finger-print-outline' as const,
+      label_sw: 'Uthibitisho wa Kitambulisho',
+      label_en: 'Identity Verification',
+      desc_sw: 'Thibitisha utambulisho wako kupitia mfumo wa NIDA.',
+      desc_en: 'Verify your identity through the NIDA system.',
+      ok: status.identity.configured,
+    },
+    {
+      icon: 'shield-checkmark-outline' as const,
+      label_sw: 'Usalama wa Maudhui',
+      label_en: 'Content Safety',
+      desc_sw: 'Kuhakikisha mazingira ya heshima na salama kwa wote.',
+      desc_en: 'Ensuring a respectful and safe environment for all.',
+      ok: status.moderation.configured,
+    },
+    {
+      icon: 'document-text-outline' as const,
+      label_sw: 'Pakua Hati (PDF)',
+      label_en: 'Download Documents (PDF)',
+      desc_sw: 'Pakua nakala ya Katiba na mapendekezo kwa PDF.',
+      desc_en: 'Download the Constitution and proposals as PDF.',
+      ok: status.pdf.configured,
+    },
   ];
 
+  const allOk = features.every(f => f.ok);
+  const okCount = features.filter(f => f.ok).length;
+
   return (
-    <View style={styles.root}>
-      <AppHeader showBack={!!onBack} onBack={onBack} title={copy('Hadhi ya Nyuma', 'Backend Status')} />
-      <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.hero}>
-          <Ionicons name="server-outline" size={34} color={Colors.blue[300]} />
-          <Text style={styles.heroTitle}>{copy('Hadhi ya Nyuma', 'Backend Status')}</Text>
-          <Text style={styles.heroSub}>
-            {copy(
-              'Inaonyesha huduma zilizounganishwa na huduma ambazo zimezimwa kwa sababu hazijasanidiwa.',
-              'Shows connected services and services disabled because they are not configured.'
-            )}
-          </Text>
-        </View>
+    <View style={s.root}>
+      <AppHeader showBack={!!onBack} onBack={onBack}
+        title={copy('Hali ya Mfumo', 'System Status')} />
+      <ScrollView contentContainerStyle={s.content}>
 
-        <Notice>{BACKEND_DISCLAIMER}</Notice>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{copy('Huduma Zilizosanidiwa', 'Configured Services')}</Text>
-          {statusRows.map(row => {
-            const s = status[row.key];
-            return (
-              <View key={row.key} style={styles.statusRow}>
-                <Ionicons name={row.icon as any} size={20} color={s.configured ? Colors.green[400] : Colors.text.muted} />
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.statusLabel}>{row.label}</Text>
-                  <Text style={styles.statusValue}>
-                    {s.configured
-                      ? (copy('Imeunganishwa', 'Connected') + ` · ${s.kind} · ${s.baseUrl}`)
-                      : (copy('Haijasanidiwa — imezimwa', 'Not configured — disabled') + ` · ${s.kind}`)}
-                  </Text>
-                </View>
-                <View style={[styles.dot, s.configured ? styles.dotGreen : styles.dotGray]} />
-              </View>
-            );
-          })}
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{copy('Maelezo ya Awali', 'Initial Notes')}</Text>
-          <Text style={styles.bodyText}>
-            {copy(
-              'Supabase ndiyo hifadhi kuu. AI, NIDA, Udhibiti na PDF hazitatumia data ya mfano; kila huduma hubaki imezimwa hadi seva yake halisi isanidiwe.',
-              'Supabase is the primary data service. AI, NIDA, moderation, and PDF never use mock data; each remains disabled until its real server is configured.'
-            )}
-          </Text>
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>{copy('Hatua za Uundaji wa PDF', 'PDF Generation Steps')}</Text>
-          <Text style={styles.bodyText}>
-            {copy(
-              'Uhamishaji wa PDF unapatikana tu baada ya seva halisi ya PDF kusanidiwa.',
-              'PDF export is available only after a real PDF server is configured.'
-            )}
-          </Text>
-          <Pressable style={styles.openBtn} onPress={() => setExportModal(true)}>
-            <Text style={styles.openBtnText}>{copy('Maelezo zaidi', 'Learn more')}</Text>
-          </Pressable>
-        </View>
-
-        <Text style={styles.disclaimer}>{BACKEND_DISCLAIMER}</Text>
-      </ScrollView>
-
-      <Modal visible={exportModal} animationType="slide" transparent onRequestClose={() => setExportModal(false)}>
-        <View style={styles.scrim}>
-          <View style={styles.sheet}>
-            <View style={styles.sheetHeader}>
-              <Text style={styles.sheetTitle}>{copy('Maelezo ya Uundaji wa PDF', 'PDF Generation Details')}</Text>
-              <Pressable onPress={() => setExportModal(false)} accessibilityRole="button" accessibilityLabel={copy('Funga', 'Close')}><Ionicons name="close" size={24} color={Colors.text.muted} /></Pressable>
-            </View>
-            <ScrollView contentContainerStyle={{ gap: Spacing[3] }}>
-              <Text style={styles.bodyText}>
-                {copy(
-                  'Hakuna PDF ya mfano. Seva ya PDF lazima isanidiwe kabla ya kipengele hiki kutumika.',
-                  'There is no mock PDF export. A PDF server must be configured before this feature can be used.'
-                )}
-              </Text>
-              <Text style={styles.label}>{copy('Maudhui yanayoingizwa', 'Exported content includes')}:</Text>
-              {['Jina na toleo la rasimu', 'Tarehe ya kuchapishwa', 'Sura na ibara', 'Maelezo ya kisheria ya awali', 'Muhtasari wa mbinu', 'Onyo la uwakilishi', 'Ufafanuzi wa lugha rahisi'].map(item => (
-                <View key={item} style={styles.listRow}>
-                  <Ionicons name="checkmark-circle" size={16} color={Colors.green[400]} />
-                  <Text style={styles.bodyText}>{copy(item, item)}</Text>
-                </View>
-              ))}
-              <Text style={styles.label}>{copy('Maudhui yasiyoingizwa', 'Exported content excludes')}:</Text>
-              {['Taarifa za kibinafsi za washiriki', 'Michango iliyokataliwa', 'Taarifa za udhibiti zilizolindwa'].map(item => (
-                <View key={item} style={styles.listRow}>
-                  <Ionicons name="close-circle" size={16} color={Colors.red[400]} />
-                  <Text style={styles.bodyText}>{copy(item, item)}</Text>
-                </View>
-              ))}
-              <Pressable style={styles.closeBtn} onPress={() => setExportModal(false)}>
-                <Text style={styles.closeBtnText}>{copy('Sawa', 'OK')}</Text>
-              </Pressable>
-            </ScrollView>
+        {/* Overall status banner */}
+        <View style={[s.banner, allOk ? s.bannerGreen : s.bannerAmber]}>
+          <Ionicons
+            name={allOk ? 'checkmark-circle' : 'information-circle'}
+            size={32}
+            color={allOk ? Colors.green[400] : Colors.gold[400]}
+          />
+          <View style={{ flex: 1 }}>
+            <Text style={s.bannerTitle}>
+              {allOk
+                ? copy('Mfumo unafanya kazi vizuri', 'All systems are running')
+                : copy(`Huduma ${okCount} kati ya ${features.length} zinafanya kazi`, `${okCount} of ${features.length} features available`)}
+            </Text>
+            <Text style={s.bannerSub}>
+              {allOk
+                ? copy('Huduma zote zinapatikana.', 'All features are available to you.')
+                : copy('Baadhi ya huduma bado zinaendelea kuunganishwa.', 'Some features are still being connected.')}
+            </Text>
           </View>
         </View>
-      </Modal>
+
+        {/* Feature cards */}
+        <Text style={s.sectionTitle}>{copy('Huduma Zinazopatikana', 'Available Features')}</Text>
+        {features.map((f, i) => (
+          <View key={i} style={[s.card, !f.ok && s.cardDim]}>
+            <View style={[s.cardIcon, f.ok ? s.cardIconGreen : s.cardIconGray]}>
+              <Ionicons name={f.icon} size={22} color={f.ok ? Colors.green[400] : Colors.text.muted} />
+            </View>
+            <View style={{ flex: 1, gap: 3 }}>
+              <View style={s.cardRow}>
+                <Text style={[s.cardLabel, !f.ok && s.cardLabelDim]}>
+                  {copy(f.label_sw, f.label_en)}
+                </Text>
+                <View style={[s.pill, f.ok ? s.pillGreen : s.pillGray]}>
+                  <Text style={[s.pillText, f.ok ? s.pillTextGreen : s.pillTextGray]}>
+                    {f.ok ? copy('Inapatikana', 'Available') : copy('Haijaungwa', 'Coming soon')}
+                  </Text>
+                </View>
+              </View>
+              <Text style={s.cardDesc}>{copy(f.desc_sw, f.desc_en)}</Text>
+            </View>
+          </View>
+        ))}
+
+        {/* Reassurance note */}
+        <View style={s.note}>
+          <Ionicons name="lock-closed-outline" size={16} color={Colors.gold[400]} />
+          <Text style={s.noteText}>
+            {copy(
+              'Hata bila huduma zote, unaweza kusoma Katiba, kutoa maoni, na kupiga kura. Taarifa zako ziko salama.',
+              'Even without all features, you can read the Constitution, add comments, and vote. Your data is safe.',
+            )}
+          </Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const s = StyleSheet.create({
   root: { flex: 1, backgroundColor: Colors.surface.base },
-  content: { padding: Spacing[5], paddingBottom: Spacing[20], maxWidth: 920, alignSelf: 'center', width: '100%', gap: Spacing[4] },
-  hero: { alignItems: 'center', gap: Spacing[2], paddingVertical: Spacing[3] },
-  heroTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size['2xl'], fontWeight: Typography.weight.bold, color: Colors.text.primary, textAlign: 'center' },
-  heroSub: { fontSize: Typography.size.sm, color: Colors.text.muted, textAlign: 'center', maxWidth: 580, lineHeight: 21 },
-  card: { backgroundColor: Colors.surface.raised, borderRadius: Radius.lg, borderWidth: 1, borderColor: Colors.surface.borderStrong, padding: Spacing[4], gap: Spacing[2] },
-  cardTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size.lg, fontWeight: Typography.weight.bold, color: Colors.text.primary },
-  statusRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing[3], paddingVertical: Spacing[2], borderBottomWidth: 1, borderBottomColor: Colors.surface.border },
-  statusLabel: { fontSize: Typography.size.sm, fontWeight: Typography.weight.semibold, color: Colors.text.primary },
-  statusValue: { fontSize: Typography.size.xs, color: Colors.text.muted, marginTop: 2 },
-  dot: { width: 12, height: 12, borderRadius: 6 },
-  dotGreen: { backgroundColor: Colors.green[400] },
-  dotGray: { backgroundColor: Colors.text.muted },
-  bodyText: { fontSize: Typography.size.sm, color: Colors.text.secondary, lineHeight: 21 },
-  label: { fontSize: Typography.size.sm, color: Colors.text.secondary, fontWeight: Typography.weight.semibold, marginTop: Spacing[2] },
-  listRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing[2] },
-  openBtn: { paddingVertical: Spacing[2], paddingHorizontal: Spacing[3], borderRadius: Radius.sm, backgroundColor: Colors.blue[700], minHeight: 36, alignItems: 'center', justifyContent: 'center' },
-  openBtnText: { color: '#fff', fontSize: Typography.size.sm, fontWeight: Typography.weight.semibold },
-  disclaimer: { fontSize: Typography.size.xs, color: Colors.text.muted, textAlign: 'center', paddingTop: Spacing[4], lineHeight: 18 },
-  scrim: { flex: 1, backgroundColor: '#00000099', justifyContent: 'flex-end' },
-  sheet: { backgroundColor: Colors.surface.base, borderTopLeftRadius: Radius['2xl'], borderTopRightRadius: Radius['2xl'], padding: Spacing[5], maxHeight: '90%' },
-  sheetHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: Spacing[3] },
-  sheetTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size.xl, fontWeight: Typography.weight.bold, color: Colors.text.primary, flex: 1 },
-  closeBtn: { paddingVertical: Spacing[3], borderRadius: Radius.md, backgroundColor: Colors.green[700], alignItems: 'center', minHeight: 44 },
-  closeBtnText: { color: '#fff', fontSize: Typography.size.lg, fontWeight: Typography.weight.semibold },
+  content: { padding: Spacing[5], paddingBottom: Spacing[20], maxWidth: 720, alignSelf: 'center', width: '100%', gap: Spacing[3] },
+  banner: { flexDirection: 'row', alignItems: 'center', gap: Spacing[3], padding: Spacing[4], borderRadius: Radius.xl, marginBottom: Spacing[2] },
+  bannerGreen: { backgroundColor: Colors.green[900] },
+  bannerAmber: { backgroundColor: '#2a2200' },
+  bannerTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size.lg, fontWeight: Typography.weight.bold, color: Colors.text.primary },
+  bannerSub: { fontSize: Typography.size.sm, color: Colors.text.muted, marginTop: 3 },
+  sectionTitle: { fontFamily: Typography.family.serif, fontSize: Typography.size.xl, fontWeight: Typography.weight.bold, color: Colors.text.primary, marginTop: Spacing[2] },
+  card: { flexDirection: 'row', alignItems: 'flex-start', gap: Spacing[3], backgroundColor: Colors.surface.raised, borderRadius: Radius.lg, borderWidth: 1, borderColor: Colors.surface.borderStrong, padding: Spacing[4] },
+  cardDim: { opacity: 0.6 },
+  cardIcon: { width: 44, height: 44, borderRadius: Radius.md, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  cardIconGreen: { backgroundColor: Colors.green[900] },
+  cardIconGray: { backgroundColor: Colors.surface.overlay },
+  cardRow: { flexDirection: 'row', alignItems: 'center', gap: Spacing[2], flexWrap: 'wrap' },
+  cardLabel: { fontSize: Typography.size.base, fontWeight: Typography.weight.semibold, color: Colors.text.primary, flex: 1 },
+  cardLabelDim: { color: Colors.text.muted },
+  cardDesc: { fontSize: Typography.size.sm, color: Colors.text.secondary, lineHeight: 20 },
+  pill: { paddingHorizontal: Spacing[2], paddingVertical: 3, borderRadius: Radius.full },
+  pillGreen: { backgroundColor: Colors.green[900] },
+  pillGray: { backgroundColor: Colors.surface.overlay },
+  pillText: { fontSize: 11, fontWeight: Typography.weight.semibold },
+  pillTextGreen: { color: Colors.green[400] },
+  pillTextGray: { color: Colors.text.muted },
+  note: { flexDirection: 'row', gap: Spacing[2], padding: Spacing[4], backgroundColor: '#1a1500', borderRadius: Radius.lg, alignItems: 'flex-start', marginTop: Spacing[2] },
+  noteText: { flex: 1, fontSize: Typography.size.sm, color: Colors.text.secondary, lineHeight: 20 },
 });
 
 export default BackendStatusScreen;

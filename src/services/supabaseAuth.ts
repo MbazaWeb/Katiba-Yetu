@@ -18,6 +18,7 @@ export async function loadProfile(authUser: AuthUser, maxAttempts = 5): Promise<
         verification_tier: data.verification_tier,
         role: data.role,
         anonymity_default: data.anonymity_default,
+        stakeholder_type: data.stakeholder_type ?? undefined,
         region: data.region ?? undefined,
         district: data.district ?? undefined,
         language_pref: data.language_pref,
@@ -45,6 +46,7 @@ export async function signUp(
   region?: string,
   district?: string,
   anonymityDefault?: boolean,
+  stakeholderType?: string,
 ) {
   const { data, error } = await supabase.auth.signUp({
     email: email.trim(),
@@ -60,11 +62,12 @@ export async function signUp(
 
   // After signUp the trigger creates the profile row. Update it with the
   // extra fields the trigger doesn't receive (region, district, anonymity).
-  if (data.user && (region || district || anonymityDefault)) {
+  if (data.user && (region || district || anonymityDefault || stakeholderType)) {
     const updates: Record<string, unknown> = {};
     if (region) updates.region = region;
     if (district) updates.district = district;
     if (anonymityDefault !== undefined) updates.anonymity_default = anonymityDefault;
+    if (stakeholderType) updates.stakeholder_type = stakeholderType;
     // Retry the update briefly — the trigger row must exist first.
     for (let i = 0; i < 4; i++) {
       const { error: updateErr } = await supabase
