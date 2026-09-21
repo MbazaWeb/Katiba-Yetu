@@ -82,7 +82,7 @@ export function AuthScreen({ onAuthenticated, onBack, initialMode = 'signin' }: 
           district: location.district,
           languagePref: language as LibraryLanguage,
           anonymous,
-          stakeholder_type: stakeholder ?? undefined,
+          stakeholderType: stakeholder ?? 'citizen',
         };
         signedInUser = await service.register(input);
       }

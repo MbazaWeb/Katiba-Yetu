@@ -99,6 +99,9 @@ export function getRoleLabel(role: UserRole, lang: Language): string {
     guest:            { sw: 'Mgeni',                    en: 'Guest' },
     registered:       { sw: 'Mtumiaji',                 en: 'Registered' },
     verified_citizen: { sw: 'Raia Aliyethibitishwa',   en: 'Verified citizen' },
+    institution:      { sw: 'Taasisi',                 en: 'Institution' },
+    law_society:      { sw: 'Jumuiya ya Mawakili',     en: 'Law society' },
+    academic:         { sw: 'Mtaalamu',                en: 'Academic' },
     moderator:        { sw: 'Msimamizi',               en: 'Moderator' },
     admin:            { sw: 'Msimamizi Mkuu',          en: 'Admin' },
   };

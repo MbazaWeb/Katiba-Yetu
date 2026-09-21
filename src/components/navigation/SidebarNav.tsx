@@ -15,9 +15,10 @@ import type { UserRole } from '../../types';
 
 export type SidebarKey =
   | TabKey
-  | 'contributions' | 'history' | 'discussion'
+  | 'contributions' | 'history' | 'discussion' | 'resources'
   | 'proposed_constitution' | 'citizen_submission' | 'multi_stage_polls'
-  | 'draft_builder' | 'approval_workflow' | 'backend_status' | 'admin';
+  | 'draft_builder' | 'approval_workflow' | 'backend_status' | 'system_status'
+  | 'admin';
 
 interface NavItem {
   key: SidebarKey;
@@ -51,6 +52,7 @@ interface SidebarNavProps {
   onTabPress: (tab: TabKey) => void;
   onContributionsPress?: () => void;
   onHistoryPress?: () => void;
+  onResourcesPress?: () => void;
   onDiscussionPress?: () => void;
   onProposedConstitutionPress?: () => void;
   onCitizenSubmissionPress?: () => void;
@@ -67,7 +69,7 @@ const EXPANDED_W  = 260;
 
 export function SidebarNav({
   activeTab, onTabPress,
-  onContributionsPress, onHistoryPress, onDiscussionPress,
+  onContributionsPress, onHistoryPress, onResourcesPress, onDiscussionPress,
   onProposedConstitutionPress, onCitizenSubmissionPress, onMultiStagePollsPress,
   onDraftBuilderPress, onApprovalWorkflowPress, onBackendStatusPress, onAdminPress,
   notificationCount,
@@ -94,6 +96,7 @@ export function SidebarNav({
     const handlers: Partial<Record<SidebarKey, () => void>> = {
       contributions:         onContributionsPress,
       history:               onHistoryPress,
+      resources:             onResourcesPress,
       discussion:            onDiscussionPress,
       proposed_constitution: onProposedConstitutionPress,
       citizen_submission:    onCitizenSubmissionPress,

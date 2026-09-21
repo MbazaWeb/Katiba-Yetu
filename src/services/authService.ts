@@ -74,11 +74,10 @@ const supabaseAdapter: AuthService = {
       input.password,
       input.displayName,
       input.languagePref as Language,
-      input.stakeholderType,
       input.region,
       input.district,
       input.anonymous,
-      input.stakeholder_type,
+      input.stakeholderType ?? input.stakeholder_type,
     );
     const authUser = signUpData?.user ?? null;
     if (authUser) return loadProfile(authUser);
