@@ -1,6 +1,11 @@
 import React, { useState } from 'react';
 import {
-  View, Text, Pressable, StyleSheet, ScrollView, Animated, useAnimatedValue,
+  View,
+  Text,
+  Pressable,
+  StyleSheet,
+  ScrollView,
+  Animated,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Typography, Radius } from '../../constants/tokens';
@@ -10,7 +15,7 @@ import type { UserRole } from '../../types';
 
 export type SidebarKey =
   | TabKey
-  | 'contributions' | 'history' | 'resources' | 'discussion'
+  | 'contributions' | 'history' | 'discussion'
   | 'proposed_constitution' | 'citizen_submission' | 'multi_stage_polls'
   | 'draft_builder' | 'approval_workflow' | 'backend_status' | 'admin';
 
@@ -36,7 +41,6 @@ const ALL_ITEMS: NavItem[] = [
   { key: 'draft_builder',         icon: 'construct-outline',               label_sw: 'Mjenzi wa Rasimu',        label_en: 'Draft Builder',     roles: ['law_society','academic','moderator','admin'] },
   { key: 'approval_workflow',     icon: 'git-branch-outline',              label_sw: 'Mchakato wa Idhini',     label_en: 'Approval Workflow', roles: ['moderator','admin'] },
   { key: 'history',               icon: 'time-outline',                    label_sw: 'Historia ya Mabadiliko',  label_en: 'Change History' },
-  { key: 'resources',             icon: 'library-outline',                 label_sw: 'Maktaba ya Kisheria',     label_en: 'Legal Library' },
   { key: 'profile',               icon: 'person-outline',                  label_sw: 'Akaunti Yangu',           label_en: 'My Account' },
   { key: 'backend_status',        icon: 'pulse-outline',                   label_sw: 'Hali ya Mfumo',          label_en: 'System Status',     roles: ['moderator','admin'] },
   { key: 'admin',                 icon: 'shield-outline',                  label_sw: 'Usimamizi',              label_en: 'Admin Panel',       roles: ['admin','moderator'] },
@@ -47,7 +51,6 @@ interface SidebarNavProps {
   onTabPress: (tab: TabKey) => void;
   onContributionsPress?: () => void;
   onHistoryPress?: () => void;
-  onResourcesPress?: () => void;
   onDiscussionPress?: () => void;
   onProposedConstitutionPress?: () => void;
   onCitizenSubmissionPress?: () => void;
@@ -64,14 +67,14 @@ const EXPANDED_W  = 260;
 
 export function SidebarNav({
   activeTab, onTabPress,
-  onContributionsPress, onHistoryPress, onResourcesPress, onDiscussionPress,
+  onContributionsPress, onHistoryPress, onDiscussionPress,
   onProposedConstitutionPress, onCitizenSubmissionPress, onMultiStagePollsPress,
   onDraftBuilderPress, onApprovalWorkflowPress, onBackendStatusPress, onAdminPress,
   notificationCount,
 }: SidebarNavProps) {
   const { language, user } = useAppContext();
   const [collapsed, setCollapsed] = useState(false);
-  const animW = useAnimatedValue(EXPANDED_W);
+  const [animW] = useState(() => new Animated.Value(EXPANDED_W));
 
   const toggle = () => {
     Animated.spring(animW, {
@@ -91,7 +94,6 @@ export function SidebarNav({
     const handlers: Partial<Record<SidebarKey, () => void>> = {
       contributions:         onContributionsPress,
       history:               onHistoryPress,
-      resources:             onResourcesPress,
       discussion:            onDiscussionPress,
       proposed_constitution: onProposedConstitutionPress,
       citizen_submission:    onCitizenSubmissionPress,

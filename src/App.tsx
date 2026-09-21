@@ -144,7 +144,7 @@ export default function App() {
     if (tab === 'admin') { setNav({ screen: 'admin', previousTab: activeTab }); setActiveTab('admin'); return; }
     setActiveTab(tab);
     setNav({ screen: TAB_TO_SCREEN[tab] });
-  }, []);
+  }, [activeTab]);
 
   const handleHistoryPress = useCallback(() => setNav({ screen: 'history', previousTab: activeTab }), [activeTab]);
   const handleResourcesPress = useCallback(() => setNav({ screen: 'resources', previousTab: activeTab }), [activeTab]);
